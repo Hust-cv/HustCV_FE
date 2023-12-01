@@ -18,10 +18,12 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+}
+
+.header {
+  background: linear-gradient(269.85deg,#54151C 0%,#121212 54.89%);
+}
+
+.footer {
+  background: linear-gradient(269.85deg,#54151C 0%,#121212 54.89%);
 }
