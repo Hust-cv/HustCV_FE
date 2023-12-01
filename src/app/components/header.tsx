@@ -155,7 +155,7 @@ const items: MenuProps['items'] = [
 
 const Header = () => {
     return (
-        <div className="header min-h-[88px]">
+        <div className="header min-h-[88px] border-b border-b-gray-800 fixed top-0 left-0 right-0">
             <div className="container min-h-[88px] mx-auto flex items-center">
                 <div>
                     <p className="text-white text-3xl font-bold">Hust<span className="text-[#f0101a]">CV</span></p>
