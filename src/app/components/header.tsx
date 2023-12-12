@@ -1,7 +1,8 @@
+'use client'
 import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu, Button } from 'antd';
-
+import { useRouter } from 'next/navigation';
 const items: MenuProps['items'] = [
     {
         label: 'All Jobs',
@@ -153,7 +154,18 @@ const items: MenuProps['items'] = [
     },
 ];
 
+
 const Header = () => {
+    const router = useRouter();
+
+    const handleLoginClick = () => {
+        router.push('/login');
+    };
+
+    const handleRegisterClick = () => {
+        router.push('/register');
+    };
+
     return (
         <div className="header min-h-[88px] border-b border-b-gray-800 fixed z-10 top-0 left-0 right-0">
             <div className="container min-h-[88px] mx-auto flex items-center">
@@ -162,15 +174,21 @@ const Header = () => {
                 </div>
                 <div className='ml-48 flex-1'>
                     <div className='flex items-center gap-6 '>
-                        <Menu className='bg-transparent min-w-[400px] text-xl text-[#a6a6a6]' mode="horizontal" items={items} />;
+                        <Menu className='bg-transparent min-w-[400px] text-xl text-[#a6a6a6]' mode="horizontal" items={items} />
                     </div>
                 </div>
                 <div className='pr-14'>
-                    <button className='text-[#a6a6a6] hover:text-white'>Đăng nhập/Đăng ký</button>
+                    <button className='text-[#a6a6a6] hover:text-white' onClick={handleLoginClick}>
+                        Đăng nhập
+                    </button>
+                    <span className='text-[#a6a6a6] mx-2'>/</span>
+                    <button className='text-[#a6a6a6] hover:text-white' onClick={handleRegisterClick}>
+                        Đăng ký
+                    </button>
                 </div>
             </div>
         </div>
     )
 }
 
-export default Header
+export default Header;

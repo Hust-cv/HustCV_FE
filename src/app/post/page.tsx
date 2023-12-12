@@ -22,8 +22,6 @@ const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 const { Option } = Select;
 
-
-
 const Post = () => {
     //hook
     const [isModalOpen, setIsModalOpen] = useState(false);
