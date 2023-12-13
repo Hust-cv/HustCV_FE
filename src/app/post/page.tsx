@@ -18,18 +18,20 @@ import { MoreOutlined, CheckOutlined, FireOutlined, ReadOutlined, FormOutlined, 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { IPost } from '../shared/recruitmentPost.type';
 import http from '../utils/http';
+import moment from 'moment'
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 const { Option } = Select;
 
-
+const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY', 'DD-MM-YYYY', 'DD-MM-YY'];
 
 const Post = () => {
     //hook
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isModalConfirmOpen, setIsModalConfirmOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isModalConfirmOpen, setIsModalConfirmOpen] = useState(false)
     const [deleteId, setDeleteId] = useState(null)
-    const [popoverVisible, setPopoverVisible] = useState(false);
+    const [isModalEditOpen, setIsModalEditOpen] = useState(false)
+    const [editPost, setEditPost] = useState<any>({})
 
     // Get QueryClient from the context
     const queryClient = useQueryClient()
@@ -65,12 +67,26 @@ const Post = () => {
 
     const deletePostMutation = useMutation({
         mutationFn: async (id: any) => {
-            console.log(id)
             const response = await http.delete('/api/recruitmentPosts/' + id)
             return response
         },
         onSuccess: (data, variables, context) => {
             message.success('Xoá bài đăng thành công')
+            queryClient.invalidateQueries({ queryKey: ['recruitmentPosts'] })
+        },
+        onError: (error) => {
+            console.log(error)
+        }
+    })
+
+    const updateMutation = useMutation({
+        mutationFn: async ({ id, values }: any) => {
+            const response = await http.put('/api/recruitmentPosts/' + id, values)
+            return response
+        },
+        onSuccess: (data, variables, context) => {
+            message.success('Sửa bài đăng thành công')
+            setIsModalEditOpen(false)
             queryClient.invalidateQueries({ queryKey: ['recruitmentPosts'] })
         },
         onError: (error) => {
@@ -133,21 +149,23 @@ const Post = () => {
         setIsModalOpen(false);
     };
 
-    const handleChange = (value: string[]) => {
-        // console.log(`selected ${value}`);
-    };
-
     const onFinish = (values: any) => {
+        values.dateClose = values.dateClose.toISOString()
         addNewPostMutation.mutate(values)
     }
 
-    const handleEdit = () => {
-        setPopoverVisible(false)
+    const onFinishEdit = (id: any, values: any) => {
+        values.dateClose = values.dateClose.toISOString()
+        updateMutation.mutate({ id, values })
+    }
+
+    const handleEdit = (post: any) => {
+        setEditPost(post)
+        setIsModalEditOpen(true)
     }
 
     const handleDelete = (id: any) => {
         setDeleteId(id)
-        setPopoverVisible(false)
         setIsModalConfirmOpen(true)
     }
 
@@ -192,7 +210,7 @@ const Post = () => {
                                     <Radio value="Remote"> Remote </Radio>
                                 </Radio.Group>
                             </Form.Item>
-                            {/* <Form.Item label='Kỹ năng' name='skill'>
+                            <Form.Item label='Kỹ năng' name='skill'>
                                 <Select
                                     mode="multiple"
                                     allowClear
@@ -201,13 +219,12 @@ const Post = () => {
                                     // onChange={handleChange}
                                     options={options}
                                 />
-                            </Form.Item> */}
+                            </Form.Item>
                             <Form.Item label='Mức lương' name='salary'>
                                 <Select
                                     allowClear
                                     style={{ width: '100%' }}
                                     placeholder="Mức lương"
-                                // onChange={handleChange}
                                 >
                                     <Option value="2.000.000 đ - 5.000.000 đ">2.000.000 đ - 5.000.000 đ</Option>
                                     <Option value="5.000.000 đ - 10.000.000 đ">5.000.000 đ - 10.000.000 đ</Option>
@@ -216,7 +233,7 @@ const Post = () => {
                                     <Option value="25.000.000 đ - 50.000.000 đ">25.000.000 đ - 50.000.000 đ</Option>
                                 </Select>
                             </Form.Item>
-                            <Form.Item label="Ngày hết hạn" name='tillDate'>
+                            <Form.Item label="Ngày hết hạn" name='dateClose'>
                                 <DatePicker />
                             </Form.Item>
                             <Form.Item wrapperCol={{ offset: 10, span: 16 }}>
@@ -228,7 +245,7 @@ const Post = () => {
                     </Modal>
                 </div>
                 <div className='mx-[300px]'>
-                    {data?.map((post: any) => {
+                    {data?.map((post: any, index: number) => {
                         return (
                             <Card
                                 key={post.id}
@@ -242,7 +259,7 @@ const Post = () => {
                                         content={
                                             <>
                                                 <div className='mb-4 mt-2'>
-                                                    <a onClick={handleEdit}><EditOutlined className='mr-4' />Sửa bài đăng</a>
+                                                    <a onClick={() => handleEdit(post)}><EditOutlined className='mr-4' />Sửa bài đăng</a>
                                                 </div>
                                                 <div>
                                                     <a onClick={() => handleDelete(post.id)}><DeleteOutlined className='mr-4' />Xoá bài đăng</a>
@@ -251,11 +268,11 @@ const Post = () => {
                                         }
                                         title="Hành động"
                                         trigger="click"
-                                        open={popoverVisible}
                                         placement="left"
                                         className='z-1'
+
                                     >
-                                        <MoreOutlined onClick={() => setPopoverVisible(true)} />
+                                        <MoreOutlined />
                                     </Popover>
                                 }
                                 className='w-full mb-4'
@@ -273,7 +290,7 @@ const Post = () => {
                                     <p><ReadOutlined className='mr-4' />Kĩ năng cần thiết</p>
                                 </div>
                                 <p className='my-3'><MoneyCollectOutlined className='mr-4' />Mức lương: {post.salary}</p>
-                                <p className='my-3'><FieldTimeOutlined className='mr-4' />Ngày kết thúc: {post.tillDate}</p>
+                                <p className='my-3'><FieldTimeOutlined className='mr-4' />Ngày kết thúc: {post.dateClose?.split('T')[0]}</p>
                             </Card>
                         )
                     })}
@@ -296,6 +313,77 @@ const Post = () => {
                             <p>Bạn có chắc muốn xoá bài viết này?</p>
                         </Modal>
                     ) : ''}
+                </div>
+                <div>
+                    {isModalEditOpen ? (
+                        <Modal title="Sửa bài đăng tuyển"
+                            open={isModalEditOpen}
+                            onCancel={() => { setIsModalEditOpen(false) }}
+                            footer={[
+                                <Button key="back" onClick={() => { setIsModalEditOpen(false) }}>
+                                    Huỷ
+                                </Button>
+                            ]}
+                        >
+                            <Form
+                                labelCol={{ span: 8 }}
+                                wrapperCol={{ span: 16 }}
+                                layout="horizontal"
+                                style={{ maxWidth: 800 }}
+                                className='w-800px'
+                                onFinish={(values: any) => onFinishEdit(editPost.id, values)}
+                            >
+                                <Form.Item label="Tiêu đề bài đăng" name='title' initialValue={editPost.title}>
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item label="Mô tả bài đăng tuyển" name='describe' initialValue={editPost.describe}>
+                                    <TextArea rows={4} />
+                                </Form.Item>
+                                <Form.Item label="Yêu cầu" name='request' initialValue={editPost.request}>
+                                    <TextArea rows={4} />
+                                </Form.Item>
+                                <Form.Item label="Hình thức" name='form' initialValue={editPost.form}>
+                                    <Radio.Group>
+                                        <Radio value="Onsite"> Onsite </Radio>
+                                        <Radio value="Hybrid"> Hybrid </Radio>
+                                        <Radio value="Remote"> Remote </Radio>
+                                    </Radio.Group>
+                                </Form.Item>
+                                <Form.Item label='Kỹ năng' name='skill'>
+                                    <Select
+                                        mode="multiple"
+                                        allowClear
+                                        style={{ width: '100%' }}
+                                        placeholder="Kỹ năng"
+                                        // onChange={handleChange}
+                                        options={options}
+                                    />
+                                </Form.Item>
+                                <Form.Item label='Mức lương' name='salary' initialValue={editPost.salary}>
+                                    <Select
+                                        allowClear
+                                        style={{ width: '100%' }}
+                                        placeholder="Mức lương"
+                                    >
+                                        <Option value="2.000.000 đ - 5.000.000 đ">2.000.000 đ - 5.000.000 đ</Option>
+                                        <Option value="5.000.000 đ - 10.000.000 đ">5.000.000 đ - 10.000.000 đ</Option>
+                                        <Option value="10.000.000 đ - 15.000.000 đ">10.000.000 đ - 15.000.000 đ</Option>
+                                        <Option value="15.000.000 đ - 25.000.000 đ">15.000.000 đ - 25.000.000 đ</Option>
+                                        <Option value="25.000.000 đ - 50.000.000 đ">25.000.000 đ - 50.000.000 đ</Option>
+                                    </Select>
+                                </Form.Item>
+                                <Form.Item label="Ngày hết hạn" name='dateClose' initialValue={moment(editPost.dateClose)}>
+                                    <DatePicker />
+                                </Form.Item>
+                                <Form.Item wrapperCol={{ offset: 10, span: 16 }}>
+                                    <Button className='bg-blue-600' type="primary" htmlType="submit">
+                                        Lưu
+                                    </Button>
+                                </Form.Item>
+                            </Form>
+                        </Modal>
+                    ) : ''
+                    }
                 </div>
             </div >
         </>
