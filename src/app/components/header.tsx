@@ -161,9 +161,8 @@ const Header = () => {
     const handleLoginClick = () => {
         router.push('/login');
     };
-
     const handleRegisterClick = () => {
-        router.push('/register');
+        router.push('/signup');
     };
 
     return (
