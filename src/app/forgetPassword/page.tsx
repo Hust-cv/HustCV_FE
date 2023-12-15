@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Button, Input } from 'antd';
 import { useRouter } from 'next/navigation';
-import http from '@/app/utils/http';
+import http from "@/app/utils/http";
 
 // Define the ForgetPassword component
 const ForgetPassword = () => {
@@ -10,15 +10,16 @@ const ForgetPassword = () => {
     const [email, setEmail] = useState('');
     const [verificationCode, setVerificationCode] = useState('');
     const [newPassword, setNewPassword] = useState('');
+    const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [step, setStep] = useState(1);
-    const [error, setError] = useState(null);
+
 
     // Function to handle email submission
     const handleEmailSubmit = async () => {
         try {
             if (!email) {
-                setError('Vui lòng nhập địa chỉ email');
+                setError('Vui lòng nhập email');
                 return;
             }
 
@@ -29,13 +30,15 @@ const ForgetPassword = () => {
 
             if (response.data?.success === true) {
                 // Reset the error state if the email check is successful
-                setError(null);
+                setError('');
                 setStep(2);
             } else {
                 setError('Email này không tồn tại');
+                return ;
             }
         } catch (error) {
             console.error('Lỗi kiểm tra email:', error);
+            // @ts-ignore
             setError('Đã xảy ra lỗi khi kiểm tra email');
         } finally {
             // Stop loading
@@ -48,14 +51,14 @@ const ForgetPassword = () => {
     const handleVerificationCodeSubmit = async () => {
         try {
             if (!verificationCode) {
-                setError('Vui lòng nhập verificationCode');
+                setError('Vui lòng nhập mã xác nhận');
                 return;
             }
             setLoading(true);
             const response = await http.post('/api/auths/checkCode', { verificationCode });
             const success = response.data?.success;
             if (success) {
-                setError(null);
+                setError('');
                 setStep(3);
             } else {
                 setError('Mã này không tồn tại');
@@ -81,7 +84,7 @@ const ForgetPassword = () => {
             setLoading(true);
             const response = await http.put('/api/auths/resetPassword', { newPassword });
             if (response.data?.success === true) {
-                setError(null);
+                setError('');
                 router.push('/login');
             } else {
                 setError('Đã xảy ra lỗi khi đặt mật khẩu mới');
@@ -89,6 +92,9 @@ const ForgetPassword = () => {
         } catch (error) {
             console.error('Lỗi đặt mật khẩu mới:', error);
         }
+    };
+    const handleLogin = () => {
+        router.push('/login');
     };
 
     // JSX structure for the ForgetPassword component
@@ -115,6 +121,15 @@ const ForgetPassword = () => {
                             >
                                 {loading ? 'Đang Gửi...' : 'Gửi'}
                             </Button>
+                            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                                <Button
+                                    type="primary"
+                                    onClick={handleLogin}
+                                    style={{ backgroundColor: 'blue', borderColor: '#blue' }}
+                                >
+                                    Huỷ
+                                </Button>
+                            </div>
                         </div>
                     </>
                 )}
@@ -139,7 +154,17 @@ const ForgetPassword = () => {
                             >
                                 {loading ? 'Đang Gửi...' : 'Gửi'}
                             </Button>
+                            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                                <Button
+                                    type="primary"
+                                    onClick={handleLogin}
+                                    style={{ backgroundColor: 'blue', borderColor: '#blue' }}
+                                >
+                                    Huỷ
+                                </Button>
+                            </div>
                         </div>
+
                     </>
                 )}
 
@@ -163,6 +188,16 @@ const ForgetPassword = () => {
                             >
                                 {loading ? 'Đang Gửi...' : 'Gửi'}
                             </Button>
+
+                            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                                <Button
+                                    type="primary"
+                                    onClick={handleLogin}
+                                    style={{ backgroundColor: 'blue', borderColor: '#blue' }}
+                                >
+                                    Huỷ
+                                </Button>
+                            </div>
                         </div>
                     </>
                 )}
