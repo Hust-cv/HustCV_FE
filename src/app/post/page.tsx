@@ -41,7 +41,7 @@ const Post = () => {
     //api
     const addNewPostMutation = useMutation({
         mutationFn: async (values: IPost) => {
-            const data = await http.post('/api/recruitmentPosts', values)
+            const data = await http.axiosClient.post('/api/recruitmentPosts', values)
             return data
         },
         onSuccess: (data, variables, context) => {
@@ -58,10 +58,22 @@ const Post = () => {
         queryKey: ['recruitmentPosts'],
         queryFn: async () => {
             try {
-                const response = await http.get('/api/recruitmentPosts')        //chỗ này cần sửa api cho bản thân
+                const response = await http.axiosClient.get('/api/recruitmentPosts')        //chỗ này cần sửa api cho bản thân
                 return response.data
             } catch (error) {
+                console.log(error)
+            }
+        }
+    })
 
+    const skillsResponse = useQuery({
+        queryKey: ['skills'],
+        queryFn: async () => {
+            try {
+                const response = await http.get('/api/skills/getAllSkills')
+                return response.data
+            } catch (error) {
+                console.log(error)
             }
         }
     })
@@ -69,7 +81,7 @@ const Post = () => {
 
     const deletePostMutation = useMutation({
         mutationFn: async (id: any) => {
-            const response = await http.delete('/api/recruitmentPosts/' + id)
+            const response = await http.axiosClient.delete('/api/recruitmentPosts/' + id)
             return response
         },
         onSuccess: (data, variables, context) => {
@@ -83,7 +95,7 @@ const Post = () => {
 
     const updateMutation = useMutation({
         mutationFn: async ({ id, values }: any) => {
-            const response = await http.put('/api/recruitmentPosts/' + id, values)
+            const response = await http.axiosClient.put('/api/recruitmentPosts/' + id, values)
             return response
         },
         onSuccess: (data, variables, context) => {
@@ -98,44 +110,14 @@ const Post = () => {
 
 
     //component require
-    const options: SelectProps['options'] = [
-        {
-            value: 'nodejs',
-            label: 'NodeJS',
-        },
-        {
-            value: 'reacjs',
-            label: 'ReactJS',
-        },
-        {
-            value: 'nextjs',
-            label: 'NextJS'
-        },
-        {
-            value: 'figma',
-            label: 'Figma'
-        },
-        {
-            value: 'express',
-            label: 'ExpressJS'
-        },
-        {
-            value: 'mysql',
-            label: 'MySQL'
-        },
-        {
-            value: 'mongodb',
-            label: 'Mongo DB'
-        }
-    ];
+    const options: SelectProps['options'] = [];
 
-    // for (let i = 10; i < 36; i++) {
-    //     options.push({
-    //         label: i.toString(36) + i,
-    //         value: i.toString(36) + i,
-    //     });
-    // }
-
+    skillsResponse?.data?.map((skill: any) => {
+        options.push({
+            label: skill.name,
+            value: skill.id,
+        })
+    })
 
     //logic
     const showModal = () => {
@@ -152,6 +134,7 @@ const Post = () => {
     };
 
     const onFinish = (values: any) => {
+        console.log(values)
         values.dateClose = values.dateClose.toISOString()
         addNewPostMutation.mutate(values)
     }
@@ -218,7 +201,6 @@ const Post = () => {
                                     allowClear
                                     style={{ width: '100%' }}
                                     placeholder="Kỹ năng"
-                                    // onChange={handleChange}
                                     options={options}
                                 />
                             </Form.Item>
@@ -283,13 +265,10 @@ const Post = () => {
                                 <p className='my-3'><FormOutlined className='mr-4' />{post.describe}</p>
                                 <div className='my-3'>
                                     <p><FireOutlined className='mr-4' />Yêu cầu: {post.request}</p>
-                                    <p className='ml-4'><CheckOutlined className='mr-2' />Đúng giờ giấc</p>
-                                    <p className='ml-4'><CheckOutlined className='mr-2' />Thật thà, khiêm tốn</p>
-                                    <p className='ml-4'><CheckOutlined className='mr-2' />Chăm chỉ</p>
                                 </div>
                                 <p className='my-3'><HomeOutlined className='mr-4' />Hình thức: {post.form}</p>
                                 <div className='my-3'>
-                                    <p><ReadOutlined className='mr-4' />Kĩ năng cần thiết</p>
+                                    <p><ReadOutlined className='mr-4' />Kĩ năng cần thiết: {post.skills?.map((skill: any) => skill.name).join(', ')}</p>
                                 </div>
                                 <p className='my-3'><MoneyCollectOutlined className='mr-4' />Mức lương: {post.salary}</p>
                                 <p className='my-3'><FieldTimeOutlined className='mr-4' />Ngày kết thúc: {post.dateClose?.split('T')[0]}</p>
@@ -351,7 +330,7 @@ const Post = () => {
                                         <Radio value="Remote"> Remote </Radio>
                                     </Radio.Group>
                                 </Form.Item>
-                                <Form.Item label='Kỹ năng' name='skill'>
+                                <Form.Item label='Kỹ năng' name='skill' initialValue={editPost.skills?.map((skill: any) => skill.name)}>
                                     <Select
                                         mode="multiple"
                                         allowClear
