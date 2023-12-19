@@ -14,6 +14,7 @@ const Login: React.FC = () => {
     const [loginAttempts, setLoginAttempts] = useState(0);
     const [isValidEmail, setIsValidEmail] = useState(true);
     const router = useRouter();
+    const [isEmailValid, setIsEmailValid] = useState(true);
 
     const handleForgotPassword = () => {
         router.push('/forgetPassword');
@@ -23,19 +24,10 @@ const Login: React.FC = () => {
         router.push('/signup');
     };
 
-    const isEmailValid = () => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    };
-
     const handleEmailBlur = () => {
-        if (!isEmailValid()) {
-            setError('Địa chỉ email không hợp lệ');
-            setIsValidEmail(false);
-        } else {
-            setError('');
-            setIsValidEmail(true);
-        }
+        const emailRegex = /^[a-zA-Z0-9._-]+@gmail\.com$/;
+        const isValid = emailRegex.test(email);
+        setIsEmailValid(isValid);
     };
 
     const handleLogin = async () => {
@@ -50,11 +42,11 @@ const Login: React.FC = () => {
             }
 
             setLoading(true);
-            const response = await http.post('/api/auths/login', { email, password });
-            localStorage.setItem('accessToken', response.data?.accessToken);
-            localStorage.setItem('refreshToken', response.data?.refreshToken);
-            localStorage.setItem('userId', response.data?.userData?.id);
-
+            const response = await http.axiosClient.post('/api/auths/login', { email, password });
+            localStorage.setItem('accessToken', response.data?.resBody?.accessToken);
+            localStorage.setItem('refreshToken', response.data?.resBody?.refreshToken);
+            localStorage.setItem('userId', response.data?.resBody?.userData?.id);
+            console.log(">>>>>>1"+response.data?.resBody?.accessToken)
             setLoginAttempts(0);
             setLoading(false);
             router.push('/');
@@ -62,7 +54,6 @@ const Login: React.FC = () => {
             setError('Email hoặc mật khẩu không đúng. Vui lòng thử lại');
             setLoading(false);
             setLoginAttempts((prevAttempts) => prevAttempts + 1);
-
             if (loginAttempts + 1 === 5) {
                 const changePassword = window.confirm(
                     'Bạn có muốn đổi mật khẩu không?'
@@ -75,7 +66,6 @@ const Login: React.FC = () => {
             }
         }
     };
-
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
             <div style={{ border: '1px solid #ccc', padding: '20px', borderRadius: '8px', maxWidth: '400px', width: '100%' }}>
@@ -89,6 +79,7 @@ const Login: React.FC = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         onBlur={handleEmailBlur}
                     />
+                    {!isEmailValid && <p style={{ color: 'red' }}>Email không hợp lệ.</p>}
                 </label>
                 <br />
                 <label>

@@ -13,23 +13,24 @@ const ForgetPassword = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [step, setStep] = useState(1);
+    const [isEmailValid, setIsEmailValid] = useState(true);
+    const handleEmailBlur = () => {
+        const emailRegex = /^[a-zA-Z0-9._-]+@gmail\.com$/;
+        const isValid = emailRegex.test(email);
+        setIsEmailValid(isValid);
+    };
 
 
-    // Function to handle email submission
     const handleEmailSubmit = async () => {
         try {
             if (!email) {
                 setError('Vui lòng nhập email');
                 return;
             }
-
             setLoading(true);
-
-            const response = await http.post('/api/auths/forgotPassword', { email });
-            console.log(response.data?.success);
-
-            if (response.data?.success === true) {
-                // Reset the error state if the email check is successful
+            const response = await http.axiosClient.post('/api/auths/forgotPassword', { email });
+            console.log(response.data?.statusCode);
+            if (response.data?.statusCode === 200) {
                 setError('');
                 setStep(2);
             } else {
@@ -55,9 +56,9 @@ const ForgetPassword = () => {
                 return;
             }
             setLoading(true);
-            const response = await http.post('/api/auths/checkCode', { verificationCode });
-            const success = response.data?.success;
-            if (success) {
+            const response = await http.axiosClient.post('/api/auths/checkCode', { verificationCode });
+            console.log(response.data?.statusCode )
+            if (response.data?.statusCode === 200) {
                 setError('');
                 setStep(3);
             } else {
@@ -82,15 +83,18 @@ const ForgetPassword = () => {
                     return;
             }
             setLoading(true);
-            const response = await http.put('/api/auths/resetPassword', { newPassword });
-            if (response.data?.success === true) {
+            const response = await http.axiosClient.put('/api/auths/resetPassword', { newPassword });
+            if (response.data?.statusCode === 200) {
                 setError('');
                 router.push('/login');
             } else {
                 setError('Đã xảy ra lỗi khi đặt mật khẩu mới');
             }
         } catch (error) {
-            console.error('Lỗi đặt mật khẩu mới:', error);
+            setError('Đã xảy ra lỗi khi kiểm tra mật khẩu mới');
+        } finally {
+            // Stop loading
+            setLoading(false);
         }
     };
     const handleLogin = () => {
@@ -110,7 +114,9 @@ const ForgetPassword = () => {
                                 value={email}
                                 placeholder="Nhập email"
                                 onChange={(e) => setEmail(e.target.value)}
+                                onBlur={handleEmailBlur}
                             />
+                            {!isEmailValid && <p style={{ color: 'red' }}>Email không hợp lệ.</p>}
                         </label>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
                             <Button

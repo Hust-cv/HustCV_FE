@@ -8,9 +8,24 @@ import {
   Form,
   Input,
 } from 'antd';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
+import {useRouter} from "next/navigation";
+
+import http from "@/app/utils/http";
+
+function hasLogin() {
+  return localStorage.getItem('accessToken') ? true : false
+}
 
 export default function Home() {
+  const router = useRouter();
+  useEffect(()=> {
+    if(hasLogin())
+      // An dang ki dang nhap , them anh dai dien
+      // http.getWithAutoRefreshToken('/api/auths/logout',  {useAccessToken: true})
+      // http.postWithAutoRefreshToken('/api/do-something', {useAccessToken: true});
+    console.log('User has login');
+  }, []);
   const items: MenuProps['items'] = [
     {
       label: 'Tất cả thành phố',
@@ -50,7 +65,6 @@ export default function Home() {
   const onSearch = () => {
     console.log(input)
   }
-
   return (
     <div className='h-[600px]'>
       <div className="search text-white pt-16 mt-[88px]">
@@ -81,6 +95,8 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      <h1>This is home page</h1>
     </div>
   )
 }

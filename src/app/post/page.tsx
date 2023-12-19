@@ -41,7 +41,7 @@ const Post = () => {
     //api
     const addNewPostMutation = useMutation({
         mutationFn: async (values: IPost) => {
-            const data = await http.post('/api/recruitmentPosts', values)
+            const data = await http.axiosClient.post('/api/recruitmentPosts', values)
             return data
         },
         onSuccess: (data, variables, context) => {
@@ -58,7 +58,7 @@ const Post = () => {
         queryKey: ['recruitmentPosts'],
         queryFn: async () => {
             try {
-                const response = await http.get('/api/recruitmentPosts')        //chỗ này cần sửa api cho bản thân
+                const response = await http.axiosClient.get('/api/recruitmentPosts')        //chỗ này cần sửa api cho bản thân
                 return response.data
             } catch (error) {
 
@@ -69,7 +69,7 @@ const Post = () => {
 
     const deletePostMutation = useMutation({
         mutationFn: async (id: any) => {
-            const response = await http.delete('/api/recruitmentPosts/' + id)
+            const response = await http.axiosClient.delete('/api/recruitmentPosts/' + id)
             return response
         },
         onSuccess: (data, variables, context) => {
@@ -83,7 +83,7 @@ const Post = () => {
 
     const updateMutation = useMutation({
         mutationFn: async ({ id, values }: any) => {
-            const response = await http.put('/api/recruitmentPosts/' + id, values)
+            const response = await http.axiosClient.put('/api/recruitmentPosts/' + id, values)
             return response
         },
         onSuccess: (data, variables, context) => {
