@@ -57,7 +57,7 @@ const Signup: React.FC = () => {
             console.log(">>>>>>>>> 1");
             if (isEmployerOption) {
                 role_id = 1;
-                const businessResponse = await http.post('/api/business', {
+                const businessResponse = await http.axiosClient.post('/api/business', {
                     businessName,
                     businessAddress,
                     businessWebsite,
@@ -66,7 +66,7 @@ const Signup: React.FC = () => {
             }
             console.log(">>>>>>>>> 2");
             try {
-                    response = await http.post('/api/users', {
+                    response = await http.axiosClient.post('/api/users', {
                     username,
                     email,
                     password,
@@ -81,13 +81,12 @@ const Signup: React.FC = () => {
                         return;
             }
             console.log("response.data?" + response.data)
-            console.log("response.data?" + response.data?.status)
+            console.log("response.data?" + response.data?.statusCode)
 
-                if(response.data?.status === false) {
+                if(response.data?.statusCode === 400) {
                     setError('Email  hoặc username đã tồn tại');
                     return;
                 }
-
 
             setLoading(false);
             router.push('/login');
