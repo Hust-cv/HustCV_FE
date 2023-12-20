@@ -58,7 +58,7 @@ const Post = () => {
         queryKey: ['recruitmentPosts'],
         queryFn: async () => {
             try {
-                const response = await http.axiosClient.get('/api/recruitmentPosts')        //chỗ này cần sửa api cho bản thân
+                const response = await http.axiosClient.get('/api/recruitmentPosts', )        //chỗ này cần sửa api cho bản thân
                 return response.data
             } catch (error) {
                 console.log(error)
@@ -70,7 +70,7 @@ const Post = () => {
         queryKey: ['skills'],
         queryFn: async () => {
             try {
-                const response = await http.get('/api/skills/getAllSkills')
+                const response = await http.axiosClient.get('/api/skills/getAllSkills')
                 return response.data
             } catch (error) {
                 console.log(error)

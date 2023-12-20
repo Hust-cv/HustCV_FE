@@ -30,8 +30,8 @@ const { Option } = Select;
 const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY', 'DD-MM-YYYY', 'DD-MM-YY'];
 
 const candidateProfile = () => {
-    const [isModalAddEducationOpen,setModalAddEducationOpen] = useState(false)
-    const [isModalEditEducationOpen, setModalEditEducationOpen] = useState(false)
+    const [isModalAddEduOpen,setModalAddEduOpen] = useState(false)
+    const [isModalEditEduOpen, setModalEditEduOpen] = useState(false)
     const [deleteEducation, setDeleteEducation] = useState(null)
 
     const queryClient = useQueryClient()
@@ -39,8 +39,11 @@ const candidateProfile = () => {
     const education = useQuery({
         queryKey: ['education'],
         queryFn: async () => {
+            const values = {
+                personalFileId : 1
+            }
             try {
-                const response = await http.get('/api/profile/education')        //chỗ này cần sửa api cho bản thân
+                const response = await http.axiosClient.post('/api/profile/education/getAll', values)
                 return response.data
             } catch (error) {
 
@@ -49,8 +52,8 @@ const candidateProfile = () => {
     })
 
     const addNewEducationMutation = useMutation({
-        mutationFn: async (values: IPost) => {
-            const data = await http.post('/api/profile', values)
+        mutationFn: async (values: any) => {
+            const data = await http.axiosClient.post('/api/profile/education', values)
             return data
         },
         onSuccess: (data, variables, context) => {
@@ -63,32 +66,46 @@ const candidateProfile = () => {
         }
     })
 
-    const handleAddEducation = () => {
+    const showModalAddEdu = () => {
+        setModalAddEduOpen(true);
+    }
+    const cancelModalAddEdu = () => {
+        setModalAddEduOpen(false);
+    }
+    const finishAddEdu = (values: any) => {
+        addNewEducationMutation.mutate(values)
+    }
+
+    const showModalEditEdu = (post: any) => {
 
     }
 
-    const handleEditEducation = (post: any) => {
-
-    }
-
-    const handleDeleteEducation = (id: any) => {
+    const handleDeleteEdu = (id: any) => {
 
     }
 
     const profile1 = () => {
         return(
             <>
-                <div className='mx-[300px]'>                           
+                <div className='mx-[300px]'>
+                    <Modal title="Basic Modal"
+                        open={isModalAddEduOpen}
+                        onCancel={cancelModalAddEdu}
+                    >
+                        <p>Some contents...</p>
+                        <p>Some contents...</p>
+                        <p>Some contents...</p>
+                    </Modal>
                     <Card
                         title={
                             <>
-                                <p className='font-bold text-3xl'>Education</p>
+                                <p className='font-bold text-3xl'>Học vấn</p>
                             </>
                         }
                         extra={
                             <>
                                 <div className='mb-4 mt-2'>
-                                    <a onClick={() => handleAddEducation()}><PlusCircleOutlined className='mr-4 text-2xl' /></a>
+                                    <a onClick={() => showModalAddEdu()}><PlusCircleOutlined className='mr-4 text-2xl' /></a>
                                 </div>
                             </>
                         }
@@ -100,22 +117,18 @@ const candidateProfile = () => {
                                     key={info.id}
                                     title={
                                         <>
-                                            <p className='font-bold text-lg'>{info.name.split('*/')[0]}</p>
+                                            <p className='font-bold text-xl'>{info.name.split('*/')[0]}</p>
                                         </>
                                     }
                                     extra={
                                         <>
-                                            <div className='mb-4 mt-2'>
-                                                <a onClick={() => handleEditEducation(info.id)}><EditOutlined className='mr-4' />Sửa</a>
-                                            </div>
-                                            <div>
-                                                <a onClick={() => handleDeleteEducation(info.id)}><DeleteOutlined className='mr-4' />Xoá</a>
-                                            </div>
+                                            <a onClick={() => showModalEditEdu(info.id)}><EditOutlined className='mr-8' /></a>
+                                            <a onClick={() => handleDeleteEdu(info.id)}><DeleteOutlined className='' /></a>
                                         </>
                                     }
                                 >
-                                    <p className='my-3'>{info.name.split('*/')[1]}</p>
-                                    <p className='my-3'>{info.name.split('*/')[2]}</p>
+                                    <p className='my-3 text-base'>{info.name.split('*/')[1]}</p>
+                                    <p className='my-3 text-base'>{info.name.split('*/')[2]}</p>
                                 </Card>
                             )
                         })}
