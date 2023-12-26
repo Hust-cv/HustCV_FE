@@ -157,7 +157,7 @@ export default function Applications() {
                                 fill="black"
                                 height="2em"
                                 width="2em"
-                                // data-value={application.user.email}
+                                data-value={application.user.email}
                                 className='hover:fill-red-500'
                                 onClick={(e) => {Copy(e);
                                 notifyCopy()}}

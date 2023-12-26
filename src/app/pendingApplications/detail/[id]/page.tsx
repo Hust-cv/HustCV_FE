@@ -22,7 +22,7 @@ export default function Applications() {
                 operate = "Decline"
             }
             console.log(refreshToken)
-            const response = await axios.post(`${baseURL}/post${operate}Application/${path.split("/").pop()}`, {},{
+            const response = await axios.put(`${baseURL}/put${operate}Application/${path.split("/").pop()}`, {},{
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
                     "Content-Type": "application/json"
@@ -157,7 +157,7 @@ export default function Applications() {
                                 fill="black"
                                 height="2em"
                                 width="2em"
-                                // data-value={application.user.email}
+                                data-value={application.user.email}
                                 className='hover:fill-red-500'
                                 onClick={(e) => {Copy(e);
                                 notifyCopy()}}
