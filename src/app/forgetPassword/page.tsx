@@ -28,9 +28,10 @@ const ForgetPassword = () => {
                 return;
             }
             setLoading(true);
-            const response = await http.axiosClient.post('/api/auths/forgotPassword', { email });
+            const response = await http.axiosClient.post('/api/auth/forgotPassword', { email });
             console.log(response.data?.statusCode);
             if (response.data?.statusCode === 200) {
+                localStorage.setItem('email', email);
                 setError('');
                 setStep(2);
             } else {
@@ -56,7 +57,8 @@ const ForgetPassword = () => {
                 return;
             }
             setLoading(true);
-            const response = await http.axiosClient.post('/api/auths/checkCode', { verificationCode });
+            let email = localStorage.getItem('email');
+            const response = await http.axiosClient.post('/api/auth/checkCode', { email,verificationCode });
             console.log(response.data?.statusCode )
             if (response.data?.statusCode === 200) {
                 setError('');
@@ -79,12 +81,14 @@ const ForgetPassword = () => {
         try {
 
             if (!newPassword) {
-                    setError('Vui lòng nhập mật khẩu mới');
-                    return;
+                setError('Vui lòng nhập mật khẩu mới');
+                return;
             }
             setLoading(true);
-            const response = await http.axiosClient.put('/api/auths/resetPassword', { newPassword });
+            let email = localStorage.getItem('email');
+            const response = await http.axiosClient.put('/api/auth/resetPassword', {email, newPassword });
             if (response.data?.statusCode === 200) {
+                sessionStorage.clear();
                 setError('');
                 router.push('/login');
             } else {

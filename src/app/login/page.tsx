@@ -42,10 +42,9 @@ const Login: React.FC = () => {
             }
 
             setLoading(true);
-            const response = await http.axiosClient.post('/api/auths/login', { email, password });
+            const response = await http.axiosClient.post('/api/auth/login', { email, password });
             localStorage.setItem('accessToken', response.data?.resBody?.accessToken);
             localStorage.setItem('refreshToken', response.data?.resBody?.refreshToken);
-            localStorage.setItem('userId', response.data?.resBody?.userData?.id);
             console.log(">>>>>>1"+response.data?.resBody?.accessToken)
             setLoginAttempts(0);
             setLoading(false);
