@@ -35,13 +35,12 @@ const ForgetPassword = () => {
                 setError('');
                 setStep(2);
             } else {
-                setError('Email này không tồn tại');
+                setError('Địa chỉ email không tồn tại ');
                 return ;
             }
         } catch (error) {
-            console.error('Lỗi kiểm tra email:', error);
             // @ts-ignore
-            setError('Đã xảy ra lỗi khi kiểm tra email');
+            setError('Địa chỉ email không tồn tại ');
         } finally {
             // Stop loading
             setLoading(false);
@@ -68,7 +67,7 @@ const ForgetPassword = () => {
             }
         } catch (error) {
             console.error('Lỗi kiểm tra mã xác nhận:', error);
-            setError('Đã xảy ra lỗi khi kiểm tra mã xác nhận');
+            setError('Đã nhập sai mã xác nhận');
         } finally {
             // Stop loading
             setLoading(false);
@@ -95,7 +94,7 @@ const ForgetPassword = () => {
                 setError('Đã xảy ra lỗi khi đặt mật khẩu mới');
             }
         } catch (error) {
-            setError('Đã xảy ra lỗi khi kiểm tra mật khẩu mới');
+            setError('Mật khẩu mới phải có ít nhất 8 ký tự');
         } finally {
             // Stop loading
             setLoading(false);
