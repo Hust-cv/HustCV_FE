@@ -47,8 +47,10 @@ const ManageCV = () => {
     const handleShowCV = async () => {
         const id = await localStorage.getItem('userId');
         try {
-            const data = await http.axiosClient.post('/api/manageCv/getUrlCv', {id: id})
-            console.log(data)
+            const response = await http.axiosClient.post('/api/manageCv/getUrlCv', {id: id})
+            console.log(response)
+            const fileLink = response.data.url
+            window.open(fileLink, '_blank');
         }
         catch(err) {
             message.error('Bạn cần Upload File')
