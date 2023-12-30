@@ -47,7 +47,7 @@ class Http {
             // @ts-ignore
             if (error.response && error.response.status === 401) {
                 await this._handleRefreshToken();
-                return this.getWithAutoRefreshToken(url, options);
+                return await this.getWithAutoRefreshToken(url, options);
             } else {
                 throw error;
             }
@@ -72,6 +72,9 @@ class Http {
             if(error.response.status === 401) {
                 await this._handleRefreshToken()
                 return await this.postWithAutoRefreshToken(url, data, options)
+            }
+            else{
+                throw error;
             }
         }
     }
