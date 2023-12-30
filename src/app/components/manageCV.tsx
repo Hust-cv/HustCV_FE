@@ -4,47 +4,155 @@ import dayjs from 'dayjs';
 import { Descriptions } from 'antd';
 import {
     Button,
-    Modal,
-    DatePicker,
-    Form,
-    Input,
-    Select,
     message,
     Popover,
     Tabs,
     Upload,
     Card,
-    TabsProps
 } from 'antd';
+import type { UploadProps } from 'antd'
 import { UploadOutlined } from '@ant-design/icons';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import type { UploadFile } from 'antd/es/upload/interface';
 import http from '../utils/http';
 
-const ManageCV = () => {
-    const [fileList, setFileList] = useState<any>(null);
-    const props = {
-        beforeUpload: (file: any) => {
-          setFileList(file);
-          return false;
-        },
-        fileList,
-      };
-    const onFileUpload = () => {
 
+const ManageCV = () => {
+    const [fileList, setFileList] = useState<UploadFile[]>([])
+    const id = localStorage.getItem('userId');
+
+    const queryClient = useQueryClient()
+    const linkCV = useQuery({
+        queryKey: ['cv'],
+        queryFn: async () => {
+            const id = await localStorage.getItem('userId');
+            try {
+                const response = await http.axiosClient.post('/api/manageCv/getNameCv', {id: id});
+                let name = response.data.name;
+                if (name == ''){
+                    name = 'Bạn cần upload file'
+                }
+                setFileList([{
+                    uid: '-1',
+                    name: name,
+                }])
+                return response.data
+            }
+            catch(err) {
+
+            }
+        }
+    })
+
+    const handleShowCV = async () => {
+        const id = await localStorage.getItem('userId');
+        try {
+            const data = await http.axiosClient.post('/api/manageCv/getUrlCv', {id: id})
+            console.log(data)
+        }
+        catch(err) {
+            message.error('Bạn cần Upload File')
+        }
+    }
+    const handleChange: UploadProps['onChange'] = (info) => {
+        let newFileList = [...info.fileList];
+
+        newFileList = newFileList.slice(-1);
+        setFileList(newFileList);
+      };
+    const customRequest = async ({ file, onSuccess, onError, onProgress }: any) => {
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('id', id || '');
+            const response = await http.axiosClient.post('/api/manageCv', formData, {
+                headers: {
+                'Content-Type': 'multipart/form-data',
+                },
+            });
+            if (response.status) {
+                queryClient.invalidateQueries({queryKey: ['cv']})
+                message.success('Upload thành vấn thành công!')
+                onSuccess();
+            } else {
+                onError(new Error('Failed to upload file'));
+            }
+        } catch (error) {
+            onError(error);
+        }
+    }
+    const beforeUpload = (file: any) => {
+        const isPDF = file.type === 'application/pdf';
+        if (!isPDF) {
+            message.error('Bạn chỉ có thể upload file PDF');
+        }
+        return isPDF || Upload.LIST_IGNORE;
     }
     return (
-        <div>
-            <Card>
-                <p className='font-bold text-3xl mb-10'>Quản lý CV</p>
-                <Upload>
-                    <Button icon={<UploadOutlined />}>Choose PDF file</Button>
-                </Upload>
-                <Button type="primary" onClick={onFileUpload} className='bg-blue-600 mt-5'>
-                    Upload
-                </Button>
+        <div className='mb-10 mt-5'>
+            <Card className='border-gray-400'>
+                <p className='font-bold text-3xl mb-5'>Quản lý CV</p>
+                <p className='mb-5 text-base'>Tải CV của bạn bên dưới để có thể sử dụng xuyên suốt quá trình tìm việc</p>
+                <div className="border border-solid border-gray-500 p-4 mb-5">
+                    <div className='mb-5'>
+                        <Upload
+                            customRequest={customRequest}
+                            beforeUpload={beforeUpload}
+                            onChange={handleChange}
+                            fileList={fileList}
+                            showUploadList={true}
+                        >
+                            <Button type="primary" htmlType="submit" className='bg-red-600' icon={<UploadOutlined />}>Choose PDF file</Button>
+                        </Upload>
+                    </div>
+                    <div>
+                        <Button type="primary" htmlType="submit" className='bg-blue-600' onClick={handleShowCV}>Xem CV</Button>
+                    </div>
+                </div>
             </Card>
         </div>
       );
 }
 
 export default ManageCV
+
+// import { useState } from 'react';
+
+// const ManageCV = () => {
+//     const [selectedFile, setSelectedFile] = useState(null);
+
+//     const handleFileChange = (event: any) => {
+//         setSelectedFile(event.target.files[0]);
+//     };
+
+//     const handleUpload = async () => {
+//         try {
+//             const formData = new FormData();
+//             if (selectedFile){
+//                 formData.append('file', selectedFile);
+
+//                 await http.axiosClient.post('/api/manageCv', formData, {
+//                     headers: {
+//                     'Content-Type': 'multipart/form-data',
+//                     },
+//                 });
+//             }
+
+//             alert('File uploaded successfully!');
+//         } catch (error) {
+//             console.error('Error uploading file:', error);
+//             alert('Error uploading file!');
+//         }
+//     };
+
+//   return (
+//     <div>
+//       <input type="file" accept=".pdf" onChange={handleFileChange} />
+//       <button onClick={handleUpload} disabled={!selectedFile}>
+//         Upload
+//       </button>
+//     </div>
+//   );
+// };
+
+// export default ManageCV;
