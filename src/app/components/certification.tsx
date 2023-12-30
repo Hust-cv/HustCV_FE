@@ -28,21 +28,21 @@ const { RangePicker } = DatePicker;
 
 
 
-const Project = () => {
-    const [isModalAddPrjOpen,setModalAddPrjOpen] = useState(false)
-    const [isModalEditPrjOpen, setModalEditPrjOpen] = useState(false)
-    const [isModalConfirmDeletePrjOpen, setModalConfirmDeletePrjOpen] = useState(false)
-    const [disabledCheckboxPrj, setDisabledCheckboxPrj] = useState(false)
-    const [deletePrj, setDeletePrj] = useState(null)
-    const [editPrj, setEditPrj] = useState<any>({})
+const Certification = () => {
+    const [isModalAddCerOpen,setModalAddCerOpen] = useState(false)
+    const [isModalEditCerOpen, setModalEditCerOpen] = useState(false)
+    const [isModalConfirmDeleteCerOpen, setModalConfirmDeleteCerOpen] = useState(false)
+    const [disabledCheckboxCer, setDisabledCheckboxCer] = useState(false)
+    const [deleteCer, setDeleteCer] = useState(null)
+    const [editCer, setEditCer] = useState<any>({})
 
     const queryClient = useQueryClient()
-    const project = useQuery({
-        queryKey: ['project'],
+    const certificate = useQuery({
+        queryKey: ['certificate'],
         queryFn: async () => {
             const userId = await localStorage.getItem('userId');
             try {
-                const response = await http.axiosClient.post('/api/profile/project/getAll', {personalFileId: userId})
+                const response = await http.axiosClient.post('/api/profile/certificate/getAll', {personalFileId: userId})
                 return response.data
             } catch (error) {
 
@@ -50,103 +50,101 @@ const Project = () => {
         }
     })
 
-    const addNewPrjMutation = useMutation({
+    const addNewCerMutation = useMutation({
         mutationFn: async (values: any) => {
             const userId = await localStorage.getItem('userId');
             values.start = values.start.toISOString();
-            values.end = values.end.toISOString(); 
-            const name = values.nameProject + '*/' + values.start + '*/' + (values.isStillDo == true ? 'Hiện tại' : values.end)
-            const data = await http.axiosClient.post('/api/profile/project/add', {name: name, personalFileId: userId})
+            const name = values.nameCertificate + '*/' + values.nameOrganize + '*/' + values.start
+            const data = await http.axiosClient.post('/api/profile/certificate/add', {name: name, personalFileId: userId})
             return data
         },
         onSuccess: (data, variables, context) => {
-            message.success('Thêm dự án thành công!')
-            queryClient.invalidateQueries({ queryKey: ['project'] })
+            message.success('Thêm chứng chỉ thành công!')
+            queryClient.invalidateQueries({ queryKey: ['certificate'] })
         },
         onError: (error: any) => {
             message.error(error.response.data.message)
         }
     })
 
-    const deletePrjMutation = useMutation({
+    const deleteCerMutation = useMutation({
         mutationFn: async (id: any) => {
-            const response = await http.axiosClient.delete('/api/profile/project/' + id)
+            const response = await http.axiosClient.delete('/api/profile/certificate/' + id)
             return response
         },
         onSuccess: (data, variables, context) => {
-            message.success('Xóa dự án thành công!')
-            queryClient.invalidateQueries({ queryKey: ['project']})
+            message.success('Xóa chứng chỉ thành công!')
+            queryClient.invalidateQueries({ queryKey: ['certificate']})
         },
         onError: (error: any) => {
             message.error(error.response.data.message)
         }
     })
 
-    const editPrjMutation = useMutation({
+    const editCerMutation = useMutation({
         mutationFn: async ({ id, values }: any) => {
             values.start = values.start.toISOString();
-            values.end = values.end.toISOString();
-            const name = values.nameProject + '*/' + values.start + '*/' + (values.isStillDo == true ? 'Hiện tại' : values.end)
-            const response = await http.axiosClient.put('/api/profile/project/' + id, {name: name})
+            const name = values.nameCertificate + '*/' + values.nameOrganize + '*/' + values.start
+            const response = await http.axiosClient.put('/api/profile/certificate/' + id, {name: name})
             return response
         },
         onSuccess: (data, variables, context) => {
-            message.success('Cập nhật dự án thành công!')
-            queryClient.invalidateQueries({ queryKey: ['project']})
+            message.success('Cập nhật chứng chỉ thành công!')
+            queryClient.invalidateQueries({ queryKey: ['certificate']})
         },
         onError: (error: any) => {
             message.error(error.response.data.message)
         }
     })
 
-    const showModalAddPrj = () => {
-        setModalAddPrjOpen(true);
+    const showModalAddCer = () => {
+        setModalAddCerOpen(true);
     }
-    const cancelModalAddPrj = () => {
-        setModalAddPrjOpen(false);
+    const cancelModalAddCer = () => {
+        setModalAddCerOpen(false);
     }
-    const onChangeCheckBoxPrj = (checked: any) => {
-        // setDisabledCheckboxPrj((checked))
+    const onChangeCheckBoxCer = (checked: any) => {
+        // setDisabledCheckboxCer((checked))
     }
-    const finishAddPrj = (values: any) => {
-        setModalAddPrjOpen(false);
-        addNewPrjMutation.mutate(values);
+    const finishAddCer = (values: any) => {
+        setModalAddCerOpen(false);
+        addNewCerMutation.mutate(values);
     }
 
     const cancelModalConfirmDelete = () => {
-        setDeletePrj(null)
-        setModalConfirmDeletePrjOpen(false);
+        setDeleteCer(null)
+        setModalConfirmDeleteCerOpen(false);
     }
 
-    const handleDeletePrj = (idPrj: any) => {
-        setDeletePrj(idPrj)
-        setModalConfirmDeletePrjOpen(true);
+    const handleDeleteCer = (idCer: any) => {
+        setDeleteCer(idCer)
+        setModalConfirmDeleteCerOpen(true);
     }
-    const finishDeletePrj = () => {
-        deletePrjMutation.mutate(deletePrj);
+    const finishDeleteCer = () => {
+        deleteCerMutation.mutate(deleteCer);
         cancelModalConfirmDelete();
     }
-    const cancelModalEditPrj = () => {
-        setModalEditPrjOpen(false);
+    const cancelModalEditCer = () => {
+        setModalEditCerOpen(false);
     }
 
-    const handleEditPrj = (infoPrj: any) => {
-        setEditPrj(infoPrj);
-        setModalEditPrjOpen(true);
+    const handleEditCer = (infoCer: any) => {
+        setEditCer(infoCer);
+        setModalEditCerOpen(true);
     }
 
-    const finishEditPrj = (values: any) => {
-        let id = editPrj.id
-        editPrjMutation.mutate({id, values});
-        cancelModalEditPrj();
+    const finishEditCer = (values: any) => {
+        let id = editCer.id
+        editCerMutation.mutate({id, values});
+        cancelModalEditCer();
     }
     return(
         <>
             <div>
                 <div>
-                    <Modal title="Thêm dự án"
-                        open={isModalAddPrjOpen}
-                        onCancel={cancelModalAddPrj}
+                    <Modal title="Thêm học vấn"
+                        open={isModalAddCerOpen}
+                        onCancel={cancelModalAddCer}
                         footer={null}
                     >
                         <Form
@@ -154,36 +152,28 @@ const Project = () => {
                             labelCol={{ span: 8 }}
                             wrapperCol={{ span: 16 }}
                             style={{ maxWidth: 600 }}
-                            initialValues={{ isStillDo: false }}
-                            onFinish={finishAddPrj}
+                            onFinish={finishAddCer}
                         >
                             <Form.Item
-                                label="Tên dự án"
-                                name="nameProject"
+                                label="Tên chứng chỉ"
+                                name="nameCertificate"
                                 rules={[{ required: true, message: 'Vui lòng nhập tên trường của bạn!' }]}
                             >
                                 <Input />
                             </Form.Item>
                             <Form.Item
-                                name="isStillDo"
-                                valuePropName='checked'
-                                wrapperCol={{ offset: 8, span: 16 }}
+                                label="Tổ chức"
+                                name="nameOrganize"
+                                rules={[{ required: true, message: 'Vui lòng nhập tên trường của bạn!' }]}
                             >
-                                <Checkbox onChange={(e: any) => {onChangeCheckBoxPrj(e.target.checked)}} >Đang làm</Checkbox>
+                                <Input />
                             </Form.Item>
                             <Form.Item
-                                label="Từ"
+                                label="Thời gian"
                                 name="start"
                                 rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
                                 <DatePicker picker="month" />
-                            </Form.Item>
-                            <Form.Item
-                                label="Đến"
-                                name="end"
-                                rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
-                            >
-                                <DatePicker picker="month" disabled={disabledCheckboxPrj} />
                             </Form.Item>
                             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                                 <Button type="primary" htmlType="submit" className='bg-blue-600'>
@@ -195,60 +185,52 @@ const Project = () => {
                 </div>
                 <div>
                     <Modal title="Chú ý" 
-                        open={isModalConfirmDeletePrjOpen}
+                        open={isModalConfirmDeleteCerOpen}
                         onCancel={cancelModalConfirmDelete}
                         footer={[
-                            <Button onClick={finishDeletePrj} type="primary" htmlType="submit" className='bg-red-600'>Xóa</Button>
+                            <Button onClick={finishDeleteCer} type="primary" htmlType="submit" className='bg-red-600'>Xóa</Button>
                         ]}
                     >
                         <p>Bạn chắc chắn xóa ?</p>
                     </Modal>
                 </div>
                 <div>
-                    {isModalEditPrjOpen ? 
+                    {isModalEditCerOpen ? 
                     (<Modal
                         title="Sửa"
-                        open={isModalEditPrjOpen}
-                        onCancel={cancelModalEditPrj}
+                        open={isModalEditCerOpen}
+                        onCancel={cancelModalEditCer}
                         footer={null}
                     >
                         <Form
                             labelCol={{ span: 8 }}
                             wrapperCol={{ span: 16 }}
                             style={{ maxWidth: 600 }}
-                            onFinish={(values :any) => finishEditPrj(values)}
+                            onFinish={(values :any) => finishEditCer(values)}
                         >
                             <Form.Item
-                                label="Tên dự án"
-                                name="nameProject"
-                                initialValue={editPrj?.name?.split('*/')[0]}
+                                label="Tên chứng chỉ"
+                                name="nameCertificate"
+                                initialValue={editCer?.name?.split('*/')[0]}
                                 rules={[{ required: true, message: 'Vui lòng nhập tên dự án của bạn!' }]}
                             >
                                 <Input />
                             </Form.Item>
                             <Form.Item
-                                name="isStillDo"
-                                valuePropName='checked'
-                                initialValue={editPrj?.name?.split('*/')[2] == 'Hiện tại' ? true : false}
-                                wrapperCol={{ offset: 8, span: 16 }}
+                                label="Tên tổ chức"
+                                name="nameOrganize"
+                                initialValue={editCer?.name?.split('*/')[1]}
+                                rules={[{ required: true, message: 'Vui lòng nhập tên dự án của bạn!' }]}
                             >
-                                <Checkbox onChange={(e: any) => onChangeCheckBoxPrj(e.target.checked)} >Đang làm</Checkbox>
+                                <Input />
                             </Form.Item>
                             <Form.Item
-                                label="Từ"
+                                label="Thời gian"
                                 name="start"
-                                initialValue={moment(editPrj?.name?.split('*/')[1])}
+                                initialValue={moment(editCer?.name?.split('*/')[2])}
                                 rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
                                 <DatePicker picker="month" />
-                            </Form.Item>
-                            <Form.Item
-                                label="Đến"
-                                name="end"
-                                initialValue={moment(editPrj.name.split('*/')[2] != 'Hiện tại' ? editPrj.name.split('*/')[3] : false)}
-                                rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
-                            >
-                                <DatePicker picker="month" disabled={disabledCheckboxPrj} />
                             </Form.Item>
                             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                                 <Button type="primary" htmlType="submit" className='bg-blue-600'>
@@ -262,19 +244,19 @@ const Project = () => {
                     <Card
                         title={
                             <>
-                                <p className='font-bold text-3xl'>Dự án</p>
+                                <p className='font-bold text-3xl'>Chứng chỉ</p>
                             </>
                         }
                         extra={
                             <>
                                 <div className='mb-4 mt-2'>
-                                    <a onClick={() => showModalAddPrj()}><PlusCircleOutlined className='mr-4 text-2xl' /></a>
+                                    <a onClick={() => showModalAddCer()}><PlusCircleOutlined className='mr-4 text-2xl' /></a>
                                 </div>
                             </>
                         }
                         className='w-full mb-4 border-black'
                     >
-                        {project?.data?.map((info: any) => {
+                        {certificate?.data?.map((info: any) => {
                             return (
                                 <Card
                                     key={info.id}
@@ -285,12 +267,13 @@ const Project = () => {
                                     }
                                     extra={
                                         <>
-                                            <a onClick={() => handleEditPrj(info)}><EditOutlined className='mr-8' /></a>
-                                            <a onClick={() => handleDeletePrj(info.id)}><DeleteOutlined className='' /></a>
+                                            <a onClick={() => handleEditCer(info)}><EditOutlined className='mr-8' /></a>
+                                            <a onClick={() => handleDeleteCer(info.id)}><DeleteOutlined className='' /></a>
                                         </>
                                     }
                                 >
-                                    <p className='my-3 text-base'>{moment(info.name.split('*/')[1]).format('MM/YYYY') + ' - ' + (info.name.split('*/')[2] == 'Hiện tại' ? 'Hiện tại' : moment(info.name.split('*/')[3]).format('MM/YYYY')) }</p>
+                                    <p className='my-3 text-base'>{info.name.split('*/')[1]}</p>
+                                    <p className='my-3 text-base'>{moment(info.name.split('*/')[2]).format('MM/YYYY')}</p>
                                 </Card>
                             )
                         })}
@@ -301,4 +284,4 @@ const Project = () => {
     )
 }
 
-export default Project
+export default Certification

@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import Education from '../components/education'
 import Project from '../components/project';
+import Certification from '../components/certification';
 import UserInfor from '../components/userInfor'
 import SkillProfile from '../components/skillProfile';
 import ManageCV from '../components/manageCV';
@@ -41,6 +42,8 @@ const candidateProfile = () => {
                     <UserInfor></UserInfor>
                     <br></br>
                     <Education></Education>
+                    <br></br>
+                    <Certification></Certification>
                     <br></br>
                     <Project></Project>
                     <br></br>
