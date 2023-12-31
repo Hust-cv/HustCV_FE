@@ -48,7 +48,7 @@ const Home = () => {
                         router.refresh();
                     }
                     catch (e){
-                        setError(500)
+                        router.push("/login")
                     }
                 }
             }
