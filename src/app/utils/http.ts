@@ -20,7 +20,7 @@ class Http {
         try {
             const refreshToken = localStorage.getItem('refreshToken');
             if(refreshToken) {
-                const result = await this.axiosClient.post('/api/auths/refreshtoken', {
+                const result = await this.axiosClient.post('/api/auth/refreshtoken', {
                     refreshToken
                 })
                 if(result.data) {
