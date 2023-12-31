@@ -3,8 +3,8 @@ import { useState, useEffect} from "react";
 import Card from "@/app/components/applicationCard";
 import { useRouter, usePathname } from "next/navigation";
 import axios from "axios";
-import getNewAccessToken from "@/app/utils/getNewAccessToken";
 import Error from "next/error";
+import http from "@/app/utils/http";
 const Applications = () => {
     const baseURL = "http://localhost:6868/api/recruiterApplication"
     const router = useRouter();
@@ -26,32 +26,15 @@ const Applications = () => {
         getPosts()
         async function getPosts() {
             try{
-                const response = await axios.get(`${baseURL}/getAcceptedApplications/${path.split('/').pop()}`, {
-                    headers: {
-                        "Authorization": `Bearer ${accessToken}`,
-                        "Content-Type": "application/json"
-                    }
-                })
-                setApplications([...response.data.data]);
+                const data  = await http.getWithAutoRefreshToken(`/api/recruiterApplication/getAcceptedApplications/${path.split('/').pop()}`, {useAccessToken: true})
+                setApplications([...data.data]);
                 setLoading(false);
             }
             catch(e:any){
-                if (e.response.status != 401){
-                    setError(e.response.status)
-                }
-                else if (e.response.status == 401){
-                    try{
-                        console.log(refreshToken)
-                        await getNewAccessToken(refreshToken, localStorage);
-                        router.refresh();
-                    }
-                    catch (e){
-                        router.push("/login")
-                    }
-                }
+                setError(e.response.status)
             }
         }
-    }, [router, path, refreshToken, accessToken]);
+    }, [path]);
     if (error != 200){
         return(
             <>

@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useRouter, usePathname } from 'next/navigation'
 import axios from 'axios';
 import Error from 'next/error';
-import getNewAccessToken from '@/app/utils/getNewAccessToken';
+import http from '@/app/utils/http';
 interface Application {
     id: number;
     user: {
@@ -96,29 +96,12 @@ export default function Applications() {
         getApplication()
         async function getApplication() {
             try{
-                const response = await axios.get(`${baseURL}/getAcceptedDetailedApplication/${path.split("/").pop()}`, {
-                    headers: {
-                        "Authorization": `Bearer ${accessToken}`,
-                        "Content-Type": "application/json"
-                    }
-                })
-                setApplication({...response.data.data})
+                const data = await http.getWithAutoRefreshToken(`/api/recruiterApplication/getAcceptedDetailedApplication/${path.split("/").pop()}`, {useAccessToken: true})
+                setApplication({...data.data})
                 setLoading(false)
             }
             catch(e:any) {
-                if (e.response.status != 401){
-                    setError(e.response.status)
-                }
-                else if (e.response.status == 401){
-                    try{
-                        console.log(refreshToken)
-                        await getNewAccessToken(refreshToken, localStorage);
-                        router.refresh();
-                    }
-                    catch (e){
-                        setError(500)
-                    }
-                }
+                setError(e.response.status)
             }
         }
     
