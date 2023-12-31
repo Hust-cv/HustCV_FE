@@ -28,19 +28,19 @@ const ForgetPassword = () => {
                 return;
             }
             setLoading(true);
-            const response = await http.axiosClient.post('/api/auths/forgotPassword', { email });
+            const response = await http.axiosClient.post('/api/auth/forgotPassword', { email });
             console.log(response.data?.statusCode);
             if (response.data?.statusCode === 200) {
+                localStorage.setItem('email', email);
                 setError('');
                 setStep(2);
             } else {
-                setError('Email này không tồn tại');
+                setError('Địa chỉ email không tồn tại ');
                 return ;
             }
         } catch (error) {
-            console.error('Lỗi kiểm tra email:', error);
             // @ts-ignore
-            setError('Đã xảy ra lỗi khi kiểm tra email');
+            setError('Địa chỉ email không tồn tại ');
         } finally {
             // Stop loading
             setLoading(false);
@@ -56,7 +56,8 @@ const ForgetPassword = () => {
                 return;
             }
             setLoading(true);
-            const response = await http.axiosClient.post('/api/auths/checkCode', { verificationCode });
+            let email = localStorage.getItem('email');
+            const response = await http.axiosClient.post('/api/auth/checkCode', { email,verificationCode });
             console.log(response.data?.statusCode )
             if (response.data?.statusCode === 200) {
                 setError('');
@@ -66,7 +67,7 @@ const ForgetPassword = () => {
             }
         } catch (error) {
             console.error('Lỗi kiểm tra mã xác nhận:', error);
-            setError('Đã xảy ra lỗi khi kiểm tra mã xác nhận');
+            setError('Đã nhập sai mã xác nhận');
         } finally {
             // Stop loading
             setLoading(false);
@@ -79,19 +80,21 @@ const ForgetPassword = () => {
         try {
 
             if (!newPassword) {
-                    setError('Vui lòng nhập mật khẩu mới');
-                    return;
+                setError('Vui lòng nhập mật khẩu mới');
+                return;
             }
             setLoading(true);
-            const response = await http.axiosClient.put('/api/auths/resetPassword', { newPassword });
+            let email = localStorage.getItem('email');
+            const response = await http.axiosClient.put('/api/auth/resetPassword', {email, newPassword });
             if (response.data?.statusCode === 200) {
+                sessionStorage.clear();
                 setError('');
                 router.push('/login');
             } else {
                 setError('Đã xảy ra lỗi khi đặt mật khẩu mới');
             }
         } catch (error) {
-            setError('Đã xảy ra lỗi khi kiểm tra mật khẩu mới');
+            setError('Mật khẩu mới phải có ít nhất 8 ký tự');
         } finally {
             // Stop loading
             setLoading(false);

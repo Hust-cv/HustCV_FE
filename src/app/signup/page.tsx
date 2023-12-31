@@ -37,36 +37,35 @@ const Signup: React.FC = () => {
     };
     const handleSignup = async () => {
         try {
-            if (!email ){
-                setError('Vui lòng nhập email');
+            if (!email || !password || !username) {
+                setError('Vui lòng nhập đầy đủ thông tin');
+                setLoading(false);
                 return;
             }
-            if(!password )
-            {
-                setError('Vui lòng nhập password');
-                return;
-            }
-            if(!username ) {
-                setError('Vui lòng nhập username');
-                return;
-            }
+
             setLoading(true);
-            let response;
+
             let role_id = 2; // Default role for job seeker
             let business_id = null;
-            console.log(">>>>>>>>> 1");
+
             if (isEmployerOption) {
                 role_id = 1;
-                const businessResponse = await http.axiosClient.post('/api/business', {
-                    businessName,
-                    businessAddress,
-                    businessWebsite,
-                });
-                business_id = businessResponse.data?.id;
+                try {
+                    const businessResponse = await http.axiosClient.post('/api/business', {
+                        businessName,
+                        businessAddress,
+                        businessWebsite,
+                    });
+                    business_id = businessResponse.data?.id;
+                } catch (businessError) {
+                    setError('Đã xảy ra lỗi khi tạo doanh nghiệp');
+                    setLoading(false);
+                    return;
+                }
             }
-            console.log(">>>>>>>>> 2");
+
             try {
-                    response = await http.axiosClient.post('/api/users', {
+                const response = await http.axiosClient.post('/api/users', {
                     username,
                     email,
                     password,
@@ -75,28 +74,24 @@ const Signup: React.FC = () => {
                     role_id,
                     business_id,
                 });
-            }catch (error) {
-                    console.log(">>>>>>>>> ERRRo1");
-                        setError('Email hoặc username đã tồn tại');
-                        return;
-            }
-            console.log("response.data?" + response.data)
-            console.log("response.data?" + response.data?.statusCode)
 
-                if(response.data?.statusCode === 400) {
-                    setError('Email  hoặc username đã tồn tại');
-                    return;
+                if (response.data?.statusCode === 400) {
+                    setError('Email hoặc username đã tồn tại');
+                } else {
+                    // Successful registration
+                    router.push('/login');
                 }
-
-            setLoading(false);
-            router.push('/login');
-
+            } catch (userError) {
+                setError('Đã xảy ra lỗi khi đăng ký');
+            } finally {
+                setLoading(false);
+            }
         } catch (error) {
-            console.log(">>>>>>>>> ERRRo2");
-            setError('Đã xảy ra lỗi khi đăng kí');
+            setError('Đã xảy ra lỗi khi xử lý đăng ký');
             setLoading(false);
         }
     };
+
     const handleLogin = () => {
         router.push('/login');
     };
