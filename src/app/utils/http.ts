@@ -51,7 +51,7 @@ class Http {
             // @ts-ignore
             if (error.response && error.response.status === 401) {
                 await this._handleRefreshToken();
-                if(localStorage.localStorage.getItem('accessToken') !== null)
+                if(localStorage.getItem('accessToken') !== null)
                     return await this.getWithAutoRefreshToken(url, options);
                 else
                     throw error;

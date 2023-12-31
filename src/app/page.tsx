@@ -22,8 +22,8 @@ export default function Home() {
   useEffect(()=> {
     if(hasLogin())
       // An dang ki dang nhap , them anh dai dien
-      http.getWithAutoRefreshToken('/api/auth/logout',  {useAccessToken: true})
-      // http.postWithAutoRefreshToken('/api/do-something', {useAccessToken: true});
+      // http.getWithAutoRefreshToken('/api/auth/logout',  {useAccessToken: true})
+      // http.postWithAutoRefreshToken('/api/do-something', {},{useAccessToken: true});
     console.log('User has login');
   }, []);
   const items: MenuProps['items'] = [
