@@ -47,7 +47,7 @@ export default function Applications() {
                     router.refresh();
                 }
                 catch (e){
-                    setError(500)
+                    router.push("/login")
                 }
             }
         }
@@ -116,7 +116,7 @@ export default function Applications() {
                         router.refresh();
                     }
                     catch (e){
-                        setError(500)
+                        router.push("/login")
                     }
                 }
             }

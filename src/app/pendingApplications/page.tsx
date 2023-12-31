@@ -26,34 +26,32 @@ const Home = () => {
     useEffect(() => {
         getPosts()
         async function getPosts() {
-            // try{
-            //     const response = await axios.get(`${baseURL}/getPosts`, {
-            //         headers: {
-            //             "Authorization": `Bearer ${accessToken}`,
-            //             "Content-Type": "application/json"
-            //         }
-            //     })
-            //     //set here
-            //     setLoading(false);
-            //     setPosts([...response.data.data]);
-            // }
-            // catch(e: any){
-            //     if (e.response.status != 401){
-            //         setError(e.response.status)
-            //     }
-            //     else if (e.response.status == 401){
-            //         try{
-            //             console.log(refreshToken)
-            //             await getNewAccessToken(refreshToken, localStorage);
-            //             router.refresh();
-            //         }
-            //         catch (e){
-            //             setError(500)
-            //         }
-            //     }
-            // }
-            const data = await http.getWithAutoRefreshToken("/api/recruiterApplication/getPosts", {useAccessToken: true})
-            setPosts([...data.data])
+            try{
+                const response = await axios.get(`${baseURL}/getPosts`, {
+                    headers: {
+                        "Authorization": `Bearer ${accessToken}`,
+                        "Content-Type": "application/json"
+                    }
+                })
+                //set here
+                setLoading(false);
+                setPosts([...response.data.data]);
+            }
+            catch(e: any){
+                if (e.response.status != 401){
+                    setError(e.response.status)
+                }
+                else if (e.response.status == 401){
+                    try{
+                        console.log(refreshToken)
+                        await getNewAccessToken(refreshToken, localStorage);
+                        router.refresh();
+                    }
+                    catch (e){
+                        router.push("/login")
+                    }
+                }
+            }
         }
     }, [refreshToken, router, accessToken]);
     if (error != 200){
