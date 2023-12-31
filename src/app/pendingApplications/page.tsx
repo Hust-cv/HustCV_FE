@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import Card from '../components/postCard'
 import Error from 'next/error'
-import getNewAccessToken from '../utils/getNewAccessToken'
 import http from '../utils/http'
 const Home = () => {
     const baseURL = "http://localhost:6868/api/recruiterApplication"
@@ -14,46 +13,30 @@ const Home = () => {
     const [isLoading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<number>(200);
     let refreshToken: any;
-    let accessToken: any;
+    // let accessToken: any;
     if (typeof window !== 'undefined') {
         // Perform localStorage action
         refreshToken = localStorage.getItem('refreshToken')
         if (!refreshToken){
+             console.log("hi")
              router.push("/login");
         }
-        accessToken = localStorage.getItem('accessToken')
     }
     useEffect(() => {
         getPosts()
         async function getPosts() {
             try{
-                const response = await axios.get(`${baseURL}/getPosts`, {
-                    headers: {
-                        "Authorization": `Bearer ${accessToken}`,
-                        "Content-Type": "application/json"
-                    }
-                })
-                //set here
+                const data = await http.getWithAutoRefreshToken("/api/recruiterApplication/getPosts", {useAccessToken: true})
                 setLoading(false);
-                setPosts([...response.data.data]);
+                setPosts([...data.data])
             }
             catch(e: any){
-                if (e.response.status != 401){
-                    setError(e.response.status)
-                }
-                else if (e.response.status == 401){
-                    try{
-                        console.log(refreshToken)
-                        await getNewAccessToken(refreshToken, localStorage);
-                        router.refresh();
-                    }
-                    catch (e){
-                        router.push("/login")
-                    }
-                }
+                console.log(e);
+                setError(e.response.status);
             }
+            
         }
-    }, [refreshToken, router, accessToken]);
+    }, []);
     if (error != 200){
         return(
             <>
