@@ -23,7 +23,7 @@ class Http {
                 refreshToken
             })
             if(result.data) {
-                localStorage.setItem('accessToken', result.data.accessToken)
+                localStorage.setItem('refreshToken', result.data.accessToken)
             }
         } else {
             localStorage.clear()
@@ -34,7 +34,7 @@ class Http {
             const requestHeader: RawAxiosRequestHeaders | AxiosHeaders = {};
 
             if (options.useAccessToken) {
-                const accessToken = localStorage.getItem('accessToken');
+                const accessToken = localStorage.getItem('refreshToken');
                 if (accessToken) {
                     requestHeader.authorization = `Bearer ${accessToken}`;
                 }
@@ -60,7 +60,7 @@ class Http {
             const requestHeader: (RawAxiosRequestHeaders) | AxiosHeaders = {};
 
             if(options.useAccessToken) {
-                requestHeader.authorization = `Bearer ${localStorage.getItem('accessToken')}`
+                requestHeader.authorization = `Bearer ${localStorage.getItem('refreshToken')}`
             }
             const result = await this.axiosClient.post(url, data,{
                 headers: requestHeader
@@ -83,7 +83,7 @@ class Http {
             const requestHeader: (RawAxiosRequestHeaders) | AxiosHeaders = {};
 
             if(options.useAccessToken) {
-                requestHeader.authorization = `Bearer ${localStorage.getItem('accessToken')}`
+                requestHeader.authorization = `Bearer ${localStorage.getItem('refreshToken')}`
             }
             const result = await this.axiosClient.put(url, data,{
                 headers: requestHeader
@@ -103,7 +103,7 @@ class Http {
             const requestHeader: RawAxiosRequestHeaders | AxiosHeaders = {};
 
             if (options.useAccessToken) {
-                requestHeader.authorization = `Bearer ${localStorage.getItem('accessToken')}`;
+                requestHeader.authorization = `Bearer ${localStorage.getItem('refreshToken')}`;
             }
 
             const result = await this.axiosClient.delete(url, {

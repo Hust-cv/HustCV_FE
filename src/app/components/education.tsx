@@ -46,8 +46,8 @@ const Education = () => {
         queryFn: async () => {
             const userId = await localStorage.getItem('userId');
             try {
-                const response = await http.axiosClient.post('/api/profile/education/getAll', {personalFileId: userId})
-                return response.data
+                const response = await http.postWithAutoRefreshToken('/api/profile/education/getAll', {personalFileId: userId}, { useAccessToken: true })
+                return response
             } catch (error) {
 
             }
@@ -60,7 +60,7 @@ const Education = () => {
             values.start = values.start.toISOString();
             values.end = values.end.toISOString();
             const name = values.schools + '*/' + values.majors + '*/' + values.start + '*/' + (values.isStillStudy == true ? 'Hiện tại' : values.end)
-            const data = await http.axiosClient.post('/api/profile/education/add', {name: name, personalFileId: userId})
+            const data = await http.postWithAutoRefreshToken('/api/profile/education/add', {name: name, personalFileId: userId}, { useAccessToken: true })
             return data
         },
         onSuccess: (data, variables, context) => {
@@ -68,13 +68,13 @@ const Education = () => {
             queryClient.invalidateQueries({ queryKey: ['education'] })
         },
         onError: (error: any) => {
-            message.error(error.response.data.message)
+            message.error(error.response.message)
         }
     })
 
     const deleteEduMutation = useMutation({
         mutationFn: async (id: any) => {
-            const response = await http.axiosClient.delete('/api/profile/education/' + id)
+            const response = await http.deleteWithAutoRefreshToken('/api/profile/education/' + id, { useAccessToken: true })
             return response
         },
         onSuccess: (data, variables, context) => {
@@ -82,7 +82,7 @@ const Education = () => {
             queryClient.invalidateQueries({ queryKey: ['education']})
         },
         onError: (error: any) => {
-            message.error(error.response.data.message)
+            message.error(error.response.message)
         }
     })
 
@@ -91,7 +91,7 @@ const Education = () => {
             values.start = values.start.toISOString();
             values.end = values.end.toISOString();
             const name = values.schools + '*/' + values.majors + '*/' + values.start + '*/' + (values.isStillStudy == true ? 'Hiện tại' : values.end)
-            const response = await http.axiosClient.put('/api/profile/education/' + id, {name: name})
+            const response = await http.putWithAutoRefreshToken('/api/profile/education/' + id, {name: name}, { useAccessToken: true })
             return response
         },
         onSuccess: (data, variables, context) => {
@@ -99,7 +99,7 @@ const Education = () => {
             queryClient.invalidateQueries({ queryKey: ['education']})
         },
         onError: (error: any) => {
-            message.error(error.response.data.message)
+            message.error(error.response.message)
         }
     })
 

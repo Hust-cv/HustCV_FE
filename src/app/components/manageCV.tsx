@@ -14,12 +14,13 @@ import type { UploadProps } from 'antd'
 import { UploadOutlined } from '@ant-design/icons';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { UploadFile } from 'antd/es/upload/interface';
+import axios from 'axios'
 import http from '../utils/http';
 
 
 const ManageCV = () => {
     const [fileList, setFileList] = useState<UploadFile[]>([])
-    const id = localStorage.getItem('userId');
+    const accessToken = localStorage.getItem('refreshToken')
 
     const queryClient = useQueryClient()
     const linkCV = useQuery({
@@ -27,8 +28,8 @@ const ManageCV = () => {
         queryFn: async () => {
             const id = await localStorage.getItem('userId');
             try {
-                const response = await http.axiosClient.post('/api/manageCv/getNameCv', {id: id});
-                let name = response.data.name;
+                const response = await http.postWithAutoRefreshToken('/api/manageCv/getNameCv', {id: id}, { useAccessToken: true });
+                let name = response.name;
                 if (name == ''){
                     name = 'Bạn cần upload file'
                 }
@@ -36,7 +37,7 @@ const ManageCV = () => {
                     uid: '-1',
                     name: name,
                 }])
-                return response.data
+                return response
             }
             catch(err) {
 
@@ -45,11 +46,10 @@ const ManageCV = () => {
     })
 
     const handleShowCV = async () => {
-        const id = await localStorage.getItem('userId');
         try {
-            const response = await http.axiosClient.post('/api/manageCv/getUrlCv', {id: id})
+            const response = await http.postWithAutoRefreshToken('/api/manageCv/getUrlCv', {id: 1}, { useAccessToken: true })
             console.log(response)
-            const fileLink = response.data.url
+            const fileLink = response.url
             window.open(fileLink, '_blank');
         }
         catch(err) {
@@ -66,9 +66,9 @@ const ManageCV = () => {
         try {
             const formData = new FormData();
             formData.append('file', file);
-            formData.append('id', id || '');
-            const response = await http.axiosClient.post('/api/manageCv', formData, {
+            const response = await axios.post('/api/manageCv', formData, {
                 headers: {
+                "Authorization": `Bearer ${accessToken}`,
                 'Content-Type': 'multipart/form-data',
                 },
             });

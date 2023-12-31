@@ -42,8 +42,8 @@ const Certification = () => {
         queryFn: async () => {
             const userId = await localStorage.getItem('userId');
             try {
-                const response = await http.axiosClient.post('/api/profile/certificate/getAll', {personalFileId: userId})
-                return response.data
+                const response = await http.postWithAutoRefreshToken('/api/profile/certificate/getAll', {personalFileId: userId}, { useAccessToken: true })
+                return response
             } catch (error) {
 
             }
@@ -55,7 +55,7 @@ const Certification = () => {
             const userId = await localStorage.getItem('userId');
             values.start = values.start.toISOString();
             const name = values.nameCertificate + '*/' + values.nameOrganize + '*/' + values.start
-            const data = await http.axiosClient.post('/api/profile/certificate/add', {name: name, personalFileId: userId})
+            const data = await http.postWithAutoRefreshToken('/api/profile/certificate/add', {name: name, personalFileId: userId}, { useAccessToken: true })
             return data
         },
         onSuccess: (data, variables, context) => {
@@ -63,13 +63,13 @@ const Certification = () => {
             queryClient.invalidateQueries({ queryKey: ['certificate'] })
         },
         onError: (error: any) => {
-            message.error(error.response.data.message)
+            message.error(error.response.message)
         }
     })
 
     const deleteCerMutation = useMutation({
         mutationFn: async (id: any) => {
-            const response = await http.axiosClient.delete('/api/profile/certificate/' + id)
+            const response = await http.deleteWithAutoRefreshToken('/api/profile/certificate/' + id, { useAccessToken: true })
             return response
         },
         onSuccess: (data, variables, context) => {
@@ -77,7 +77,7 @@ const Certification = () => {
             queryClient.invalidateQueries({ queryKey: ['certificate']})
         },
         onError: (error: any) => {
-            message.error(error.response.data.message)
+            message.error(error.response.message)
         }
     })
 
@@ -85,7 +85,7 @@ const Certification = () => {
         mutationFn: async ({ id, values }: any) => {
             values.start = values.start.toISOString();
             const name = values.nameCertificate + '*/' + values.nameOrganize + '*/' + values.start
-            const response = await http.axiosClient.put('/api/profile/certificate/' + id, {name: name})
+            const response = await http.putWithAutoRefreshToken('/api/profile/certificate/' + id, {name: name}, { useAccessToken: true })
             return response
         },
         onSuccess: (data, variables, context) => {
@@ -93,7 +93,7 @@ const Certification = () => {
             queryClient.invalidateQueries({ queryKey: ['certificate']})
         },
         onError: (error: any) => {
-            message.error(error.response.data.message)
+            message.error(error.response.message)
         }
     })
 

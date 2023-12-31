@@ -42,8 +42,8 @@ const Project = () => {
         queryFn: async () => {
             const userId = await localStorage.getItem('userId');
             try {
-                const response = await http.axiosClient.post('/api/profile/project/getAll', {personalFileId: userId})
-                return response.data
+                const response = await http.postWithAutoRefreshToken('/api/profile/project/getAll', {personalFileId: userId}, { useAccessToken: true })
+                return response
             } catch (error) {
 
             }
@@ -56,7 +56,7 @@ const Project = () => {
             values.start = values.start.toISOString();
             values.end = values.end.toISOString(); 
             const name = values.nameProject + '*/' + values.start + '*/' + (values.isStillDo == true ? 'Hiện tại' : values.end)
-            const data = await http.axiosClient.post('/api/profile/project/add', {name: name, personalFileId: userId})
+            const data = await http.postWithAutoRefreshToken('/api/profile/project/add', {name: name, personalFileId: userId}, { useAccessToken: true })
             return data
         },
         onSuccess: (data, variables, context) => {
@@ -64,13 +64,13 @@ const Project = () => {
             queryClient.invalidateQueries({ queryKey: ['project'] })
         },
         onError: (error: any) => {
-            message.error(error.response.data.message)
+            message.error(error.response.message)
         }
     })
 
     const deletePrjMutation = useMutation({
         mutationFn: async (id: any) => {
-            const response = await http.axiosClient.delete('/api/profile/project/' + id)
+            const response = await http.deleteWithAutoRefreshToken('/api/profile/project/' + id, { useAccessToken: true })
             return response
         },
         onSuccess: (data, variables, context) => {
@@ -78,7 +78,7 @@ const Project = () => {
             queryClient.invalidateQueries({ queryKey: ['project']})
         },
         onError: (error: any) => {
-            message.error(error.response.data.message)
+            message.error(error.response.message)
         }
     })
 
@@ -87,7 +87,7 @@ const Project = () => {
             values.start = values.start.toISOString();
             values.end = values.end.toISOString();
             const name = values.nameProject + '*/' + values.start + '*/' + (values.isStillDo == true ? 'Hiện tại' : values.end)
-            const response = await http.axiosClient.put('/api/profile/project/' + id, {name: name})
+            const response = await http.putWithAutoRefreshToken('/api/profile/project/' + id, {name: name}, { useAccessToken: true })
             return response
         },
         onSuccess: (data, variables, context) => {
@@ -95,7 +95,7 @@ const Project = () => {
             queryClient.invalidateQueries({ queryKey: ['project']})
         },
         onError: (error: any) => {
-            message.error(error.response.data.message)
+            message.error(error.response.message)
         }
     })
 
