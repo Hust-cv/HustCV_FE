@@ -17,15 +17,19 @@ class Http {
         })
     }
     private async _handleRefreshToken(): Promise <void> {
-        const refreshToken = localStorage.getItem('refreshToken');
-        if(refreshToken) {
-            const result = await this.axiosClient.post('/api/auths/refreshtoken', {
-                refreshToken
-            })
-            if(result.data) {
-                localStorage.setItem('refreshToken', result.data.accessToken)
+        try {
+            const refreshToken = localStorage.getItem('refreshToken');
+            if(refreshToken) {
+                const result = await this.axiosClient.post('/api/auth/refreshtoken', {
+                    refreshToken
+                })
+                if(result.data) {
+                    localStorage.setItem('accessToken', result.data.accessToken)
+                }
+            } else {
+                localStorage.clear()
             }
-        } else {
+        } catch(error){
             localStorage.clear()
         }
     }
@@ -47,7 +51,10 @@ class Http {
             // @ts-ignore
             if (error.response && error.response.status === 401) {
                 await this._handleRefreshToken();
-                return await this.getWithAutoRefreshToken(url, options);
+                if(localStorage.getItem('accessToken') !== null)
+                    return await this.getWithAutoRefreshToken(url, options);
+                else
+                    throw error;
             } else {
                 throw error;
             }
@@ -69,11 +76,13 @@ class Http {
             return result.data
         } catch (error) {
             // @ts-ignore
-            if(error.response.status === 401) {
-                await this._handleRefreshToken()
-                return await this.postWithAutoRefreshToken(url, data, options)
-            }
-            else{
+            if (error.response && error.response.status === 401) {
+                await this._handleRefreshToken();
+                if(localStorage.getItem('accessToken') !== null)
+                    return await this.postWithAutoRefreshToken(url, data, options);
+                else
+                    throw error;
+            } else {
                 throw error;
             }
         }
@@ -92,9 +101,14 @@ class Http {
             return result.data
         } catch (error) {
             // @ts-ignore
-            if(error.response.status === 401) {
-                await this._handleRefreshToken()
-                return await this.postWithAutoRefreshToken(url, data, options)
+            if (error.response && error.response.status === 401) {
+                await this._handleRefreshToken();
+                if(localStorage.getItem('accessToken') !== null)
+                    return await this.putWithAutoRefreshToken(url, data, options);
+                else
+                    throw error;
+            } else {
+                throw error;
             }
         }
     }
@@ -115,7 +129,10 @@ class Http {
             // @ts-ignore
             if (error.response && error.response.status === 401) {
                 await this._handleRefreshToken();
-                return await this.deleteWithAutoRefreshToken(url, options);
+                if(localStorage.getItem('accessToken') !== null)
+                    return await this.deleteWithAutoRefreshToken(url, options);
+                else
+                    throw error;
             } else {
                 throw error;
             }
