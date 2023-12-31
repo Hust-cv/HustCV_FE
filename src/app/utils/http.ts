@@ -48,14 +48,18 @@ class Http {
             });
             return result.data;
         } catch (error) {
-            // @ts-ignore
-            if (error.response && error.response.status === 401) {
-                await this._handleRefreshToken();
-                if(localStorage.getItem('accessToken') !== null)
-                    return await this.getWithAutoRefreshToken(url, options);
-                else
+            try {
+                // @ts-ignore
+                if (error.response && error.response.status === 401) {
+                    await this._handleRefreshToken();
+                    if (localStorage.getItem('accessToken') !== null)
+                        return await this.getWithAutoRefreshToken(url, options);
+                    else
+                        throw error;
+                } else {
                     throw error;
-            } else {
+                }
+            } catch (error) {
                 throw error;
             }
         }
@@ -75,6 +79,7 @@ class Http {
 
             return result.data
         } catch (error) {
+            try{
             // @ts-ignore
             if (error.response && error.response.status === 401) {
                 await this._handleRefreshToken();
@@ -83,6 +88,10 @@ class Http {
                 else
                     throw error;
             } else {
+                throw error;
+            }
+        }
+            catch (error) {
                 throw error;
             }
         }
@@ -100,6 +109,7 @@ class Http {
 
             return result.data
         } catch (error) {
+            try{
             // @ts-ignore
             if (error.response && error.response.status === 401) {
                 await this._handleRefreshToken();
@@ -108,6 +118,10 @@ class Http {
                 else
                     throw error;
             } else {
+                throw error;
+            }
+        }
+            catch (error) {
                 throw error;
             }
         }
@@ -126,6 +140,7 @@ class Http {
 
             return result.data;
         } catch (error) {
+            try{
             // @ts-ignore
             if (error.response && error.response.status === 401) {
                 await this._handleRefreshToken();
@@ -134,6 +149,10 @@ class Http {
                 else
                     throw error;
             } else {
+                throw error;
+            }
+        }
+            catch (error) {
                 throw error;
             }
         }
