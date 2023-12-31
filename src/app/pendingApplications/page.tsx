@@ -6,7 +6,7 @@ import axios from 'axios'
 import Card from '../components/postCard'
 import Error from 'next/error'
 import getNewAccessToken from '../utils/getNewAccessToken'
-
+import http from '../utils/http'
 const Home = () => {
     const baseURL = "http://localhost:6868/api/recruiterApplication"
     const router = useRouter();
@@ -33,7 +33,7 @@ const Home = () => {
                         "Content-Type": "application/json"
                     }
                 })
-                // set here
+                //set here
                 setLoading(false);
                 setPosts([...response.data.data]);
             }
@@ -48,7 +48,7 @@ const Home = () => {
                         router.refresh();
                     }
                     catch (e){
-                        setError(500)
+                        router.push("/login")
                     }
                 }
             }
