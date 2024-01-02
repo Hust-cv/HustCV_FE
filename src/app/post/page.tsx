@@ -22,10 +22,7 @@ import moment from 'moment'
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 const { Option } = Select;
-
-
-const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY', 'DD-MM-YYYY', 'DD-MM-YY'];
-
+import { Empty } from 'antd';
 
 const Post = () => {
     //hook
@@ -41,7 +38,7 @@ const Post = () => {
     //api
     const addNewPostMutation = useMutation({
         mutationFn: async (values: IPost) => {
-            const data = await http.axiosClient.post('/api/recruitmentPosts', values)
+            const data = await http.postWithAutoRefreshToken('/api/recruitmentPosts', values, { useAccessToken: true })
             return data
         },
         onSuccess: (data, variables, context) => {
@@ -58,8 +55,8 @@ const Post = () => {
         queryKey: ['recruitmentPosts'],
         queryFn: async () => {
             try {
-                const response = await http.axiosClient.get('/api/recruitmentPosts')        //chỗ này cần sửa api cho bản thân
-                return response.data
+                const response = await http.getWithAutoRefreshToken('/api/recruitmentPosts', { useAccessToken: true })        //chỗ này cần sửa api cho bản thân
+                return response
             } catch (error) {
                 console.log(error)
             }
@@ -81,7 +78,7 @@ const Post = () => {
 
     const deletePostMutation = useMutation({
         mutationFn: async (id: any) => {
-            const response = await http.axiosClient.delete('/api/recruitmentPosts/' + id)
+            const response = await http.deleteWithAutoRefreshToken('/api/recruitmentPosts/' + id, { useAccessToken: true })
             return response
         },
         onSuccess: (data, variables, context) => {
@@ -95,7 +92,7 @@ const Post = () => {
 
     const updateMutation = useMutation({
         mutationFn: async ({ id, values }: any) => {
-            const response = await http.axiosClient.put('/api/recruitmentPosts/' + id, values)
+            const response = await http.putWithAutoRefreshToken('/api/recruitmentPosts/' + id, values, { useAccessToken: true })
             return response
         },
         onSuccess: (data, variables, context) => {
@@ -134,7 +131,6 @@ const Post = () => {
     };
 
     const onFinish = (values: any) => {
-        console.log(values)
         values.dateClose = values.dateClose.toISOString()
         addNewPostMutation.mutate(values)
     }
@@ -228,54 +224,61 @@ const Post = () => {
                         </Form>
                     </Modal>
                 </div>
-                <div className='mx-[300px]'>
-                    {data?.map((post: any, index: number) => {
-                        return (
-                            <Card
-                                key={post.id}
-                                title={
-                                    <>
-                                        <p><Avatar className='mr-4' size='large' icon={<UserOutlined />} />Dinh Linh tuyen dung</p>
-                                    </>
-                                }
-                                extra={
-                                    <Popover
-                                        content={
-                                            <>
-                                                <div className='mb-4 mt-2'>
-                                                    <a onClick={() => handleEdit(post)}><EditOutlined className='mr-4' />Sửa bài đăng</a>
-                                                </div>
-                                                <div>
-                                                    <a onClick={() => handleDelete(post.id)}><DeleteOutlined className='mr-4' />Xoá bài đăng</a>
-                                                </div>
-                                            </>
-                                        }
-                                        title="Hành động"
-                                        trigger="click"
-                                        placement="left"
-                                        className='z-1'
+                {data?.data?.length < 1 ? (
+                    <div className='mx-[300px] my-[80px]'>
+                        <div className='text-center text-black'>Bạn chưa đăng bài tuyển dụng nào</div>
+                        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                    </div>
+                ) : (
+                    <div className='mx-[300px]'>
+                        {data?.data?.map((post: any, index: number) => {
+                            return (
+                                <Card
+                                    key={post.id}
+                                    title={
+                                        <>
+                                            <p><Avatar className='mr-4' size='large' icon={<UserOutlined />} />{post.user.username}</p>
+                                        </>
+                                    }
+                                    extra={
+                                        <Popover
+                                            content={
+                                                <>
+                                                    <div className='mb-4 mt-2'>
+                                                        <a onClick={() => handleEdit(post)}><EditOutlined className='mr-4' />Sửa bài đăng</a>
+                                                    </div>
+                                                    <div>
+                                                        <a onClick={() => handleDelete(post.id)}><DeleteOutlined className='mr-4' />Xoá bài đăng</a>
+                                                    </div>
+                                                </>
+                                            }
+                                            title="Hành động"
+                                            trigger="click"
+                                            placement="left"
+                                            className='z-1'
 
-                                    >
-                                        <MoreOutlined />
-                                    </Popover>
-                                }
-                                className='w-full mb-4'
-                            >
-                                <h3 className='font-bold text-lg'><TagOutlined className='mr-4' />{post.title}</h3>
-                                <p className='my-3'><FormOutlined className='mr-4' />{post.describe}</p>
-                                <div className='my-3'>
-                                    <p><FireOutlined className='mr-4' />Yêu cầu: {post.request}</p>
-                                </div>
-                                <p className='my-3'><HomeOutlined className='mr-4' />Hình thức: {post.form}</p>
-                                <div className='my-3'>
-                                    <p><ReadOutlined className='mr-4' />Kĩ năng cần thiết: {post.skills?.map((skill: any) => skill.name).join(', ')}</p>
-                                </div>
-                                <p className='my-3'><MoneyCollectOutlined className='mr-4' />Mức lương: {post.salary}</p>
-                                <p className='my-3'><FieldTimeOutlined className='mr-4' />Ngày kết thúc: {post.dateClose?.split('T')[0]}</p>
-                            </Card>
-                        )
-                    })}
-                </div >
+                                        >
+                                            <MoreOutlined />
+                                        </Popover>
+                                    }
+                                    className='w-full mb-4'
+                                >
+                                    <h3 className='font-bold text-lg'><TagOutlined className='mr-4' />{post.title}</h3>
+                                    <p className='my-3'><FormOutlined className='mr-4' />{post.describe}</p>
+                                    <div className='my-3'>
+                                        <p><FireOutlined className='mr-4' />Yêu cầu: {post.request}</p>
+                                    </div>
+                                    <p className='my-3'><HomeOutlined className='mr-4' />Hình thức: {post.form}</p>
+                                    <div className='my-3'>
+                                        <p><ReadOutlined className='mr-4' />Kĩ năng cần thiết: {post.skills?.map((skill: any) => skill.name).join(', ')}</p>
+                                    </div>
+                                    <p className='my-3'><MoneyCollectOutlined className='mr-4' />Mức lương: {post.salary}</p>
+                                    <p className='my-3'><FieldTimeOutlined className='mr-4' />Ngày kết thúc: {moment(post.dateClose).format('DD/MM/YYYY')}</p>
+                                </Card>
+                            )
+                        })}
+                    </div >
+                )}
                 <div>
                     {isModalConfirmOpen ? (
                         <Modal
