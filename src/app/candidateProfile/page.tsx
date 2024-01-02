@@ -6,6 +6,7 @@ import Certification from '../components/certification';
 import UserInfor from '../components/userInfor'
 import SkillProfile from '../components/skillProfile';
 import ManageCV from '../components/manageCV';
+import CriterionJob from '../components/criterionJob'
 import { Descriptions, Empty } from 'antd';
 import {
     Button,
@@ -66,6 +67,9 @@ const candidateProfile = () => {
     const jobPreferences = () => {
         return(
             <>
+                <div className='mx-[300px]'>
+                    <CriterionJob></CriterionJob>
+                </div>
             </>
         )
     }
