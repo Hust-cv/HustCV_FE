@@ -5,7 +5,7 @@ import { Menu, Button, Popover } from 'antd';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import http from '../utils/http';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 const items: MenuProps['items'] = [
     {
         label: 'All Jobs',
@@ -171,19 +171,26 @@ const Header = () => {
             return user
         }
     })
-
+    const handleLogout = async() => {
+        await http.getWithAutoRefreshToken('/api/auth/logout',  {useAccessToken: true})
+        sessionStorage.clear()
+        localStorage.clear()
+        setUser(null)
+        router.push('/')
+    }
     const content = (
         <div className='min-w-14 cursor-pointer'>
             <div className='py-2 ' onClick={() => router.push('/post')}>
                 Tuyển dụng
             </div>
             <div className='py-2'>
-                Đăng xuất
+                <button className='text-black' onClick={handleLogout} style={{color: 'black'}}>
+                    Đăng xuất
+                </button>
+
             </div>
         </div>
     )
-
-
 
     const handleLoginClick = () => {
         router.push('/login');
