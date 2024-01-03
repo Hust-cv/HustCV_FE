@@ -14,7 +14,7 @@ import {
     Avatar,
 } from 'antd';
 import type { SelectProps } from 'antd';
-import { MoreOutlined, CheckOutlined, FireOutlined, ReadOutlined, FormOutlined, TagOutlined, EditOutlined, DeleteOutlined, UserOutlined, HomeOutlined, MoneyCollectOutlined, FieldTimeOutlined } from '@ant-design/icons';
+import { MoreOutlined, AreaChartOutlined, FireOutlined, CheckOutlined, ReadOutlined, FormOutlined, TagOutlined, EditOutlined, DeleteOutlined, UserOutlined, HomeOutlined, MoneyCollectOutlined, FieldTimeOutlined } from '@ant-design/icons';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { IPost } from '../shared/recruitmentPost.type';
 import http from '../utils/http';
@@ -191,6 +191,31 @@ const Post = () => {
                                     <Radio value="Remote"> Remote </Radio>
                                 </Radio.Group>
                             </Form.Item>
+                            <Form.Item label='Địa điểm' name='location'>
+                                <Select
+                                    allowClear
+                                    style={{ width: '100%' }}
+                                    placeholder="Địa điểm"
+                                >
+                                    <Option value="Hà Nội">Hà Nội</Option>
+                                    <Option value="Hồ Chí Minh">Hồ Chí Minh</Option>
+                                    <Option value="Đà Nẵng">Đà Nẵng</Option>
+                                    <Option value="Hải Dương">Hải Dương</Option>
+                                    <Option value="Hải Phòng">Hải Phòng</Option>
+                                </Select>
+                            </Form.Item>
+                            <Form.Item label='Trình độ' name='level'>
+                                <Select
+                                    allowClear
+                                    style={{ width: '100%' }}
+                                    placeholder="Trình độ"
+                                >
+                                    <Option value="Intern">Intern</Option>
+                                    <Option value="Fresher">Fresher</Option>
+                                    <Option value="Junior">Junior</Option>
+                                    <Option value="Senior">Senior</Option>
+                                </Select>
+                            </Form.Item>
                             <Form.Item label='Kỹ năng' name='skill'>
                                 <Select
                                     mode="multiple"
@@ -268,7 +293,9 @@ const Post = () => {
                                     <div className='my-3'>
                                         <p><FireOutlined className='mr-4' />Yêu cầu: {post.request}</p>
                                     </div>
-                                    <p className='my-3'><HomeOutlined className='mr-4' />Hình thức: {post.form}</p>
+                                    <p className='my-3'><AreaChartOutlined className='mr-4' />Hình thức: {post.form}</p>
+                                    <p className='my-3'><HomeOutlined className='mr-4' />Địa điểm: {post.location}</p>
+                                    <p className='my-3'><CheckOutlined className='mr-4' />Trình độ: {post.level}</p>
                                     <div className='my-3'>
                                         <p><ReadOutlined className='mr-4' />Kĩ năng cần thiết: {post.skills?.map((skill: any) => skill.name).join(', ')}</p>
                                     </div>
@@ -332,6 +359,31 @@ const Post = () => {
                                         <Radio value="Hybrid"> Hybrid </Radio>
                                         <Radio value="Remote"> Remote </Radio>
                                     </Radio.Group>
+                                </Form.Item>
+                                <Form.Item label='Địa điểm' name='location' initialValue={editPost.location}>
+                                    <Select
+                                        allowClear
+                                        style={{ width: '100%' }}
+                                        placeholder="Địa điểm"
+                                    >
+                                        <Option value="Hà Nội">Hà Nội</Option>
+                                        <Option value="Hồ Chí Minh">Hồ Chí Minh</Option>
+                                        <Option value="Đà Nẵng">Đà Nẵng</Option>
+                                        <Option value="Hải Dương">Hải Dương</Option>
+                                        <Option value="Hải Phòng">Hải Phòng</Option>
+                                    </Select>
+                                </Form.Item>
+                                <Form.Item label='Trình độ' name='level' initialValue={editPost.level}>
+                                    <Select
+                                        allowClear
+                                        style={{ width: '100%' }}
+                                        placeholder="Trình độ"
+                                    >
+                                        <Option value="Intern">Intern</Option>
+                                        <Option value="Fresher">Fresher</Option>
+                                        <Option value="Junior">Junior</Option>
+                                        <Option value="Senior">Senior</Option>
+                                    </Select>
                                 </Form.Item>
                                 <Form.Item label='Kỹ năng' name='skill' initialValue={editPost.skills?.map((skill: any) => skill.name)}>
                                     <Select
