@@ -1,8 +1,11 @@
 'use client'
-import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
-import type { MenuProps } from 'antd';
-import { Menu, Button } from 'antd';
+import { UserOutlined, DownOutlined } from '@ant-design/icons'
+import type { MenuProps, } from 'antd';
+import { Menu, Button, Popover } from 'antd';
 import { useRouter } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
+import http from '../utils/http';
+import {useEffect, useState} from 'react';
 const items: MenuProps['items'] = [
     {
         label: 'All Jobs',
@@ -156,7 +159,38 @@ const items: MenuProps['items'] = [
 
 
 const Header = () => {
+    const [user, setUser] = useState<any>(null)
+
     const router = useRouter();
+
+    const verifyLogin = useQuery({
+        queryKey: ['verify'],
+        queryFn: async () => {
+            const user = await http.getWithAutoRefreshToken('http://localhost:6868/api/users/me', { useAccessToken: true })
+            setUser(user)
+            return user
+        }
+    })
+    const handleLogout = async() => {
+        await http.getWithAutoRefreshToken('/api/auth/logout',  {useAccessToken: true})
+        sessionStorage.clear()
+        localStorage.clear()
+        setUser(null)
+        router.push('/')
+    }
+    const content = (
+        <div className='min-w-14 cursor-pointer'>
+            <div className='py-2 ' onClick={() => router.push('/post')}>
+                Tuyển dụng
+            </div>
+            <div className='py-2'>
+                <button className='text-black' onClick={handleLogout} style={{color: 'black'}}>
+                    Đăng xuất
+                </button>
+
+            </div>
+        </div>
+    )
 
     const handleLoginClick = () => {
         router.push('/login');
@@ -168,7 +202,7 @@ const Header = () => {
     return (
         <div className="header min-h-[88px] border-b border-b-gray-800 fixed z-10 top-0 left-0 right-0">
             <div className="container min-h-[88px] mx-auto flex items-center">
-                <div>
+                <div onClick={() => router.push('/')} className='cursor-pointer'>
                     <p className="text-white text-3xl font-bold">Hust<span className="text-[#f0101a]">CV</span></p>
                 </div>
                 <div className='ml-48 flex-1'>
@@ -176,15 +210,21 @@ const Header = () => {
                         <Menu className='bg-transparent min-w-[400px] text-xl text-[#a6a6a6]' mode="horizontal" items={items} />
                     </div>
                 </div>
-                <div className='pr-14'>
-                    <button className='text-[#a6a6a6] hover:text-white' onClick={handleLoginClick}>
-                        Đăng nhập
-                    </button>
-                    <span className='text-[#a6a6a6] mx-2'>/</span>
-                    <button className='text-[#a6a6a6] hover:text-white' onClick={handleRegisterClick}>
-                        Đăng ký
-                    </button>
-                </div>
+                {user ? (
+                    <Popover content={content} style={{ width: 100 }} trigger="click" placement="bottom">
+                        <div className='pr-28 cursor-pointer'><UserOutlined className='mr-4' />{user.username}<DownOutlined className='ml-4 opacity-70' /></div>
+                    </Popover>
+                ) : (
+                    <div className='pr-14'>
+                        <button className='text-[#a6a6a6] hover:text-white' onClick={handleLoginClick}>
+                            Đăng nhập
+                        </button>
+                        <span className='text-[#a6a6a6] mx-2'>/</span>
+                        <button className='text-[#a6a6a6] hover:text-white' onClick={handleRegisterClick}>
+                            Đăng ký
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     )

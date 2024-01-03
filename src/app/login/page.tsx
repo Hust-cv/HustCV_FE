@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Button, Input } from 'antd';
 import { useRouter } from 'next/navigation';
 import http from "@/app/utils/http";
+import { useQueryClient } from '@tanstack/react-query';
 
 
 const Login: React.FC = () => {
@@ -15,6 +16,7 @@ const Login: React.FC = () => {
     const [isValidEmail, setIsValidEmail] = useState(true);
     const router = useRouter();
     const [isEmailValid, setIsEmailValid] = useState(true);
+    const queryClient = useQueryClient()
 
     const handleForgotPassword = () => {
         router.push('/forgetPassword');
@@ -45,10 +47,11 @@ const Login: React.FC = () => {
             const response = await http.axiosClient.post('/api/auth/login', { email, password });
             localStorage.setItem('accessToken', response.data?.resBody?.accessToken);
             localStorage.setItem('refreshToken', response.data?.resBody?.refreshToken);
-            console.log(">>>>>>1"+response.data?.resBody?.accessToken)
+            console.log(">>>>>>1" + response.data?.resBody?.accessToken)
             setLoginAttempts(0);
             setLoading(false);
             router.push('/');
+            queryClient.invalidateQueries({ queryKey: ['verify'] })
         } catch (error) {
             setError('Email hoặc mật khẩu không đúng. Vui lòng thử lại');
             setLoading(false);
