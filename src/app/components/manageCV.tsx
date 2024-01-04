@@ -66,7 +66,7 @@ const ManageCV = () => {
         try {
             const formData = new FormData();
             formData.append('file', file);
-            const response = await axios.post('/api/manageCv', formData, {
+            const response = await axios.post('http://localhost:6868/api/manageCv', formData, {
                 headers: {
                 "Authorization": `Bearer ${accessToken}`,
                 'Content-Type': 'multipart/form-data',
