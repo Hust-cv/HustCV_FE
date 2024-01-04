@@ -39,8 +39,8 @@ const userInfor = () => {
         queryFn: async () => {
             const userId = await localStorage.getItem('userId');
             try {
-                const response = await http.axiosClient.post('/api/profile/userInfor', {id: userId});
-                return response.data
+                const response = await http.postWithAutoRefreshToken('/api/profile/userInfor', {id: userId}, { useAccessToken: true });
+                return response
             }
             catch (error){
 
@@ -51,7 +51,7 @@ const userInfor = () => {
         mutationFn: async ({id, values}: any) => {
             values.birth = values.birth.toISOString()
             const infor = values.name + '*/' + values.email + '*/' + values.birth + '*/' + values.phone + '*/' + values.gender;
-            const response = await http.axiosClient.put('api/profile/userInfor/' + id, {infor: infor})
+            const response = await http.putWithAutoRefreshToken('api/profile/userInfor/' + id, {infor: infor}, { useAccessToken: true })
             return response;
         },
         onSuccess: (data, variables, context) => {
@@ -59,7 +59,7 @@ const userInfor = () => {
             queryClient.invalidateQueries({ queryKey: ['userInfor']})
         },
         onError: (error: any) => {
-            message.error(error.response.data.message)
+            message.error(error.response.message)
         }
     })
     const showModalEditInfor = (infor: any) => {
