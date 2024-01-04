@@ -32,20 +32,21 @@ const { Option } = Select;
 
 const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY', 'DD-MM-YYYY', 'DD-MM-YY'];
 
-const Education = () => {
-    const [isModalAddEduOpen,setModalAddEduOpen] = useState(false)
-    const [isModalEditEduOpen, setModalEditEduOpen] = useState(false)
-    const [isModalConfirmDeleteEduOpen, setModalConfirmDeleteEduOpen] = useState(false)
-    const [disabledCheckboxEdu, setDisabledCheckboxEdu] = useState(false)
-    const [deleteEdu, setDeleteEdu] = useState(null)
-    const [editEdu, setEditEdu] = useState<any>({})
+const Experience = () => {
+    const [isModalAddExpOpen,setModalAddExpOpen] = useState(false)
+    const [isModalEditExpOpen, setModalEditExpOpen] = useState(false)
+    const [isModalConfirmDeleteExpOpen, setModalConfirmDeleteExpOpen] = useState(false)
+    const [disabledCheckboxExp, setDisabledCheckboxExp] = useState(false)
+    const [deleteExp, setDeleteExp] = useState(null)
+    const [editExp, setEditExp] = useState<any>({})
 
     const queryClient = useQueryClient()
-    const education = useQuery({
-        queryKey: ['education'],
+    const experience = useQuery({
+        queryKey: ['experience'],
         queryFn: async () => {
+            const userId = await localStorage.getItem('userId');
             try {
-                const response = await http.getWithAutoRefreshToken('/api/profile/education/getAll', { useAccessToken: true })
+                const response = await http.getWithAutoRefreshToken('/api/profile/experience/getAll', { useAccessToken: true })
                 return response
             } catch (error) {
 
@@ -53,103 +54,103 @@ const Education = () => {
         }
     })
 
-    const addNewEduMutation = useMutation({
+    const addNewExpMutation = useMutation({
         mutationFn: async (values: any) => {
             const userId = await localStorage.getItem('userId');
             values.start = values.start.toISOString();
             values.end = values.end.toISOString();
-            const name = values.schools + '*/' + values.majors + '*/' + values.start + '*/' + (values.isStillStudy == true ? 'Hiện tại' : values.end)
-            const data = await http.postWithAutoRefreshToken('/api/profile/education/add', {name: name, personalFileId: userId}, { useAccessToken: true })
+            const name = values.firms + '*/' + values.jobs + '*/' + values.start + '*/' + (values.isStillDo == true ? 'Hiện tại' : values.end)
+            const data = await http.postWithAutoRefreshToken('/api/profile/experience/add', {name: name, personalFileId: userId}, { useAccessToken: true })
             return data
         },
         onSuccess: (data, variables, context) => {
-            message.success('Thêm học vấn thành công!')
-            queryClient.invalidateQueries({ queryKey: ['education'] })
+            message.success('Thêm kinh nghiệm thành công!')
+            queryClient.invalidateQueries({ queryKey: ['experience'] })
         },
         onError: (error: any) => {
             message.error(error.response.message)
         }
     })
 
-    const deleteEduMutation = useMutation({
+    const deleteExpMutation = useMutation({
         mutationFn: async (id: any) => {
-            const response = await http.deleteWithAutoRefreshToken('/api/profile/education/' + id, { useAccessToken: true })
+            const response = await http.deleteWithAutoRefreshToken('/api/profile/experience/' + id, { useAccessToken: true })
             return response
         },
         onSuccess: (data, variables, context) => {
-            message.success('Xóa học vấn thành công!')
-            queryClient.invalidateQueries({ queryKey: ['education']})
+            message.success('Xóa kinh nghiệm thành công!')
+            queryClient.invalidateQueries({ queryKey: ['experience']})
         },
         onError: (error: any) => {
             message.error(error.response.message)
         }
     })
 
-    const editEduMutation = useMutation({
+    const editExpMutation = useMutation({
         mutationFn: async ({ id, values }: any) => {
             values.start = values.start.toISOString();
             values.end = values.end.toISOString();
-            const name = values.schools + '*/' + values.majors + '*/' + values.start + '*/' + (values.isStillStudy == true ? 'Hiện tại' : values.end)
-            const response = await http.putWithAutoRefreshToken('/api/profile/education/' + id, {name: name}, { useAccessToken: true })
+            const name = values.firms + '*/' + values.jobs + '*/' + values.start + '*/' + (values.isStillDo == true ? 'Hiện tại' : values.end)
+            const response = await http.putWithAutoRefreshToken('/api/profile/experience/' + id, {name: name}, { useAccessToken: true })
             return response
         },
         onSuccess: (data, variables, context) => {
-            message.success('Cập nhật học vấn thành công!')
-            queryClient.invalidateQueries({ queryKey: ['education']})
+            message.success('Cập nhật kinh nghiệm thành công!')
+            queryClient.invalidateQueries({ queryKey: ['experience']})
         },
         onError: (error: any) => {
             message.error(error.response.message)
         }
     })
 
-    const showModalAddEdu = () => {
-        setModalAddEduOpen(true);
+    const showModalAddExp = () => {
+        setModalAddExpOpen(true);
     }
-    const cancelModalAddEdu = () => {
-        setModalAddEduOpen(false);
+    const cancelModalAddExp = () => {
+        setModalAddExpOpen(false);
     }
-    const onChangeCheckBoxEdu = (checked: any) => {
-        // setDisabledCheckboxEdu((checked))
+    const onChangeCheckBoxExp = (checked: any) => {
+        // setDisabledCheckboxExp((checked))
     }
-    const finishAddEdu = (values: any) => {
-        setModalAddEduOpen(false);
-        addNewEduMutation.mutate(values);
+    const finishAddExp = (values: any) => {
+        setModalAddExpOpen(false);
+        addNewExpMutation.mutate(values);
     }
 
     const cancelModalConfirmDelete = () => {
-        setDeleteEdu(null)
-        setModalConfirmDeleteEduOpen(false);
+        setDeleteExp(null)
+        setModalConfirmDeleteExpOpen(false);
     }
 
-    const handleDeleteEdu = (idEdu: any) => {
-        setDeleteEdu(idEdu)
-        setModalConfirmDeleteEduOpen(true);
+    const handleDeleteExp = (idExp: any) => {
+        setDeleteExp(idExp)
+        setModalConfirmDeleteExpOpen(true);
     }
-    const finishDeleteEdu = () => {
-        deleteEduMutation.mutate(deleteEdu);
+    const finishDeleteExp = () => {
+        deleteExpMutation.mutate(deleteExp);
         cancelModalConfirmDelete();
     }
-    const cancelModalEditEdu = () => {
-        setModalEditEduOpen(false);
+    const cancelModalEditExp = () => {
+        setModalEditExpOpen(false);
     }
 
-    const handleEditEdu = (infoEdu: any) => {
-        setEditEdu(infoEdu);
-        setModalEditEduOpen(true);
+    const handleEditExp = (infoExp: any) => {
+        setEditExp(infoExp);
+        setModalEditExpOpen(true);
     }
 
-    const finishEditEdu = (values: any) => {
-        let id = editEdu.id
-        editEduMutation.mutate({id, values});
-        cancelModalEditEdu();
+    const finishEditExp = (values: any) => {
+        let id = editExp.id
+        editExpMutation.mutate({id, values});
+        cancelModalEditExp();
     }
     return(
         <>
             <div>
                 <div>
-                    <Modal title="Thêm học vấn"
-                        open={isModalAddEduOpen}
-                        onCancel={cancelModalAddEdu}
+                    <Modal title="Thêm kinh nghiệm"
+                        open={isModalAddExpOpen}
+                        onCancel={cancelModalAddExp}
                         footer={null}
                     >
                         <Form
@@ -157,31 +158,31 @@ const Education = () => {
                             labelCol={{ span: 8 }}
                             wrapperCol={{ span: 16 }}
                             style={{ maxWidth: 600 }}
-                            initialValues={{ isStillStudy: false }}
-                            onFinish={finishAddEdu}
+                            initialValues={{ isStillDo: false }}
+                            onFinish={finishAddExp}
                         >
                             <Form.Item
-                                label="Trường"
-                                name="schools"
-                                rules={[{ required: true, message: 'Vui lòng nhập tên trường của bạn!' }]}
+                                label="Công ty"
+                                name="firms"
+                                rules={[{ required: true, message: 'Vui lòng nhập tên Công ty của bạn!' }]}
                             >
                                 <Input />
                             </Form.Item>
 
                             <Form.Item
-                                label="Ngành học"
-                                name="majors"
-                                rules={[{ required: true, message: 'Vui lòng nhập tên ngành của bạn!' }]}
+                                label="chức danh"
+                                name="jobs"
+                                rules={[{ required: true, message: 'Vui lòng nhập tên chức danh của bạn!' }]}
                             >
                                 <Input />
                             </Form.Item>
 
                             <Form.Item
-                                name="isStillStudy"
+                                name="isStillDo"
                                 valuePropName='checked'
                                 wrapperCol={{ offset: 8, span: 16 }}
                             >
-                                <Checkbox onChange={(e: any) => {onChangeCheckBoxEdu(e.target.checked)}} >Đang học</Checkbox>
+                                <Checkbox onChange={(e: any) => {onChangeCheckBoxExp(e.target.checked)}} >Đanglàm việc</Checkbox>
                             </Form.Item>
                             <Form.Item
                                 label="Từ"
@@ -195,7 +196,7 @@ const Education = () => {
                                 name="end"
                                 rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
-                                <DatePicker picker="month" disabled={disabledCheckboxEdu} />
+                                <DatePicker picker="month" disabled={disabledCheckboxExp} />
                             </Form.Item>
                             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                                 <Button type="primary" htmlType="submit" className='bg-blue-600'>
@@ -207,59 +208,59 @@ const Education = () => {
                 </div>
                 <div>
                     <Modal title="Chú ý" 
-                        open={isModalConfirmDeleteEduOpen}
+                        open={isModalConfirmDeleteExpOpen}
                         onCancel={cancelModalConfirmDelete}
                         footer={[
-                            <Button onClick={finishDeleteEdu} type="primary" htmlType="submit" className='bg-red-600'>Xóa</Button>
+                            <Button onClick={finishDeleteExp} type="primary" htmlType="submit" className='bg-red-600'>Xóa</Button>
                         ]}
                     >
                         <p>Bạn chắc chắn xóa ?</p>
                     </Modal>
                 </div>
                 <div>
-                    {isModalEditEduOpen ? 
+                    {isModalEditExpOpen ? 
                     (<Modal
                         title="Sửa"
-                        open={isModalEditEduOpen}
-                        onCancel={cancelModalEditEdu}
+                        open={isModalEditExpOpen}
+                        onCancel={cancelModalEditExp}
                         footer={null}
                     >
                         <Form
                             labelCol={{ span: 8 }}
                             wrapperCol={{ span: 16 }}
                             style={{ maxWidth: 600 }}
-                            onFinish={(values :any) => finishEditEdu(values)}
+                            onFinish={(values :any) => finishEditExp(values)}
                         >
                             <Form.Item
-                                label="Trường"
-                                name="schools"
-                                initialValue={editEdu?.name?.split('*/')[0]}
-                                rules={[{ required: true, message: 'Vui lòng nhập tên trường của bạn!' }]}
+                                label="Công ty"
+                                name="firms"
+                                initialValue={editExp?.name?.split('*/')[0]}
+                                rules={[{ required: true, message: 'Vui lòng nhập tên Công ty của bạn!' }]}
                             >
                                 <Input />
                             </Form.Item>
 
                             <Form.Item
-                                label="Ngành học"
-                                name="majors"
-                                initialValue={editEdu?.name?.split('*/')[1]}
-                                rules={[{ required: true, message: 'Vui lòng nhập tên ngành của bạn!' }]}
+                                label="chức danh"
+                                name="jobs"
+                                initialValue={editExp?.name?.split('*/')[1]}
+                                rules={[{ required: true, message: 'Vui lòng nhập tên chức danh của bạn!' }]}
                             >
                                 <Input />
                             </Form.Item>
 
                             <Form.Item
-                                name="isStillStudy"
+                                name="isStillDo"
                                 valuePropName='checked'
-                                initialValue={editEdu?.name?.split('*/')[3] == 'Hiện tại' ? true : false}
+                                initialValue={editExp?.name?.split('*/')[3] == 'Hiện tại' ? true : false}
                                 wrapperCol={{ offset: 8, span: 16 }}
                             >
-                                <Checkbox onChange={(e: any) => onChangeCheckBoxEdu(e.target.checked)} >Đang học</Checkbox>
+                                <Checkbox onChange={(e: any) => onChangeCheckBoxExp(e.target.checked)} >Đanglàm việc</Checkbox>
                             </Form.Item>
                             <Form.Item
                                 label="Từ"
                                 name="start"
-                                initialValue={moment(editEdu?.name?.split('*/')[2])}
+                                initialValue={moment(editExp?.name?.split('*/')[2])}
                                 rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
                                 <DatePicker picker="month" />
@@ -267,10 +268,10 @@ const Education = () => {
                             <Form.Item
                                 label="Đến"
                                 name="end"
-                                initialValue={moment(editEdu.name.split('*/')[3] != 'Hiện tại' ? editEdu.name.split('*/')[3] : false)}
+                                initialValue={moment(editExp.name.split('*/')[3] != 'Hiện tại' ? editExp.name.split('*/')[3] : false)}
                                 rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
-                                <DatePicker picker="month" disabled={disabledCheckboxEdu} />
+                                <DatePicker picker="month" disabled={disabledCheckboxExp} />
                             </Form.Item>
                             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                                 <Button type="primary" htmlType="submit" className='bg-blue-600'>
@@ -284,19 +285,19 @@ const Education = () => {
                     <Card
                         title={
                             <>
-                                <p className='font-bold text-3xl'>Học vấn</p>
+                                <p className='font-bold text-3xl'>Kinh nghiệm</p>
                             </>
                         }
                         extra={
                             <>
                                 <div className='mb-4 mt-2'>
-                                    <a onClick={() => showModalAddEdu()}><PlusCircleOutlined className='mr-4 text-2xl' /></a>
+                                    <a onClick={() => showModalAddExp()}><PlusCircleOutlined className='mr-4 text-2xl' /></a>
                                 </div>
                             </>
                         }
                         className='w-full mb-4 border-black'
                     >
-                        {education?.data?.map((info: any) => {
+                        {experience?.data?.map((info: any) => {
                             return (
                                 <Card
                                     key={info.id}
@@ -307,8 +308,8 @@ const Education = () => {
                                     }
                                     extra={
                                         <>
-                                            <a onClick={() => handleEditEdu(info)}><EditOutlined className='mr-8' /></a>
-                                            <a onClick={() => handleDeleteEdu(info.id)}><DeleteOutlined className='' /></a>
+                                            <a onClick={() => handleEditExp(info)}><EditOutlined className='mr-8' /></a>
+                                            <a onClick={() => handleDeleteExp(info.id)}><DeleteOutlined className='' /></a>
                                         </>
                                     }
                                 >
@@ -324,4 +325,4 @@ const Education = () => {
     )
 }
 
-export default Education
+export default Experience

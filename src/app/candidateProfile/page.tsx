@@ -6,6 +6,7 @@ import Certification from '../components/certification';
 import UserInfor from '../components/userInfor'
 import SkillProfile from '../components/skillProfile';
 import ManageCV from '../components/manageCV';
+import Experience from '../components/experience';
 import CriterionJob from '../components/criterionJob'
 import { Descriptions, Empty } from 'antd';
 import {
@@ -33,9 +34,22 @@ import moment from 'moment'
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 const { Option } = Select;
+import axios from 'axios';
 
 
 const candidateProfile = () => {
+    const handleMakeCV = async () => {
+        // const fileCV = await http.getWithAutoRefreshToken('/api/profile/makeCV', { useAccessToken: true })
+        const fileCV = await axios.get('http://localhost:6868/api/profile/makeCV', {
+            responseType: 'arraybuffer',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        const blob = new Blob([fileCV.data], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        window.open(url, '_blank');
+    }
     const profile1 = () => {
         return(
             <>
@@ -44,11 +58,14 @@ const candidateProfile = () => {
                     <br></br>
                     <Education></Education>
                     <br></br>
-                    <Certification></Certification>
+                    <Experience></Experience>
+                    <br></br>
+                    <SkillProfile></SkillProfile>
                     <br></br>
                     <Project></Project>
                     <br></br>
-                    <SkillProfile></SkillProfile>
+                    <Certification></Certification>
+                    <Button type="primary" className='bg-blue-600 mb-10' onClick={handleMakeCV}>Xem CV tạo từ hồ sơ</Button>
                 </div >
             </>
         )
