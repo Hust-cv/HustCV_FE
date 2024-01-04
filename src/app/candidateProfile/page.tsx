@@ -2,9 +2,12 @@
 import React, { useState } from 'react';
 import Education from '../components/education'
 import Project from '../components/project';
+import Certification from '../components/certification';
 import UserInfor from '../components/userInfor'
 import SkillProfile from '../components/skillProfile';
 import ManageCV from '../components/manageCV';
+import Experience from '../components/experience';
+import CriterionJob from '../components/criterionJob'
 import { Descriptions, Empty } from 'antd';
 import {
     Button,
@@ -31,9 +34,33 @@ import moment from 'moment'
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 const { Option } = Select;
+import { useRouter } from 'next/navigation'
+import axios from 'axios';
 
 
 const candidateProfile = () => {
+    const router = useRouter();
+    const isBrowser = typeof window !== 'undefined';
+    let refreshToken: any
+    if (isBrowser) {
+        refreshToken = localStorage.getItem('refreshToken')
+        if (!refreshToken){
+            router.push("/login");
+       }
+    }
+    const handleMakeCV = async () => {
+        // const fileCV = await http.getWithAutoRefreshToken('/api/profile/makeCV', { useAccessToken: true })
+        const fileCV = await axios.get('http://localhost:6868/api/profile/makeCV', {
+            responseType: 'arraybuffer',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${refreshToken}`
+            },
+        });
+        const blob = new Blob([fileCV.data], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        window.open(url, '_blank');
+    }
     const profile1 = () => {
         return(
             <>
@@ -42,9 +69,14 @@ const candidateProfile = () => {
                     <br></br>
                     <Education></Education>
                     <br></br>
-                    <Project></Project>
+                    <Experience></Experience>
                     <br></br>
                     <SkillProfile></SkillProfile>
+                    <br></br>
+                    <Project></Project>
+                    <br></br>
+                    <Certification></Certification>
+                    <Button type="primary" className='bg-blue-600 mb-10' onClick={handleMakeCV}>Xem CV tạo từ hồ sơ</Button>
                 </div >
             </>
         )
@@ -63,6 +95,9 @@ const candidateProfile = () => {
     const jobPreferences = () => {
         return(
             <>
+                <div className='mx-[300px]'>
+                    <CriterionJob></CriterionJob>
+                </div>
             </>
         )
     }

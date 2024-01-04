@@ -29,8 +29,8 @@ const SkillProfile = () => {
         queryKey: ['skills'],
         queryFn: async () => {
             try {
-                const response = await http.axiosClient.get('/api/skills/getAllSkills')
-                return response.data
+                const response = await http.getWithAutoRefreshToken('/api/skills/getAllSkills', { useAccessToken: true })
+                return response
             } catch (error) {
                 console.log(error)
             }
@@ -41,8 +41,8 @@ const SkillProfile = () => {
         queryFn: async () => {
             const userId = await localStorage.getItem('userId');
             try {
-                const response = await http.axiosClient.post('/api/profile/skill/getAll', {id: userId})
-                return response.data
+                const response = await http.postWithAutoRefreshToken('/api/profile/skill/getAll', {id: userId}, { useAccessToken: true })
+                return response
             }
             catch (error) {
                 console.log(error)
@@ -52,7 +52,7 @@ const SkillProfile = () => {
     const addNewSkillMutation = useMutation({
         mutationFn: async (values: any) => {
             const userId = await localStorage.getItem('userId');
-            const data = await http.axiosClient.post('/api/profile/skill/add', {skill: values.skill, id: userId})
+            const data = await http.postWithAutoRefreshToken('/api/profile/skill/add', {skill: values.skill, id: userId}, { useAccessToken: true })
             return data
         },
         onSuccess: (data, variables, context) => {
@@ -60,7 +60,7 @@ const SkillProfile = () => {
             queryClient.invalidateQueries({ queryKey: ['skillProfile'] })
         },
         onError: (error: any) => {
-            message.error(error.response.data.message)
+            message.error(error.response.message)
         }
     })
     const options: SelectProps['options'] = [];
