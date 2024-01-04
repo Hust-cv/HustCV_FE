@@ -163,22 +163,16 @@ const Header = () => {
 
     const router = useRouter();
 
-    const verifyLogin = useQuery({
-        queryKey: ['verify'],
-        queryFn: async () => {
-            try {
-                const user = await http.getWithAutoRefreshToken('http://localhost:6868/api/users/me', { useAccessToken: true })
-                console.log('>>> check user: ', user)
-                setUser(user)
-                return user
-            } catch (error) {
-                message.error('Cos looix xay ra')
-                return
-            }
-        }
-    })
-    const handleLogout = async () => {
-        await http.getWithAutoRefreshToken('/api/auth/logout', { useAccessToken: true })
+    // const verifyLogin = useQuery({
+    //     queryKey: ['verify'],
+    //     queryFn: async () => {
+    //         const user = await http.getWithAutoRefreshToken('http://localhost:6868/api/users/me', { useAccessToken: true })
+    //         setUser(user)
+    //         return user
+    //     }
+    // })
+    const handleLogout = async() => {
+        await http.getWithAutoRefreshToken('/api/auth/logout',  {useAccessToken: true})
         sessionStorage.clear()
         localStorage.clear()
         setUser(null)

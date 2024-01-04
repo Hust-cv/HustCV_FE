@@ -66,7 +66,12 @@ const ManageCV = () => {
         try {
             const formData = new FormData();
             formData.append('file', file);
-            const response = await http.postWithAutoRefreshToken('/api/manageCv', formData, { useAccessToken: true });
+            const response = await axios.post('http://localhost:6868/api/manageCv', formData, {
+                headers: {
+                "Authorization": `Bearer ${accessToken}`,
+                'Content-Type': 'multipart/form-data',
+                },
+            });
             if (response.status) {
                 queryClient.invalidateQueries({ queryKey: ['cv'] })
                 message.success('Upload thành vấn thành công!')
