@@ -34,16 +34,27 @@ import moment from 'moment'
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 const { Option } = Select;
+import { useRouter } from 'next/navigation'
 import axios from 'axios';
 
 
 const candidateProfile = () => {
+    const router = useRouter();
+    const isBrowser = typeof window !== 'undefined';
+    let refreshToken: any
+    if (isBrowser) {
+        refreshToken = localStorage.getItem('refreshToken')
+        if (!refreshToken){
+            router.push("/login");
+       }
+    }
     const handleMakeCV = async () => {
         // const fileCV = await http.getWithAutoRefreshToken('/api/profile/makeCV', { useAccessToken: true })
         const fileCV = await axios.get('http://localhost:6868/api/profile/makeCV', {
             responseType: 'arraybuffer',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${refreshToken}`
             },
         });
         const blob = new Blob([fileCV.data], { type: 'application/pdf' });
