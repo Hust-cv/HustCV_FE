@@ -31,7 +31,8 @@ const ForgetPassword = () => {
             const response = await http.axiosClient.post('/api/auth/forgotPassword', { email });
             console.log(response.data?.statusCode);
             if (response.data?.statusCode === 200) {
-                localStorage.setItem('email', email);
+                // lưu trong session để dùng cho các bước sau
+                sessionStorage.setItem('email', email);
                 setError('');
                 setStep(2);
             } else {
@@ -47,7 +48,6 @@ const ForgetPassword = () => {
         }
     };
 
-
     // Function to handle verification code submission
     const handleVerificationCodeSubmit = async () => {
         try {
@@ -56,7 +56,7 @@ const ForgetPassword = () => {
                 return;
             }
             setLoading(true);
-            let email = localStorage.getItem('email');
+            let email = sessionStorage.getItem('email');
             const response = await http.axiosClient.post('/api/auth/checkCode', { email,verificationCode });
             console.log(response.data?.statusCode )
             if (response.data?.statusCode === 200) {
@@ -84,7 +84,7 @@ const ForgetPassword = () => {
                 return;
             }
             setLoading(true);
-            let email = localStorage.getItem('email');
+            let email = sessionStorage.getItem('email');
             const response = await http.axiosClient.put('/api/auth/resetPassword', {email, newPassword });
             if (response.data?.statusCode === 200) {
                 sessionStorage.clear();
