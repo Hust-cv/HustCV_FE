@@ -1,11 +1,11 @@
 'use client'
 import { UserOutlined, DownOutlined } from '@ant-design/icons'
 import type { MenuProps, } from 'antd';
-import { Menu, Button, Popover } from 'antd';
+import { Menu, Button, Popover, message } from 'antd';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import http from '../utils/http';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 const items: MenuProps['items'] = [
     {
         label: 'All Jobs',
@@ -166,13 +166,19 @@ const Header = () => {
     const verifyLogin = useQuery({
         queryKey: ['verify'],
         queryFn: async () => {
-            const user = await http.getWithAutoRefreshToken('http://localhost:6868/api/users/me', { useAccessToken: true })
-            setUser(user)
-            return user
+            try {
+                const user = await http.getWithAutoRefreshToken('http://localhost:6868/api/users/me', { useAccessToken: true })
+                console.log('>>> check user: ', user)
+                setUser(user)
+                return user
+            } catch (error) {
+                message.error('Cos looix xay ra')
+                return
+            }
         }
     })
-    const handleLogout = async() => {
-        await http.getWithAutoRefreshToken('/api/auth/logout',  {useAccessToken: true})
+    const handleLogout = async () => {
+        await http.getWithAutoRefreshToken('/api/auth/logout', { useAccessToken: true })
         sessionStorage.clear()
         localStorage.clear()
         setUser(null)
@@ -184,7 +190,7 @@ const Header = () => {
                 Tuyển dụng
             </div>
             <div className='py-2'>
-                <button className='text-black' onClick={handleLogout} style={{color: 'black'}}>
+                <button className='text-black' onClick={handleLogout} style={{ color: 'black' }}>
                     Đăng xuất
                 </button>
 
