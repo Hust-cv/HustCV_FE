@@ -36,6 +36,7 @@ const Signup: React.FC = () => {
         }
     };
     const handleSignup = async () => {
+        let response = null ;
         try {
             if (!email || !password || !username) {
                 setError('Vui lòng nhập đầy đủ thông tin');
@@ -64,8 +65,9 @@ const Signup: React.FC = () => {
                 }
             }
 
+
             try {
-                const response = await http.axiosClient.post('/api/users', {
+            const response = await http.axiosClient.post('/api/users', {
                     username,
                     email,
                     password,
@@ -74,19 +76,14 @@ const Signup: React.FC = () => {
                     role_id,
                     business_id,
                 });
-
-                if (response.data?.statusCode === 400) {
-                    setError('Email hoặc username đã tồn tại');
-                } else {
-                    // Successful registration
-                    router.push('/login');
-                }
-            } catch (userError) {
-                setError('Đã xảy ra lỗi khi đăng ký');
-            } finally {
+                router.push('/login');
                 setLoading(false);
+            }catch (e) {
+                setError('Email đã tồn tại');
+                setLoading(false);
+                return;
             }
-        } catch (error) {
+        } catch (e) {
             setError('Đã xảy ra lỗi khi xử lý đăng ký');
             setLoading(false);
         }
