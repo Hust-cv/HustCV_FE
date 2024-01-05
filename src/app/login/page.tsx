@@ -45,6 +45,7 @@ const Login: React.FC = () => {
 
             setLoading(true);
             const response = await http.axiosClient.post('/api/auth/login', { email, password });
+            console.log("check : ",response.data);
             localStorage.setItem('accessToken', response.data?.resBody?.accessToken);
             localStorage.setItem('refreshToken', response.data?.resBody?.refreshToken);
             console.log(">>>>>>1" + response.data?.resBody?.accessToken)
