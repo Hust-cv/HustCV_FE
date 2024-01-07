@@ -48,6 +48,7 @@ const Login: React.FC = () => {
             console.log("check : ",response.data);
             localStorage.setItem('accessToken', response.data?.resBody?.accessToken);
             localStorage.setItem('refreshToken', response.data?.resBody?.refreshToken);
+            localStorage.setItem('role', response.data?.resBody?.userData?.role_id);
             console.log(">>>>>>1" + response.data?.resBody?.accessToken)
             setLoginAttempts(0);
             setLoading(false);
