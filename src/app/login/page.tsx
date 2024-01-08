@@ -52,6 +52,7 @@ const Login: React.FC = () => {
             console.log(">>>>>>1" + response.data?.resBody?.accessToken)
             setLoginAttempts(0);
             setLoading(false);
+            alert("Đăng nhập thành công")
             router.push('/');
             queryClient.invalidateQueries({ queryKey: ['verify'] })
         } catch (error) {

@@ -185,6 +185,7 @@ const Header = () => {
         sessionStorage.clear()
         localStorage.clear()
         setUser(null)
+        alert("Đăng xuất thành công")
         router.push('/')
     }
     const content = (

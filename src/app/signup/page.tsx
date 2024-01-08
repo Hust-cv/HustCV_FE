@@ -76,6 +76,7 @@ const Signup: React.FC = () => {
                     role_id,
                     business_id,
                 });
+                alert("Đăng kí thành công")
                 router.push('/login');
                 setLoading(false);
             }catch (e) {
@@ -88,11 +89,9 @@ const Signup: React.FC = () => {
             setLoading(false);
         }
     };
-
     const handleLogin = () => {
         router.push('/login');
     };
-
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
             <div style={{ border: '1px solid #ccc', padding: '20px', borderRadius: '8px', maxWidth: '400px', width: '100%' }}>

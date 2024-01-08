@@ -32,6 +32,7 @@ const ForgetPassword = () => {
             console.log(response.data?.statusCode);
             if (response.data?.statusCode === 200) {
                 // lưu trong session để dùng cho các bước sau
+                alert("Mã xác nhận đã được gửi đến email của bạn")
                 sessionStorage.setItem('email', email);
                 setError('');
                 setStep(2);
@@ -60,6 +61,7 @@ const ForgetPassword = () => {
             const response = await http.axiosClient.post('/api/auth/checkCode', { email,verificationCode });
             console.log(response.data?.statusCode )
             if (response.data?.statusCode === 200) {
+                alert("Mã xác nhận chính xác")
                 setError('');
                 setStep(3);
             } else {
@@ -88,6 +90,7 @@ const ForgetPassword = () => {
             const response = await http.axiosClient.put('/api/auth/resetPassword', {email, newPassword });
             if (response.data?.statusCode === 200) {
                 sessionStorage.clear();
+                alert("Đặt lại mật khẩu mới thành công")
                 setError('');
                 router.push('/login');
             } else {
