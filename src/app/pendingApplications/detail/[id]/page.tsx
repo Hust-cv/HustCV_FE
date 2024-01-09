@@ -23,16 +23,16 @@ export default function Applications() {
             }
             await http.putWithAutoRefreshToken(`/api/recruiterApplication/put${operate}Application/${path.split("/").pop()}`, {}, {useAccessToken: true})
             if (action){
-              toast.success(`Declined Application`)  
+              toast.success(`Từ chối thành công`)  
             }
             else{
-              toast.success("Accepted Application")
+              toast.success("Chấp nhận thành công")
             }
             
         }
         catch(e:any) {
             console.log(e)
-            toast.error("Failed To Accept Application")
+            toast.error("Lỗi")
             
             
         }
@@ -135,9 +135,9 @@ export default function Applications() {
                         </div> */}
                     </div>
                     <div className='flex flex-col gap-0 justify-center content-center grow'>
-                        <button className='text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800' onClick={Accept} data-id={application.id}>Accept</button>
-                        <button className='text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800' onClick={Decline} data-id={application.id}>Decline</button>
-                        <button className='text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800' onClick={View} data-cv={application.CV}>View CV</button>
+                        <button className='text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800' onClick={Accept} data-id={application.id}>Chấp nhận</button>
+                        <button className='text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800' onClick={Decline} data-id={application.id}>Từ chối</button>
+                        <button className='text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800' onClick={View} data-cv={application.CV}>Xem CV</button>
                     </div>
                 </div>
                 <div className = 'flex flex-row justify-center content-center grow'>
