@@ -4,11 +4,14 @@ import React, { useState } from 'react';
 import { Button, Input } from 'antd';
 import { useRouter } from 'next/navigation';
 import http from "@/app/utils/http";
+import { message ,DatePicker} from 'antd';
+import {Form} from "react-bootstrap";
 
 const Signup: React.FC = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPass, setConfirmPass] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [birthDay, setBirthDay] = useState('');
     const [isEmployerOption, setIsEmployerOption] = useState(false);
@@ -17,38 +20,58 @@ const Signup: React.FC = () => {
     const [businessWebsite, setBusinessWebsite] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [isEmailValid, setIsEmailValid] = useState(true);
+    const [isPasswordValid, setIsPasswordValid] = useState(true);
+    const [isPhoneValid, setIsPhoneValid] = useState(true);
+    const [showPassword, setShowPassword] = useState<boolean>(false);
     const router = useRouter();
 
     const handleIsEmployerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setIsEmployerOption(event.target.checked);
     };
 
-    const isEmailValid = () => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    };
-
     const handleEmailBlur = () => {
-        if (!isEmailValid()) {
-            setError('Địa chỉ email không hợp lệ');
-        } else {
-            setError('');
-        }
+        const emailRegex = /^[a-zA-Z0-9._-]+@gmail\.com$/;
+        const isValid = emailRegex.test(email);
+        setIsEmailValid(isValid);
+    };
+    const handlePasswordBlur = () => {
+        const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
+        const isValid = passwordRegex.test(password);
+        setIsPasswordValid(isValid);
+    };
+    const handlePhoneBlur = () => {
+        const phoneRegex = /((09|03|07|08|05)+([0-9]{8})\b)/g;
+        const isValid = phoneRegex.test(phoneNumber);
+        setIsPhoneValid(isValid);
     };
     const handleSignup = async () => {
+        let response = null ;
         try {
-            if (!email || !password || !username) {
-                setError('Vui lòng nhập đầy đủ thông tin');
+            if (!email || !password || !username|| !phoneNumber|| !birthDay|| !confirmPass) {
+                setError('Vui lòng nhập đầy đủ thông tin đăng ký');
                 setLoading(false);
                 return;
             }
-
+            if(password !== confirmPass){
+                setError('Mật khẩu không khớp');
+                setLoading(false);
+                return;
+            }
+            if(birthDay>new Date().toISOString().slice(0, 10)){
+                setError('Ngày sinh không hợp lệ');
+                setLoading(false);
+                return;
+            }
             setLoading(true);
-
             let role_id = 2; // Default role for job seeker
             let business_id = null;
-
             if (isEmployerOption) {
+                if (!businessName || !businessAddress || !businessWebsite) {
+                    setError('Vui lòng nhập đầy đủ thông tin công ty');
+                    setLoading(false);
+                    return;
+                }
                 role_id = 1;
                 try {
                     const businessResponse = await http.axiosClient.post('/api/business', {
@@ -58,14 +81,12 @@ const Signup: React.FC = () => {
                     });
                     business_id = businessResponse.data?.id;
                 } catch (businessError) {
-                    setError('Đã xảy ra lỗi khi tạo doanh nghiệp');
-                    setLoading(false);
-                    return;
+                        message.error('Đã xảy ra lỗi khi tạo công ty');
+                        setLoading(false);
                 }
             }
-
             try {
-                const response = await http.axiosClient.post('/api/users', {
+            const response = await http.axiosClient.post('/api/users', {
                     username,
                     email,
                     password,
@@ -74,43 +95,69 @@ const Signup: React.FC = () => {
                     role_id,
                     business_id,
                 });
-
-                if (response.data?.statusCode === 400) {
-                    setError('Email hoặc username đã tồn tại');
-                } else {
-                    // Successful registration
+                    message.success('Đăng ký thành công xin mời đăng nhập');
                     router.push('/login');
+                    setLoading(false);
+            } catch (error) {
+                //@ts-ignore
+                if (error.response && error.response.status === 401) {
+                    setLoading(false);
+                    message.error('Email đã tồn tại');
+                }// @ts-ignore
+                else if (error.response && error.response.status === 400) {
+                    message.error('Vui lòng nhập đầy đủ thông tin');
+                    setLoading(false);
+                } else {
+                    setLoading(false);
+                    message.error('Hệ thống đang bận');
                 }
-            } catch (userError) {
-                setError('Đã xảy ra lỗi khi đăng ký');
-            } finally {
-                setLoading(false);
             }
-        } catch (error) {
-            setError('Đã xảy ra lỗi khi xử lý đăng ký');
+        } catch (e) {
+            // @ts-ignore
+            setLoading(false);
+        }finally {
+            // Stop loading
             setLoading(false);
         }
     };
-
     const handleLogin = () => {
         router.push('/login');
     };
-
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-            <div style={{ border: '1px solid #ccc', padding: '20px', borderRadius: '8px', maxWidth: '400px', width: '100%' }}>
-                <h2 style={{ textAlign: 'center' }}>Đăng Ký</h2>
+
+        <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '150vh',
+            backgroundImage: "linear-gradient(to bottom, #ffffff, #e0e0e0)",
+        }}>
+            <p style={{
+                fontSize: 30, fontWeight: 'bold',
+                position: 'absolute', top: '100px', left: '100px'
+            }}>
+                Chào mừng bạn đến với HustCv
+            </p>
+            <div style={{
+                border: '1px solid #ccc',
+                padding: '20px',
+                borderRadius: '8px',
+                maxWidth: '400px',
+                width: '100%'
+
+            }}>
+                <h2 style={{textAlign: 'center', fontSize: 25, fontWeight: 'bold'}}>Đăng Ký</h2>
                 <label>
-                    Username:
+                    Họ và tên:
                     <Input
                         type="text"
                         value={username}
-                        placeholder="Nhập username"
+                        placeholder="Nhập họ và tên"
                         onChange={(e) => setUsername(e.target.value)}
-                        style={{ marginBottom: '20px' }}
+                        style={{marginBottom: '20px'}}
                     />
                 </label>
-                <br />
+                <br/>
                 <label>
                     Địa chỉ email:
                     <Input
@@ -118,21 +165,43 @@ const Signup: React.FC = () => {
                         value={email}
                         placeholder="Nhập email"
                         onChange={(e) => setEmail(e.target.value)}
+                        style={{marginBottom: '20px'}}
                         onBlur={handleEmailBlur}
                     />
+                    {!isEmailValid && <p style={{color: 'red'}}>Email không hợp lệ.</p>}
                 </label>
-                <br />
+                <br/>
                 <label>
                     Mật khẩu:
                     <Input
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         value={password}
                         placeholder="Nhập mật khẩu"
                         onChange={(e) => setPassword(e.target.value)}
-                        style={{ marginBottom: '20px' }}
+                        style={{marginBottom: '20px'}}
+                        onBlur={handlePasswordBlur}
+                    />
+                    {!isPasswordValid && <p style={{color: 'red'}}>
+                      Mật khẩu phải có ít nhất 8 ký tự, trong đó có ít nhất 1 chữ cái viết hoa, 1 chữ cái viết thường và
+                      1 số.
+                    </p>}
+                </label>
+                <label>
+                    Nhập lại mật khẩu:
+                    <Input
+                        type={showPassword ? "text" : "password"}
+                        value={confirmPass}
+                        placeholder="Nhập lại mật khẩu"
+                        onChange={(e) => setConfirmPass(e.target.value)}
                     />
                 </label>
-                <br />
+                <Form.Group className="mb-3">
+                    <Form.Check
+                        type="checkbox"
+                        label=" Hiển thị mật khẩu"
+                        checked={showPassword}
+                        onChange={(e) => setShowPassword(e.target.checked)}/>
+                </Form.Group>
                 <label>
                     Số điện thoại:
                     <Input
@@ -140,30 +209,37 @@ const Signup: React.FC = () => {
                         value={phoneNumber}
                         placeholder="Nhập số điện thoại"
                         onChange={(e) => setPhoneNumber(e.target.value)}
-                        style={{ marginBottom: '20px' }}
+                        style={{marginBottom: '20px'}}
+                        onBlur={handlePhoneBlur}
                     />
+                    {!isPhoneValid && <p style={{color: 'red'}}>Số điện thoại không hợp lệ.</p>}
                 </label>
-                <br />
+                <br/>
+                {/*<label>*/}
+                {/*    Ngày sinh:*/}
+                {/*    <Input*/}
+                {/*        type="text"*/}
+                {/*        value={birthDay}*/}
+                {/*        placeholder="Nhập ngày sinh"*/}
+                {/*        onChange={(e) => setBirthDay(e.target.value)}*/}
+                {/*        style={{ marginBottom: '20px' }}*/}
+                {/*    />*/}
+                {/*</label>*/}
                 <label>
                     Ngày sinh:
-                    <Input
-                        type="text"
-                        value={birthDay}
-                        placeholder="Nhập ngày sinh"
-                        onChange={(e) => setBirthDay(e.target.value)}
-                        style={{ marginBottom: '20px' }}
-                    />
+                    <DatePicker onChange={(date, dateString) => setBirthDay(dateString)}
+                                style={{marginBottom: '20px'}}/>
                 </label>
-                <br />
+                <br/>
                 {/* Employer option */}
-                <div style={{ marginBottom: '20px' }}>
+                <div style={{marginBottom: '20px'}}>
                     <label>
                         Bạn có phải nhà tuyển dụng không?
                         <input
                             type="checkbox"
                             checked={isEmployerOption}
                             onChange={handleIsEmployerChange}
-                            style={{ marginLeft: '5px' }}
+                            style={{marginLeft: '5px'}}
                         />
                     </label>
                 </div>
@@ -177,10 +253,10 @@ const Signup: React.FC = () => {
                                 value={businessName}
                                 placeholder="Nhập tên công ty"
                                 onChange={(e) => setBusinessName(e.target.value)}
-                                style={{ marginBottom: '20px' }}
+                                style={{marginBottom: '20px'}}
                             />
                         </label>
-                        <br />
+                        <br/>
                         <label>
                             Địa chỉ công ty:
                             <Input
@@ -188,10 +264,10 @@ const Signup: React.FC = () => {
                                 value={businessAddress}
                                 placeholder="Nhập địa chỉ công ty"
                                 onChange={(e) => setBusinessAddress(e.target.value)}
-                                style={{ marginBottom: '20px' }}
+                                style={{marginBottom: '20px'}}
                             />
                         </label>
-                        <br />
+                        <br/>
                         <label>
                             Website công ty:
                             <Input
@@ -199,32 +275,32 @@ const Signup: React.FC = () => {
                                 value={businessWebsite}
                                 placeholder="Nhập website công ty"
                                 onChange={(e) => setBusinessWebsite(e.target.value)}
-                                onBlur={handleEmailBlur}
+                                style={{marginBottom: '20px'}}
                             />
                         </label>
-                        <br />
+                        <br/>
                     </>
                 )}
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+                <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '20px'}}>
                     <Button
                         type="primary"
                         onClick={handleSignup}
                         loading={loading}
-                        style={{ backgroundColor: '#FF0000', borderColor: '#ff0000' }}
+                        style={{backgroundColor: '#FF0000', borderColor: '#ff0000'}}
                     >
                         {loading ? 'Đang đăng kí...' : 'Đăng kí'}
                     </Button>
-                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                    <div style={{display: 'flex', justifyContent: 'center', marginBottom: '20px'}}>
                         <Button
                             type="primary"
                             onClick={handleLogin}
-                            style={{ backgroundColor: 'blue', borderColor: '#blue' }}
+                            style={{backgroundColor: 'blue', borderColor: '#blue'}}
                         >
                             Huỷ
                         </Button>
                     </div>
                 </div>
-                {error && <p style={{ color: 'red' }}>{error}</p>}
+                {error && <p style={{color: 'red'}}>{error}</p>}
             </div>
         </div>
     );

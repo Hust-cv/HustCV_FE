@@ -1,8 +1,10 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useState,FormEvent } from 'react';
 import { Button, Input } from 'antd';
 import { useRouter } from 'next/navigation';
 import http from "@/app/utils/http";
+import { message } from 'antd';
+import {Form} from "react-bootstrap";
 
 // Define the ForgetPassword component
 const ForgetPassword = () => {
@@ -10,64 +12,95 @@ const ForgetPassword = () => {
     const [email, setEmail] = useState('');
     const [verificationCode, setVerificationCode] = useState('');
     const [newPassword, setNewPassword] = useState('');
+    const [confirmNewPassword, setConfirmNewPassword] = useState<string>('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [step, setStep] = useState(1);
+    const [showPassword, setShowPassword] = useState<boolean>(false);
     const [isEmailValid, setIsEmailValid] = useState(true);
+    const [isPasswordValid, setIsPasswordValid] = useState(true);
+
     const handleEmailBlur = () => {
         const emailRegex = /^[a-zA-Z0-9._-]+@gmail\.com$/;
         const isValid = emailRegex.test(email);
         setIsEmailValid(isValid);
     };
-
-
-    const handleEmailSubmit = async () => {
+    const handlePasswordBlur = () => {
+        const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
+        const isValid = passwordRegex.test(newPassword);
+        setIsPasswordValid(isValid);
+    };
+        const handleEmailSubmit = async () => {
         try {
             if (!email) {
                 setError('Vui lòng nhập email');
                 return;
+            }else{
+                setError('');
             }
             setLoading(true);
             const response = await http.axiosClient.post('/api/auth/forgotPassword', { email });
             console.log(response.data?.statusCode);
             if (response.data?.statusCode === 200) {
-                localStorage.setItem('email', email);
+                setLoading(false);
+                message.success('Mã xác nhận đã được gửi đến email của bạn')
+                sessionStorage.setItem('email', email);
                 setError('');
                 setStep(2);
-            } else {
-                setError('Địa chỉ email không tồn tại ');
-                return ;
             }
         } catch (error) {
             // @ts-ignore
-            setError('Địa chỉ email không tồn tại ');
+            if(error.response && error.response.status === 401){
+                setLoading(false);
+                message.error('Email không tồn tại');
+            }
+            // @ts-ignore
+            else if(error.response && error.response.status === 400){
+                setLoading(false);
+                message.error('Email không tồn tại');
+            } else {
+                setLoading(false);
+                setError('Hệ thống đang bận');
+            }
         } finally {
             // Stop loading
             setLoading(false);
         }
     };
-
-
+    const handleSubmit = async (event: FormEvent) => {
+        event.preventDefault();
+        if (newPassword !== confirmNewPassword) {
+            message.error("Mật khẩu mới và xác nhận mật khẩu không khớp!");
+            return;
+        }
+    }
     // Function to handle verification code submission
     const handleVerificationCodeSubmit = async () => {
         try {
             if (!verificationCode) {
                 setError('Vui lòng nhập mã xác nhận');
                 return;
+            }else{
+                setError('');
             }
             setLoading(true);
-            let email = localStorage.getItem('email');
+            let email = sessionStorage.getItem('email');
             const response = await http.axiosClient.post('/api/auth/checkCode', { email,verificationCode });
             console.log(response.data?.statusCode )
             if (response.data?.statusCode === 200) {
+                message.success('Mã xác nhận chính xác bạn có thể đặt lại mật khẩu')
                 setError('');
                 setStep(3);
-            } else {
-                setError('Mã này không tồn tại');
             }
         } catch (error) {
-            console.error('Lỗi kiểm tra mã xác nhận:', error);
-            setError('Đã nhập sai mã xác nhận');
+            // @ts-ignore
+            if(error.response && error.response.status === 400){
+                setLoading(false);
+                message.error('Mã xác nhận không chính xác');
+            } else {
+                setLoading(false);
+                setError('Hệ thống đang bận');
+            }
         } finally {
             // Stop loading
             setLoading(false);
@@ -78,23 +111,34 @@ const ForgetPassword = () => {
     // Function to handle password submission
     const handlePasswordSubmit = async () => {
         try {
-
-            if (!newPassword) {
-                setError('Vui lòng nhập mật khẩu mới');
+            if (!newPassword||!confirmNewPassword) {
+                setError('Vui lòng nhập đầy đủ thông tin');
+                return;
+            }
+            if(newPassword === confirmNewPassword){
+                setError('');
+            }else{
+                setError('Mật khẩu mới và xác nhận mật khẩu không khớp');
                 return;
             }
             setLoading(true);
-            let email = localStorage.getItem('email');
+            let email = sessionStorage.getItem('email');
             const response = await http.axiosClient.put('/api/auth/resetPassword', {email, newPassword });
             if (response.data?.statusCode === 200) {
                 sessionStorage.clear();
+                message.success('Đặt lại mật khẩu thành công')
                 setError('');
                 router.push('/login');
-            } else {
-                setError('Đã xảy ra lỗi khi đặt mật khẩu mới');
             }
         } catch (error) {
-            setError('Mật khẩu mới phải có ít nhất 8 ký tự');
+            // @ts-ignore
+            if(error.response && error.response.status === 400){
+                setLoading(false);
+                message.error('Mật khẩu tối thiểu 8 ký tự');
+            } else {
+                setLoading(false);
+                setError('Hệ thống đang bận');
+            }
         } finally {
             // Stop loading
             setLoading(false);
@@ -107,9 +151,23 @@ const ForgetPassword = () => {
     // JSX structure for the ForgetPassword component
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-            <div style={{ border: '1px solid #ccc', padding: '20px', borderRadius: '8px', maxWidth: '400px', width: '100%' }}>
+            <div style={{
+                border: '1px solid #ccc',
+                padding: '20px',
+                borderRadius: '8px',
+                maxWidth: '400px',
+                width: '100%'
+            }}>
+                <p style={{
+                    fontSize: 30, fontWeight: 'bold',
+                    position: 'absolute', top: '100px', left: '100px'
+                }}>
+                    Chào mừng bạn đến với HustCv
+                </p>
+                <h2 style={{textAlign: 'center', fontSize: 25, fontWeight: 'bold'}}>Quên mật khẩu</h2>
                 {step === 1 && (
                     <>
+
                         <label>
                             Địa chỉ email:
                             <Input
@@ -119,22 +177,22 @@ const ForgetPassword = () => {
                                 onChange={(e) => setEmail(e.target.value)}
                                 onBlur={handleEmailBlur}
                             />
-                            {!isEmailValid && <p style={{ color: 'red' }}>Email không hợp lệ.</p>}
+                            {!isEmailValid && <p style={{color: 'red'}}>Email không hợp lệ.</p>}
                         </label>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+                        <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '20px'}}>
                             <Button
                                 type="primary"
                                 onClick={handleEmailSubmit}
                                 loading={loading}
-                                style={{ backgroundColor: '#FF0000', borderColor: '#ff0000' }}
+                                style={{backgroundColor: '#FF0000', borderColor: '#ff0000'}}
                             >
                                 {loading ? 'Đang Gửi...' : 'Gửi'}
                             </Button>
-                            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                            <div style={{display: 'flex', justifyContent: 'center', marginBottom: '20px'}}>
                                 <Button
                                     type="primary"
                                     onClick={handleLogin}
-                                    style={{ backgroundColor: 'blue', borderColor: '#blue' }}
+                                    style={{backgroundColor: 'blue', borderColor: '#blue'}}
                                 >
                                     Huỷ
                                 </Button>
@@ -154,20 +212,20 @@ const ForgetPassword = () => {
                                 onChange={(e) => setVerificationCode(e.target.value)}
                             />
                         </label>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+                        <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '20px'}}>
                             <Button
                                 type="primary"
                                 onClick={handleVerificationCodeSubmit}
                                 loading={loading}
-                                style={{ backgroundColor: '#FF0000', borderColor: '#ff0000' }}
+                                style={{backgroundColor: '#FF0000', borderColor: '#ff0000'}}
                             >
                                 {loading ? 'Đang Gửi...' : 'Gửi'}
                             </Button>
-                            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                            <div style={{display: 'flex', justifyContent: 'center', marginBottom: '20px'}}>
                                 <Button
                                     type="primary"
                                     onClick={handleLogin}
-                                    style={{ backgroundColor: 'blue', borderColor: '#blue' }}
+                                    style={{backgroundColor: 'blue', borderColor: '#blue'}}
                                 >
                                     Huỷ
                                 </Button>
@@ -182,27 +240,49 @@ const ForgetPassword = () => {
                         <label>
                             Mật khẩu mới:
                             <Input
-                                type="text"
+                                type={showPassword ? "text" : "password"}
                                 value={newPassword}
-                                placeholder="New password"
+                                placeholder="Nhập mật khẩu mới"
                                 onChange={(e) => setNewPassword(e.target.value)}
+                                onBlur={handlePasswordBlur}
+                            />
+                            {!isPasswordValid && <p style={{color: 'red'}}>
+                              Mật khẩu phải có ít nhất 8 ký tự, trong đó có ít nhất 1 chữ cái viết hoa, 1 chữ cái viết
+                              thường và
+                              1 số.
+                            </p>}
+                        </label>
+                        <label>
+                            Nhập lại mật khẩu mới:
+                            <Input
+                                type={showPassword ? "text" : "password"}
+                                value={confirmNewPassword}
+                                placeholder="Nhập lại mật khẩu mới"
+                                onChange={(e) => setConfirmNewPassword(e.target.value)}
                             />
                         </label>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+                        <Form.Group className="mb-3">
+                            <Form.Check
+                                type="checkbox"
+                                label=" Hiển thị mật khẩu"
+                                checked={showPassword}
+                                onChange={(e) => setShowPassword(e.target.checked)}/>
+                        </Form.Group>
+                        <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '20px'}}>
                             <Button
                                 type="primary"
                                 onClick={handlePasswordSubmit}
                                 loading={loading}
-                                style={{ backgroundColor: '#FF0000', borderColor: '#ff0000' }}
+                                style={{backgroundColor: '#FF0000', borderColor: '#ff0000'}}
                             >
+
                                 {loading ? 'Đang Gửi...' : 'Gửi'}
                             </Button>
-
-                            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                            <div style={{display: 'flex', justifyContent: 'center', marginBottom: '20px'}}>
                                 <Button
                                     type="primary"
                                     onClick={handleLogin}
-                                    style={{ backgroundColor: 'blue', borderColor: '#blue' }}
+                                    style={{backgroundColor: 'blue', borderColor: '#blue'}}
                                 >
                                     Huỷ
                                 </Button>
@@ -211,7 +291,7 @@ const ForgetPassword = () => {
                     </>
                 )}
 
-                {error && <p style={{ color: 'red' }}>{error}</p>}
+                {error && <p style={{color: 'red'}}>{error}</p>}
             </div>
         </div>
     );
