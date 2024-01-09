@@ -57,15 +57,15 @@ const Applications = () => {
         {!(applications!=null && applications.length==0) ||
             <div className="text-center h-screen">
                 <h1 className="text-3xl text-gray-800 font-semibold">
-                        Pending Applications
+                        Đơn ứng tuyển
                 </h1>
                     <p className="mt-3 text-gray-500">
-                        No Pending Applications
+                        Hiện không có đơn ứng tuyển đang chờ
                     </p>
                 </div>
         }
             {!(applications != null && applications.length) || 
-                <Card applications={applications} href={`/pendingApplications/detail/`} title={"Pending Applications"}></Card>
+                <Card applications={applications} href={`/pendingApplications/detail/`} title={"Đơn ứng tuyển đang chờ"}></Card>
         }
         </>
     )

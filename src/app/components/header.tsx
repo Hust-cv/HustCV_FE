@@ -1,11 +1,13 @@
 'use client'
 import { UserOutlined, DownOutlined } from '@ant-design/icons'
+
 import {MenuProps, message,} from 'antd';
 import { Menu, Button, Popover } from 'antd';
+
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import http from '../utils/http';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 const items: MenuProps['items'] = [
     {
         label: 'All Jobs',
@@ -193,7 +195,7 @@ const Header = () => {
                 Tuyển dụng
             </div>
             <div className='py-2'>
-                <button className='text-black' onClick={handleLogout} style={{color: 'black'}}>
+                <button className='text-black' onClick={handleLogout} style={{ color: 'black' }}>
                     Đăng xuất
                 </button>
 

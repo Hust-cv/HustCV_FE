@@ -28,9 +28,9 @@ const ManageCV = () => {
         queryFn: async () => {
             const id = await localStorage.getItem('userId');
             try {
-                const response = await http.postWithAutoRefreshToken('/api/manageCv/getNameCv', {id: id}, { useAccessToken: true });
+                const response = await http.postWithAutoRefreshToken('/api/manageCv/getNameCv', { id: id }, { useAccessToken: true });
                 let name = response.name;
-                if (name == ''){
+                if (name == '') {
                     name = 'Bạn cần upload file'
                 }
                 setFileList([{
@@ -39,20 +39,20 @@ const ManageCV = () => {
                 }])
                 return response
             }
-            catch(err) {
-
+            catch (err) {
+                console.log('>>> check error: ', err)
             }
         }
     })
 
     const handleShowCV = async () => {
         try {
-            const response = await http.postWithAutoRefreshToken('/api/manageCv/getUrlCv', {id: 1}, { useAccessToken: true })
+            const response = await http.postWithAutoRefreshToken('/api/manageCv/getUrlCv', { id: 1 }, { useAccessToken: true })
             console.log(response)
             const fileLink = response.url
             window.open(fileLink, '_blank');
         }
-        catch(err) {
+        catch (err) {
             message.error('Bạn cần Upload File')
         }
     }
@@ -61,25 +61,26 @@ const ManageCV = () => {
 
         newFileList = newFileList.slice(-1);
         setFileList(newFileList);
-      };
+    };
     const customRequest = async ({ file, onSuccess, onError, onProgress }: any) => {
         try {
             const formData = new FormData();
             formData.append('file', file);
-            const response = await axios.post('/api/manageCv', formData, {
+            const response = await axios.post('http://localhost:6868/api/manageCv', formData, {
                 headers: {
                 "Authorization": `Bearer ${accessToken}`,
                 'Content-Type': 'multipart/form-data',
                 },
             });
             if (response.status) {
-                queryClient.invalidateQueries({queryKey: ['cv']})
+                queryClient.invalidateQueries({ queryKey: ['cv'] })
                 message.success('Upload thành vấn thành công!')
                 onSuccess();
             } else {
                 onError(new Error('Failed to upload file'));
             }
         } catch (error) {
+            console.log('>>> check error: ', error)
             onError(error);
         }
     }
@@ -113,7 +114,7 @@ const ManageCV = () => {
                 </div>
             </Card>
         </div>
-      );
+    );
 }
 
 export default ManageCV
