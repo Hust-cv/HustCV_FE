@@ -18,13 +18,18 @@ const ForgetPassword = () => {
     const [step, setStep] = useState(1);
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [isEmailValid, setIsEmailValid] = useState(true);
+    const [isPasswordValid, setIsPasswordValid] = useState(true);
 
     const handleEmailBlur = () => {
         const emailRegex = /^[a-zA-Z0-9._-]+@gmail\.com$/;
         const isValid = emailRegex.test(email);
         setIsEmailValid(isValid);
     };
-
+    const handlePasswordBlur = () => {
+        const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
+        const isValid = passwordRegex.test(newPassword);
+        setIsPasswordValid(isValid);
+    };
         const handleEmailSubmit = async () => {
         try {
             if (!email) {
@@ -146,9 +151,23 @@ const ForgetPassword = () => {
     // JSX structure for the ForgetPassword component
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-            <div style={{ border: '1px solid #ccc', padding: '20px', borderRadius: '8px', maxWidth: '400px', width: '100%' }}>
+            <div style={{
+                border: '1px solid #ccc',
+                padding: '20px',
+                borderRadius: '8px',
+                maxWidth: '400px',
+                width: '100%'
+            }}>
+                <p style={{
+                    fontSize: 30, fontWeight: 'bold',
+                    position: 'absolute', top: '100px', left: '100px'
+                }}>
+                    Chào mừng bạn đến với HustCv
+                </p>
+                <h2 style={{textAlign: 'center', fontSize: 25, fontWeight: 'bold'}}>Quên mật khẩu</h2>
                 {step === 1 && (
                     <>
+
                         <label>
                             Địa chỉ email:
                             <Input
@@ -158,22 +177,22 @@ const ForgetPassword = () => {
                                 onChange={(e) => setEmail(e.target.value)}
                                 onBlur={handleEmailBlur}
                             />
-                            {!isEmailValid && <p style={{ color: 'red' }}>Email không hợp lệ.</p>}
+                            {!isEmailValid && <p style={{color: 'red'}}>Email không hợp lệ.</p>}
                         </label>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+                        <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '20px'}}>
                             <Button
                                 type="primary"
                                 onClick={handleEmailSubmit}
                                 loading={loading}
-                                style={{ backgroundColor: '#FF0000', borderColor: '#ff0000' }}
+                                style={{backgroundColor: '#FF0000', borderColor: '#ff0000'}}
                             >
                                 {loading ? 'Đang Gửi...' : 'Gửi'}
                             </Button>
-                            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                            <div style={{display: 'flex', justifyContent: 'center', marginBottom: '20px'}}>
                                 <Button
                                     type="primary"
                                     onClick={handleLogin}
-                                    style={{ backgroundColor: 'blue', borderColor: '#blue' }}
+                                    style={{backgroundColor: 'blue', borderColor: '#blue'}}
                                 >
                                     Huỷ
                                 </Button>
@@ -193,20 +212,20 @@ const ForgetPassword = () => {
                                 onChange={(e) => setVerificationCode(e.target.value)}
                             />
                         </label>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+                        <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '20px'}}>
                             <Button
                                 type="primary"
                                 onClick={handleVerificationCodeSubmit}
                                 loading={loading}
-                                style={{ backgroundColor: '#FF0000', borderColor: '#ff0000' }}
+                                style={{backgroundColor: '#FF0000', borderColor: '#ff0000'}}
                             >
                                 {loading ? 'Đang Gửi...' : 'Gửi'}
                             </Button>
-                            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                            <div style={{display: 'flex', justifyContent: 'center', marginBottom: '20px'}}>
                                 <Button
                                     type="primary"
                                     onClick={handleLogin}
-                                    style={{ backgroundColor: 'blue', borderColor: '#blue' }}
+                                    style={{backgroundColor: 'blue', borderColor: '#blue'}}
                                 >
                                     Huỷ
                                 </Button>
@@ -223,16 +242,22 @@ const ForgetPassword = () => {
                             <Input
                                 type={showPassword ? "text" : "password"}
                                 value={newPassword}
-                                placeholder="New password"
+                                placeholder="Nhập mật khẩu mới"
                                 onChange={(e) => setNewPassword(e.target.value)}
+                                onBlur={handlePasswordBlur}
                             />
+                            {!isPasswordValid && <p style={{color: 'red'}}>
+                              Mật khẩu phải có ít nhất 8 ký tự, trong đó có ít nhất 1 chữ cái viết hoa, 1 chữ cái viết
+                              thường và
+                              1 số.
+                            </p>}
                         </label>
                         <label>
                             Nhập lại mật khẩu mới:
                             <Input
                                 type={showPassword ? "text" : "password"}
                                 value={confirmNewPassword}
-                                placeholder="Confirm new password"
+                                placeholder="Nhập lại mật khẩu mới"
                                 onChange={(e) => setConfirmNewPassword(e.target.value)}
                             />
                         </label>
@@ -241,7 +266,7 @@ const ForgetPassword = () => {
                                 type="checkbox"
                                 label=" Hiển thị mật khẩu"
                                 checked={showPassword}
-                                onChange={(e) => setShowPassword(e.target.checked)} />
+                                onChange={(e) => setShowPassword(e.target.checked)}/>
                         </Form.Group>
                         <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '20px'}}>
                             <Button
@@ -251,7 +276,7 @@ const ForgetPassword = () => {
                                 style={{backgroundColor: '#FF0000', borderColor: '#ff0000'}}
                             >
 
-                                { loading ? 'Đang Gửi...' : 'Gửi'}
+                                {loading ? 'Đang Gửi...' : 'Gửi'}
                             </Button>
                             <div style={{display: 'flex', justifyContent: 'center', marginBottom: '20px'}}>
                                 <Button
