@@ -1,7 +1,9 @@
 'use client'
 import { UserOutlined, DownOutlined } from '@ant-design/icons'
-import type { MenuProps, } from 'antd';
-import { Menu, Button, Popover, message } from 'antd';
+
+import {MenuProps, message,} from 'antd';
+import { Menu, Button, Popover } from 'antd';
+
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import http from '../utils/http';
@@ -169,7 +171,6 @@ const Header = () => {
         queryFn: async () => {
             try {
 
-
                 const user = await http.getWithAutoRefreshToken('http://localhost:6868/api/users/me', {useAccessToken: true})
                 setUser(user)
                 return user
@@ -185,6 +186,7 @@ const Header = () => {
         sessionStorage.clear()
         localStorage.clear()
         setUser(null)
+        message.success('Đăng xuất thành công')
         router.push('/')
     }
     const content = (

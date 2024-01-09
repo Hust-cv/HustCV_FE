@@ -5,7 +5,8 @@ import { Button, Input } from 'antd';
 import { useRouter } from 'next/navigation';
 import http from "@/app/utils/http";
 import { useQueryClient } from '@tanstack/react-query';
-
+import { message } from 'antd';
+import {Form} from "react-bootstrap";
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -14,10 +15,10 @@ const Login: React.FC = () => {
     const [error, setError] = useState('');
     const [loginAttempts, setLoginAttempts] = useState(0);
     const [isValidEmail, setIsValidEmail] = useState(true);
+    const [showPassword, setShowPassword] = useState<boolean>(false);
     const router = useRouter();
     const [isEmailValid, setIsEmailValid] = useState(true);
     const queryClient = useQueryClient()
-
     const handleForgotPassword = () => {
         router.push('/forgetPassword');
     };
@@ -31,44 +32,52 @@ const Login: React.FC = () => {
         const isValid = emailRegex.test(email);
         setIsEmailValid(isValid);
     };
-
     const handleLogin = async () => {
+          let response;
         try {
-            if (!email) {
+            if (!email||!password) {
                 setError('Vui lòng nhập email');
                 return;
+            }else{
+                setError('');
             }
-            if (!password) {
-                setError('Vui lòng nhập password');
-                return;
-            }
-
             setLoading(true);
-            const response = await http.axiosClient.post('/api/auth/login', { email, password });
-            console.log("check : ",response.data);
-            localStorage.setItem('accessToken', response.data?.resBody?.accessToken);
-            localStorage.setItem('refreshToken', response.data?.resBody?.refreshToken);
-            localStorage.setItem('role', response.data?.resBody?.userData?.role_id);
-            console.log(">>>>>>1" + response.data?.resBody?.accessToken)
-            setLoginAttempts(0);
-            setLoading(false);
-            router.push('/');
-            queryClient.invalidateQueries({ queryKey: ['verify'] })
-        } catch (error) {
-            setError('Email hoặc mật khẩu không đúng. Vui lòng thử lại');
-            setLoading(false);
-            setLoginAttempts((prevAttempts) => prevAttempts + 1);
-            if (loginAttempts + 1 === 5) {
-                const changePassword = window.confirm(
-                    'Bạn có muốn đổi mật khẩu không?'
-                );
-                if (changePassword) {
-                    router.push('/forgetPassword');
-                }
-
+            response = await http.axiosClient.post('/api/auth/login', {email, password});
+            if (response.data?.statusCode === 200) {
+                localStorage.setItem('accessToken', response.data?.resBody?.accessToken);
+                localStorage.setItem('refreshToken', response.data?.resBody?.refreshToken);
+                localStorage.setItem('role', response.data?.resBody?.userData?.role_id);
                 setLoginAttempts(0);
+                setLoading(false);
+                message.success('Đăng nhập thành công!')
+                router.push('/');
+                queryClient.invalidateQueries({queryKey: ['verify']})
             }
+        } catch (error) {
+            //@ts-ignore
+             if (error.response && error.response.status === 400) {
+            setLoading(false);
+            message.error("Tài khoản không tồn tại")
+           } // @ts-ignore
+             else if (error.response && error.response.status === 401) {
+            setLoading(false);
+            message.error("Mật khẩu không chính xác")
+                 setLoginAttempts((prevAttempts) => prevAttempts + 1);
+                if (loginAttempts + 1 === 5) {
+                     const changePassword = window.confirm(
+                         'Bạn có muốn đổi mật khẩu không?'
+                     );
+                     if (changePassword) {
+                         router.push('/forgetPassword');
+                     }
+                     setLoginAttempts(0);
+                 }
+
+             } else {
+            setLoading(false);
+            message.error("Hệ thống đang bận")
         }
+    }
     };
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
@@ -89,13 +98,20 @@ const Login: React.FC = () => {
                 <label>
                     Password:
                     <Input
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         value={password}
                         placeholder="Nhập mật khẩu"
                         onChange={(e) => setPassword(e.target.value)}
                         style={{ marginBottom: '20px' }}
                     />
                 </label>
+                <Form.Group className="mb-3">
+                    <Form.Check
+                        type="checkbox"
+                        label=" Hiển thị mật khẩu"
+                        checked={showPassword}
+                        onChange={(e) => setShowPassword(e.target.checked)} />
+                </Form.Group>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
                     <Button
                         type="primary"
