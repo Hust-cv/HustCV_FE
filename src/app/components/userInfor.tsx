@@ -31,6 +31,12 @@ const { TextArea } = Input;
 const { Option } = Select;
 
 const userInfor = () => {
+    const [email, setEmail] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    // const [birthDay, setBirthDay] = useState('');
+    const [isEmailValid, setIsEmailValid] = useState(true);
+    const [isPhoneValid, setIsPhoneValid] = useState(true);
+
     const [isModalEditInforOpen, setModalEditInforOpen] = useState(false)
     const [editInfor, setEditInfor] = useState<any>({})
     const queryClient = useQueryClient()
@@ -50,7 +56,10 @@ const userInfor = () => {
     const editInforMutation = useMutation({
         mutationFn: async ({id, values}: any) => {
             values.birth = values.birth.toISOString()
-            const infor = values.name + '*/' + values.email + '*/' + values.birth + '*/' + values.phone + '*/' + values.gender;
+            if(values.birth>new Date().toISOString().slice(0, 10)){
+                throw new Error('Ngày sinh không hợp lệ')
+            }
+            const infor = values.name + '*/' + values.email + '*/' + values.birth + '*/' + values.phone + (values.gender != undefined ? ('*/' + values.gender) : '');
             const response = await http.putWithAutoRefreshToken('api/profile/userInfor/' + id, {infor: infor}, { useAccessToken: true })
             return response;
         },
@@ -59,20 +68,37 @@ const userInfor = () => {
             queryClient.invalidateQueries({ queryKey: ['userInfor']})
         },
         onError: (error: any) => {
-            message.error(error.response.message)
+            message.error(error.message)
         }
     })
+
+    const handlePhoneBlur = () => {
+        const phoneRegex = /((09|03|07|08|05)+([0-9]{8})\b)/g;
+        const isValid = phoneRegex.test(phoneNumber);
+        setIsPhoneValid(isValid);
+    };
+
+    const handleEmailBlur = () => {
+        const emailRegex = /^[a-zA-Z0-9._-]+@gmail\.com$/;
+        const isValid = emailRegex.test(email);
+        setIsEmailValid(isValid);
+    };
+    
     const showModalEditInfor = (infor: any) => {
         setEditInfor(infor)
         setModalEditInforOpen(true)
     }
     const cancelModalEditInfor = () => {
+        setIsEmailValid(true);
+        setIsPhoneValid(true);
         setModalEditInforOpen(false)
     }
     const finishEditInfor = (values: any) => {
-        let id = editInfor.id
-        editInforMutation.mutate({id, values})
-        cancelModalEditInfor()
+        if (isPhoneValid && isEmailValid) {
+            let id = editInfor.id
+            editInforMutation.mutate({id, values})
+            cancelModalEditInfor()
+        }
     }
     return(
         <>
@@ -118,6 +144,7 @@ const userInfor = () => {
                                 label="Họ tên"
                                 name="name"
                                 initialValue={editInfor?.profile?.split('*/')[0]}
+                                rules={[{ required: true, message: 'Vui lòng nhập họ tên'}]}
                             >
                                 <Input />
                             </Form.Item>
@@ -125,21 +152,35 @@ const userInfor = () => {
                                 label="Email"
                                 name="email"
                                 initialValue={editInfor?.profile?.split('*/')[1]}
+                                rules={[{ required: true, message: 'Vui lòng nhập email'}]}
                             >
-                                <Input />
+                                <Input
+                                    // // type="text"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    onBlur={handleEmailBlur}
+                                />
+                                {!isEmailValid && <p style={{color: 'red'}}>Email không hợp lệ.</p>}
                             </Form.Item>
                             <Form.Item
                                 label="Số điện thoại"
                                 name="phone"
                                 initialValue={editInfor?.profile?.split('*/')[3]}
+                                rules={[{ required: true, message: 'Vui lòng nhập số điện thoại'}]}
                             >
-                                <Input />
+                                <Input
+                                    // type="text"
+                                    value={phoneNumber}
+                                    onChange={(e) => setPhoneNumber(e.target.value)}
+                                    onBlur={handlePhoneBlur}
+                                />
+                                {!isPhoneValid && <p style={{color: 'red'}}>Số điện thoại không hợp lệ.</p>}
                             </Form.Item>
                             <Form.Item
                                 label="Ngày sinh"
                                 name="birth"
                                 initialValue={moment(editInfor?.profile?.split('*/')[2])}
-
+                                rules={[{ required: true, message: 'Vui lòng nhập ngày sinh'}]}
                             >
                                 <DatePicker/>
                             </Form.Item>
