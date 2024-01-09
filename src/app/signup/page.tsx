@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Button, Input } from 'antd';
 import { useRouter } from 'next/navigation';
 import http from "@/app/utils/http";
+import { message } from 'antd';
 
 const Signup: React.FC = () => {
     const [username, setUsername] = useState('');
@@ -17,7 +18,39 @@ const Signup: React.FC = () => {
     const [businessWebsite, setBusinessWebsite] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [messageApi, contextHolder] = message.useMessage();
+    const key = 'update';
     const router = useRouter();
+    const openMessageSuccess = (text:string) => {
+        messageApi.open({
+            key,
+            type: 'loading',
+            content: 'Loading...',
+        });
+        setTimeout(() => {
+            messageApi.open({
+                key,
+                type:'success',
+                content: text,
+                duration: 2,
+            });
+        }, 500);
+    };
+    const openMessageError = (text:string) => {
+        messageApi.open({
+            key,
+            type: 'loading',
+            content: 'Loading...',
+        });
+        setTimeout(() => {
+            messageApi.open({
+                key,
+                type:'error',
+                content: text,
+                duration: 2,
+            });
+        }, 500);
+    };
 
     const handleIsEmployerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setIsEmployerOption(event.target.checked);
@@ -76,7 +109,7 @@ const Signup: React.FC = () => {
                     role_id,
                     business_id,
                 });
-                alert("Đăng kí thành công")
+                openMessageSuccess('Đăng ký thành công')
                 router.push('/login');
                 setLoading(false);
             }catch (e) {
