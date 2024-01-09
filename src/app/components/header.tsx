@@ -182,12 +182,17 @@ const Header = () => {
 
     })
     const handleLogout = async() => {
-        await http.getWithAutoRefreshToken('/api/auth/logout',  {useAccessToken: true})
-        sessionStorage.clear()
-        localStorage.clear()
-        setUser(null)
-        message.success('Đăng xuất thành công')
-        router.push('/')
+        try {
+            await http.getWithAutoRefreshToken('/api/auth/logout', {useAccessToken: true})
+            sessionStorage.clear()
+            localStorage.clear()
+            setUser(null)
+            message.success('Đăng xuất thành công')
+            router.push('/')
+        }catch (error) {
+            message.success('Đăng xuất thành công')
+            router.push('/')
+        }
     }
     const content = (
         <div className='min-w-14 cursor-pointer'>
