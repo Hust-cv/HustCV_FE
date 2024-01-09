@@ -66,7 +66,7 @@ const Applications = () => {
             </div>
         }
         {!(applications != null && applications.length) || 
-                <Card applications={applications} href={`/acceptedApplications/detail/`} title={"Đơn ứng tuyển được chấp nhận"}></Card>
+                <Card applications={applications} href={`/acceptedApplications/detail/`} title={"Đơn ứng tuyển đã duyệt"}></Card>
         }
         </>
     )

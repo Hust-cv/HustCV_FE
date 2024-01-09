@@ -6,7 +6,8 @@ import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import http from '../utils/http';
 import { useEffect, useState } from 'react';
-const items: MenuProps['items'] = [
+import Link from 'next/link';
+const itemWithoutRole: MenuProps['items'] = [
     {
         label: 'All Jobs',
         key: 'All Job',
@@ -156,20 +157,186 @@ const items: MenuProps['items'] = [
         ],
     },
 ];
+const itemRecruiter: MenuProps['items'] = [
+    {
+        label: 'All Jobs',
+        key: 'All Job',
+        children: [
+            {
+                label: 'Việc làm IT theo kĩ năng',
+                key: 'job by skills',
+                children: [
+                    {
+                        label: 'Kĩ năng 1',
+                        key: 'skill 1',
+                    },
+                    {
+                        label: 'Kĩ năng 2',
+                        key: 'skill 2'
+                    }
+                ]
+            },
+            {
+                label: 'Việc làm IT theo cấp bậc',
+                key: 'job by Title',
+                children: [
+                    {
+                        label: 'Kĩ năng 1',
+                        key: 'skill 3',
+                    },
+                    {
+                        label: 'Kĩ năng 2',
+                        key: 'skill 4'
+                    }
+                ]
+            },
+            {
+                label: 'Việc làm IT theo công ty',
+                key: 'job by company',
+                children: [
+                    {
+                        label: 'Kĩ năng 1',
+                        key: 'skill 5',
+                    },
+                    {
+                        label: 'Kĩ năng 2',
+                        key: 'skill 6'
+                    }
+                ]
+            },
+            {
+                label: 'Việc làm IT theo thành phố',
+                key: 'job by cities',
+                children: [
+                    {
+                        label: 'Thành phố 1',
+                        key: 'skill 7',
+                    },
+                    {
+                        label: 'Thành phố 2',
+                        key: 'skill 8'
+                    }
+                ]
+            },
+        ]
+    },
+    {
+        label: 'Top Công ty IT',
+        key: 'app',
+        children: [
+            {
+                label: 'Công ty tốt nhất',
+                key: 'best companies',
+                children: [
+                    {
+                        label: 'Công ty 1',
+                        key: 'company 1'
+                    },
+                    {
+                        label: 'Công ty 2',
+                        key: 'company 2'
+                    }
+                ]
+            },
+            {
+                label: 'Review công ty',
+                key: 'review'
+            }
+        ]
+    },
+    // {
+    //     label: 'Blogs',
+    //     key: 'SubMenu',
+    //     children: [
+    //         {
+    //             label: 'Báo cáo lương IT',
+    //             key: 'report',
+    //             children: [
+    //                 {
+    //                     label: 'Option 1',
+    //                     key: 'setting:1',
+    //                 },
+    //                 {
+    //                     label: 'Option 2',
+    //                     key: 'setting:2',
+    //                 },
+    //             ],
+    //         },
+    //         {
+    //             label: 'Sự nghiệp IT',
+    //             key: 'career',
+    //             children: [
+    //                 {
+    //                     label: 'Option 3',
+    //                     key: 'setting:3',
+    //                 },
+    //                 {
+    //                     label: 'Option 4',
+    //                     key: 'setting:4',
+    //                 },
+    //             ],
+    //         },
+    //         {
+    //             label: 'Ứng tuyển và thăng tiến',
+    //             key: 'apply',
+    //             children: [
+    //                 {
+    //                     label: 'Option 3',
+    //                     key: 'setting:5',
+    //                 },
+    //                 {
+    //                     label: 'Option 4',
+    //                     key: 'setting:6',
+    //                 },
+    //             ],
+    //         },
+    //         {
+    //             label: 'Chuyên môn IT',
+    //             key: 'major',
+    //             children: [
+    //                 {
+    //                     label: 'Option 3',
+    //                     key: 'setting:7',
+    //                 },
+    //                 {
+    //                     label: 'Option 4',
+    //                     key: 'setting:8',
+    //                 },
+    //             ],
+    //         },
+    //     ],
+    // },
+    {
+        label: "Đơn ứng tuyển",
+        key: `application`,
+        children: [
+                {label: (
+                    <Link href="http://localhost:3000/pendingApplications">
+                        Đang chờ
+                    </Link>
+                ),
+                key: "application:1"},
+                {
+                label: (
+                    <Link href="http://localhost:3000/acceptedApplications">
+                            Đã duyệt
+                        </Link>
+                    ),
+                    key: "application:2"
+                }
+        ]
+    }
+];
 
 
 const Header = () => {
     const [user, setUser] = useState<any>(null)
-
     const router = useRouter();
-
+    const [items, setItems] = useState<any>([...itemWithoutRole]);
     const verifyLogin = useQuery({
-
         queryKey: ['verify'],
         queryFn: async () => {
             try {
-
-
                 const user = await http.getWithAutoRefreshToken('http://localhost:6868/api/users/me', {useAccessToken: true})
                 setUser(user)
                 return user
@@ -180,6 +347,16 @@ const Header = () => {
         }
 
     })
+    useEffect(()=>{
+        const role = localStorage.getItem("role");
+        console.log(role);
+        if (role == "1"){
+            setItems([...itemRecruiter]);
+        }
+        else if (role == null){
+            setItems([...itemWithoutRole])
+        }
+    }, [user])
     const handleLogout = async() => {
         await http.getWithAutoRefreshToken('/api/auth/logout',  {useAccessToken: true})
         sessionStorage.clear()
@@ -216,7 +393,7 @@ const Header = () => {
                 </div>
                 <div className='ml-48 flex-1'>
                     <div className='flex items-center gap-6 '>
-                        <Menu className='bg-transparent min-w-[400px] text-xl text-[#a6a6a6]' mode="horizontal" items={items} />
+                        <Menu className='bg-transparent min-w-[400px] text-xl text-[#a6a6a6]' mode="horizontal" selectedKeys={[]} items={items} />
                     </div>
                 </div>
                 {user ? (

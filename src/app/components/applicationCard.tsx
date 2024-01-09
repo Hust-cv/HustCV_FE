@@ -17,6 +17,9 @@ export default function Card({applications, href, title}: CardProps){
               <h1 className="text-3xl text-gray-800 font-semibold">
                   {title}
               </h1>
+              <p className="mt-3 text-gray-500">
+                  Chọn đơn ứng tuyển
+              </p>
           </div>
           <div className="mt-10 grid gap-2 sm:grid-cols-1 lg:grid-cols-1 pb-5 auto-rows-fr">
               {
