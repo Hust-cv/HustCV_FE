@@ -36,7 +36,7 @@ const Login: React.FC = () => {
           let response;
         try {
             if (!email||!password) {
-                setError('Vui lòng nhập email');
+                setError('Vui lòng nhập đầy đủ thông tin');
                 return;
             }else{
                 setError('');
@@ -80,9 +80,22 @@ const Login: React.FC = () => {
     }
     };
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-            <div style={{ border: '1px solid #ccc', padding: '20px', borderRadius: '8px', maxWidth: '400px', width: '100%' }}>
-                <h2 style={{ textAlign: 'center' }}>Đăng Nhập</h2>
+        <div style={{
+            display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh',
+
+
+        }}>
+            <p style={{fontSize: 30, fontWeight: 'bold',
+                position: 'absolute', top: '100px', left: '100px'
+                 }}>
+                Chào mừng bạn đến với HustCv
+            </p>
+            <div style={{
+                border: '1px solid #ccc', padding: '20px', borderRadius: '8px', maxWidth: '400px', width: '100%',
+                //xét màu trắng
+                backgroundColor: 'white',
+            }}>
+                <h2 style={{textAlign: 'center', fontSize: 25, fontWeight: 'bold'}}>Đăng Nhập</h2>
                 <label>
                     Địa chỉ email:
                     <Input
@@ -92,17 +105,17 @@ const Login: React.FC = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         onBlur={handleEmailBlur}
                     />
-                    {!isEmailValid && <p style={{ color: 'red' }}>Email không hợp lệ.</p>}
+                    {!isEmailValid && <p style={{color: 'red'}}>Email không hợp lệ.</p>}
                 </label>
-                <br />
+                <br/>
                 <label>
-                    Password:
+                    Mật khẩu:
                     <Input
                         type={showPassword ? "text" : "password"}
                         value={password}
                         placeholder="Nhập mật khẩu"
                         onChange={(e) => setPassword(e.target.value)}
-                        style={{ marginBottom: '20px' }}
+                        style={{marginBottom: '20px'}}
                     />
                 </label>
                 <Form.Group className="mb-3">
@@ -110,18 +123,18 @@ const Login: React.FC = () => {
                         type="checkbox"
                         label=" Hiển thị mật khẩu"
                         checked={showPassword}
-                        onChange={(e) => setShowPassword(e.target.checked)} />
+                        onChange={(e) => setShowPassword(e.target.checked)}/>
                 </Form.Group>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+                <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '20px'}}>
                     <Button
                         type="primary"
                         onClick={handleLogin}
                         loading={loading}
-                        style={{ backgroundColor: '#FF0000', borderColor: '#ff0000' }}
+                        style={{backgroundColor: '#FF0000', borderColor: '#ff0000'}}
                     >
                         {loading ? 'Đang đăng nhập...' : 'Đăng Nhập'}
                     </Button>
-                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                    <div style={{display: 'flex', justifyContent: 'center', marginBottom: '20px'}}>
                         <p
                             style={{
                                 color: 'black',
@@ -141,10 +154,10 @@ const Login: React.FC = () => {
                     color: 'black',
                     cursor: 'pointer'
                 }}>
-                    <a style={{ marginRight: '5px' }}>Bạn chưa có tài khoản?</a>
-                    <span onClick={handleRegister} style={{ cursor: 'pointer' }}>Đăng kí ngay</span>
+                    <a style={{marginRight: '5px'}}>Bạn chưa có tài khoản?</a>
+                    <span onClick={handleRegister} style={{cursor: 'pointer'}}>Đăng kí ngay</span>
                 </p>
-                {error && <p style={{ color: 'red' }}>{error}</p>}
+                {error && <p style={{color: 'red'}}>{error}</p>}
             </div>
         </div>
     );
