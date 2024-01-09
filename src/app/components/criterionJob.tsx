@@ -136,11 +136,11 @@ const CriterionJob = () => {
                                 style={{ width: '100%' }}
                                 placeholder="Mức lương"
                             >
-                                <Option value="2000000">2.000.000 đ - 5.000.000 đ</Option>
-                                <Option value="5000000">5.000.000 đ - 10.000.000 đ</Option>
-                                <Option value="10000000">10.000.000 đ - 15.000.000 đ</Option>
-                                <Option value="15000000">15.000.000 đ - 25.000.000 đ</Option>
-                                <Option value="25000000">25.000.000 đ - 50.000.000 đ</Option>
+                                <Option value="2.000.000 đ - 5.000.000 đ">2.000.000 đ - 5.000.000 đ</Option>
+                                <Option value="5.000.000 đ - 10.000.000 đ">5.000.000 đ - 10.000.000 đ</Option>
+                                <Option value="10.000.000 đ - 15.000.000 đ">10.000.000 đ - 15.000.000 đ</Option>
+                                <Option value="15.000.000 đ - 25.000.000 đ">15.000.000 đ - 25.000.000 đ</Option>
+                                <Option value="25.000.000 đ - 50.000.000 đ">25.000.000 đ - 50.000.000 đ</Option>
                             </Select>
                         </Form.Item>
                         <Form.Item
