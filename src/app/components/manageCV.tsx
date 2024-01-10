@@ -26,9 +26,8 @@ const ManageCV = () => {
     const linkCV = useQuery({
         queryKey: ['cv'],
         queryFn: async () => {
-            const id = await localStorage.getItem('userId');
             try {
-                const response = await http.postWithAutoRefreshToken('/api/manageCv/getNameCv', { id: id }, { useAccessToken: true });
+                const response = await http.getWithAutoRefreshToken('/api/manageCv/getNameCv', { useAccessToken: true });
                 let name = response.name;
                 if (name == '') {
                     name = 'Bạn cần upload file'
@@ -47,7 +46,7 @@ const ManageCV = () => {
 
     const handleShowCV = async () => {
         try {
-            const response = await http.postWithAutoRefreshToken('/api/manageCv/getUrlCv', { id: 1 }, { useAccessToken: true })
+            const response = await http.getWithAutoRefreshToken('/api/manageCv/getUrlCv', { useAccessToken: true })
             console.log(response)
             const fileLink = response.url
             window.open(fileLink, '_blank');

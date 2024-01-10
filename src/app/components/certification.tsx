@@ -40,9 +40,8 @@ const Certification = () => {
     const certificate = useQuery({
         queryKey: ['certificate'],
         queryFn: async () => {
-            const userId = await localStorage.getItem('userId');
             try {
-                const response = await http.postWithAutoRefreshToken('/api/profile/certificate/getAll', {personalFileId: userId}, { useAccessToken: true })
+                const response = await http.getWithAutoRefreshToken('/api/profile/certificate/getAll', { useAccessToken: true })
                 return response
             } catch (error) {
 
@@ -250,10 +249,11 @@ const Certification = () => {
                         extra={
                             <>
                                 <div className='mb-4 mt-2'>
-                                    <a onClick={() => showModalAddCer()}><PlusCircleOutlined className='mr-4 text-2xl' /></a>
+                                    <a onClick={() => showModalAddCer()}><PlusCircleOutlined className='mr-4 text-2xl' style={{ color: 'red' }}/></a>
                                 </div>
                             </>
                         }
+                        style={{ border: '2px solid darkred' }}
                         className='w-full mb-4 border-black'
                     >
                         {certificate?.data?.map((info: any) => {
@@ -267,7 +267,7 @@ const Certification = () => {
                                     }
                                     extra={
                                         <>
-                                            <a onClick={() => handleEditCer(info)}><EditOutlined className='mr-8' /></a>
+                                            <a onClick={() => handleEditCer(info)}><EditOutlined className='mr-8' style={{ color: 'blue' }} /></a>
                                             <a onClick={() => handleDeleteCer(info.id)}><DeleteOutlined className='' /></a>
                                         </>
                                     }

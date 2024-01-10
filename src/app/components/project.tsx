@@ -40,9 +40,8 @@ const Project = () => {
     const project = useQuery({
         queryKey: ['project'],
         queryFn: async () => {
-            const userId = await localStorage.getItem('userId');
             try {
-                const response = await http.postWithAutoRefreshToken('/api/profile/project/getAll', {personalFileId: userId}, { useAccessToken: true })
+                const response = await http.getWithAutoRefreshToken('/api/profile/project/getAll', { useAccessToken: true })
                 return response
             } catch (error) {
 
@@ -52,11 +51,10 @@ const Project = () => {
 
     const addNewPrjMutation = useMutation({
         mutationFn: async (values: any) => {
-            const userId = await localStorage.getItem('userId');
             values.start = values.start.toISOString();
             values.end = values.end.toISOString(); 
             const name = values.nameProject + '*/' + values.start + '*/' + (values.isStillDo == true ? 'Hiện tại' : values.end)
-            const data = await http.postWithAutoRefreshToken('/api/profile/project/add', {name: name, personalFileId: userId}, { useAccessToken: true })
+            const data = await http.postWithAutoRefreshToken('/api/profile/project/add', {name: name}, { useAccessToken: true })
             return data
         },
         onSuccess: (data, variables, context) => {
@@ -245,7 +243,7 @@ const Project = () => {
                             <Form.Item
                                 label="Đến"
                                 name="end"
-                                initialValue={moment(editPrj.name.split('*/')[2] != 'Hiện tại' ? editPrj.name.split('*/')[3] : false)}
+                                initialValue={moment(editPrj.name.split('*/')[2] != 'Hiện tại' ? editPrj.name.split('*/')[3] : undefined)}
                                 rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
                                 <DatePicker picker="month" disabled={disabledCheckboxPrj} />
@@ -268,11 +266,12 @@ const Project = () => {
                         extra={
                             <>
                                 <div className='mb-4 mt-2'>
-                                    <a onClick={() => showModalAddPrj()}><PlusCircleOutlined className='mr-4 text-2xl' /></a>
+                                    <a onClick={() => showModalAddPrj()}><PlusCircleOutlined className='mr-4 text-2xl' style={{ color: 'red' }} /></a>
                                 </div>
                             </>
                         }
-                        className='w-full mb-4 border-black'
+                    style={{ border: '2px solid darkred' }}
+                    className='w-full mb-4 border-black'
                     >
                         {project?.data?.map((info: any) => {
                             return (
@@ -285,7 +284,7 @@ const Project = () => {
                                     }
                                     extra={
                                         <>
-                                            <a onClick={() => handleEditPrj(info)}><EditOutlined className='mr-8' /></a>
+                                            <a onClick={() => handleEditPrj(info)}><EditOutlined className='mr-8' style={{ color: 'blue' }} /></a>
                                             <a onClick={() => handleDeletePrj(info.id)}><DeleteOutlined className='' /></a>
                                         </>
                                     }

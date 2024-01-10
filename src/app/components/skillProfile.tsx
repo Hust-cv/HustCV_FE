@@ -39,9 +39,8 @@ const SkillProfile = () => {
     const skillProfileResponse = useQuery({
         queryKey: ['skillProfile'],
         queryFn: async () => {
-            const userId = await localStorage.getItem('userId');
             try {
-                const response = await http.postWithAutoRefreshToken('/api/profile/skill/getAll', {id: userId}, { useAccessToken: true })
+                const response = await http.getWithAutoRefreshToken('/api/profile/skill/getAll', { useAccessToken: true })
                 return response
             }
             catch (error) {
@@ -51,8 +50,7 @@ const SkillProfile = () => {
     })
     const addNewSkillMutation = useMutation({
         mutationFn: async (values: any) => {
-            const userId = await localStorage.getItem('userId');
-            const data = await http.postWithAutoRefreshToken('/api/profile/skill/add', {skill: values.skill, id: userId}, { useAccessToken: true })
+            const data = await http.postWithAutoRefreshToken('/api/profile/skill/add', {skill: values.skill}, { useAccessToken: true })
             return data
         },
         onSuccess: (data, variables, context) => {
@@ -130,11 +128,12 @@ const SkillProfile = () => {
                     extra={
                         <>
                             <div className='mb-4 mt-2'>
-                                <a onClick={() => handleEditSkill()}><EditOutlined className='mr-4 text-2xl' /></a>
+                                <a onClick={() => handleEditSkill()}><EditOutlined className='mr-4 text-2xl' style={{ color: 'blue' }} /></a>
                             </div>
                         </>
                     }
                     className='w-full mb-4 border-black'
+                    style={{ border: '2px solid darkred' }}
                 >
                     {skillProfileResponse?.data?.skills.map((info: any) => {
                         return (

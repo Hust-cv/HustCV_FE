@@ -55,11 +55,10 @@ const Education = () => {
 
     const addNewEduMutation = useMutation({
         mutationFn: async (values: any) => {
-            const userId = await localStorage.getItem('userId');
             values.start = values.start.toISOString();
             values.end = values.end.toISOString();
             const name = values.schools + '*/' + values.majors + '*/' + values.start + '*/' + (values.isStillStudy == true ? 'Hiện tại' : values.end)
-            const data = await http.postWithAutoRefreshToken('/api/profile/education/add', {name: name, personalFileId: userId}, { useAccessToken: true })
+            const data = await http.postWithAutoRefreshToken('/api/profile/education/add', {name: name}, { useAccessToken: true })
             return data
         },
         onSuccess: (data, variables, context) => {
@@ -267,7 +266,7 @@ const Education = () => {
                             <Form.Item
                                 label="Đến"
                                 name="end"
-                                initialValue={moment(editEdu.name.split('*/')[3] != 'Hiện tại' ? editEdu.name.split('*/')[3] : false)}
+                                initialValue={moment(editEdu.name.split('*/')[3] != 'Hiện tại' ? editEdu.name.split('*/')[3] : undefined)}
                                 rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
                                 <DatePicker picker="month" disabled={disabledCheckboxEdu} />
@@ -290,11 +289,12 @@ const Education = () => {
                         extra={
                             <>
                                 <div className='mb-4 mt-2'>
-                                    <a onClick={() => showModalAddEdu()}><PlusCircleOutlined className='mr-4 text-2xl' /></a>
+                                    <a onClick={() => showModalAddEdu()}><PlusCircleOutlined className='mr-4 text-2xl' style={{ color: 'red' }} /></a>
                                 </div>
                             </>
                         }
-                        className='w-full mb-4 border-black'
+                    style={{ border: '2px solid darkred' }}
+                    className='w-full mb-4 border-black'
                     >
                         {education?.data?.map((info: any) => {
                             return (
@@ -307,7 +307,7 @@ const Education = () => {
                                     }
                                     extra={
                                         <>
-                                            <a onClick={() => handleEditEdu(info)}><EditOutlined className='mr-8' /></a>
+                                            <a onClick={() => handleEditEdu(info)}><EditOutlined className='mr-8' style={{ color: 'blue' }} /></a>
                                             <a onClick={() => handleDeleteEdu(info.id)}><DeleteOutlined className='' /></a>
                                         </>
                                     }

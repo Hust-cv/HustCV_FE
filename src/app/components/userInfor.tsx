@@ -43,9 +43,8 @@ const userInfor = () => {
     const userInfor = useQuery({
         queryKey: ['userInfor'],
         queryFn: async () => {
-            const userId = await localStorage.getItem('userId');
             try {
-                const response = await http.postWithAutoRefreshToken('/api/profile/userInfor', {id: userId}, { useAccessToken: true });
+                const response = await http.getWithAutoRefreshToken('/api/profile/userInfor', { useAccessToken: true });
                 return response
             }
             catch (error){
@@ -53,6 +52,7 @@ const userInfor = () => {
             }
         }
     })
+    
     const editInforMutation = useMutation({
         mutationFn: async ({id, values}: any) => {
             values.birth = values.birth.toISOString()
@@ -100,6 +100,16 @@ const userInfor = () => {
             cancelModalEditInfor()
         }
     }
+    // if (userInfor.isLoading) {
+    //     return<>
+    //         <div className="text-center h-screen">
+    //             <h1 className="text-3xl text-gray-800 font-semibold">
+    //                 Loading...
+    //             </h1>
+    //         </div>
+    //     </>
+    // }
+    // else
     return(
         <>
             <div key={'user-infor'}>
@@ -112,11 +122,12 @@ const userInfor = () => {
                     extra={
                         <>
                             <div className='mb-4 mt-2'>
-                                <a onClick={() => showModalEditInfor(userInfor?.data)}><EditOutlined className='mr-4 text-2xl'/></a>
+                                <a onClick={() => showModalEditInfor(userInfor?.data)}><EditOutlined className='mr-4 text-2xl' style={{ color: 'blue' }}/></a>
                             </div>
                         </>
                     }
-                    className='w-full mb-4 border-black'
+                    className='w-full mb-4'
+                    style={{ border: '2px solid darkred' }}
                 >
                     <Descriptions column={2} contentStyle={{fontSize: 16}} labelStyle={{fontSize: 16}}>
                         <Descriptions.Item label="Họ tên">{userInfor?.data?.profile.split('*/')[0]}</Descriptions.Item>
