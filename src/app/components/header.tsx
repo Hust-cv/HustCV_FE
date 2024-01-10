@@ -335,6 +335,11 @@ const Header = () => {
     const [user, setUser] = useState<any>(null)
     const router = useRouter();
     const [items, setItems] = useState<any>([...itemWithoutRole]);
+    const isBrowser = typeof window !== 'undefined';
+    let roleUser: any
+    if (isBrowser) {
+        roleUser = localStorage.getItem('role')
+    }
     const verifyLogin = useQuery({
         queryKey: ['verify'],
         queryFn: async () => {
@@ -369,6 +374,11 @@ const Header = () => {
     }
     const content = (
         <div className='min-w-14 cursor-pointer'>
+            {roleUser == 2 ? (
+                <div className='py-2' onClick={() => router.push('/candidateProfile')}>
+                    Hồ sơ
+                </div>
+            ) : null}
             <div className='py-2 ' onClick={() => router.push('/post')}>
                 Tuyển dụng
             </div>

@@ -135,11 +135,14 @@ const SkillProfile = () => {
                     className='w-full mb-4 border-black'
                     style={{ border: '2px solid darkred' }}
                 >
-                    {skillProfileResponse?.data?.skills.map((info: any) => {
-                        return (
-                            <p className='ml-6 text-xl' key={info.id}>{info.name}</p>
-                        )
-                    })}
+                    <div className='inline-flex'>
+                        {skillProfileResponse?.data?.skills.map((info: any) => {
+                            return (
+                                // <p className='ml-6 text-xl' key={info.id}>{info.name}</p>
+                                <p className='bg-transparent rounded-full border border-gray-600 px-4 py-2 mx-2' key={info.id}>{info.name}</p>
+                            )
+                        })}
+                    </div>
                 </Card>
             </div>
             </div>
