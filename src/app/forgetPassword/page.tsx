@@ -126,7 +126,7 @@ const ForgetPassword = () => {
             const response = await http.axiosClient.put('/api/auth/resetPassword', {email, newPassword });
             if (response.data?.statusCode === 200) {
                 sessionStorage.clear();
-                message.success('Đặt lại mật khẩu thành công')
+                message.success('Đặt lại mật khẩu thành công bạn có thể đăng nhập lại')
                 setError('');
                 router.push('/login');
             }
