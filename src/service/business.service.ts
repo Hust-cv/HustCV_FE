@@ -8,7 +8,7 @@ const QUERY_KEY = "BusinessQuery";
 export const useGetListBusiness = (options?: Partial<UseQueryOptions>) => {
   return useQuery({
     queryKey: [QUERY_KEY, "get-all"],
-    queryFn: () => http.getWithAutoRefreshToken("/business", { useAccessToken: false }),
+    queryFn: () => http.getWithAutoRefreshToken("/api/business", { useAccessToken: false }),
     select(data) {
       return data;
     },

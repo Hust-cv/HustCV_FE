@@ -2,8 +2,8 @@ import { Button, Spin, message, Typography } from "antd";
 import classNames from "classnames";
 import React, { useRef } from "react";
 import { UploadOutlined } from "@ant-design/icons";
-import { axiosInstance } from "@/src/config/https.config";
 import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
 type Props = {
   initSrc?: string;
@@ -19,7 +19,7 @@ export default function UploadFileInput({
   const inputRef = useRef<HTMLInputElement>(null);
   const uploadService = useMutation({
     mutationFn: (formData: FormData) =>
-      axiosInstance.post<string>("/create-pdf", formData, {
+      axios.post("'http://localhost:6868/api/create-pdf", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       }),
     onSuccess: (data) => {

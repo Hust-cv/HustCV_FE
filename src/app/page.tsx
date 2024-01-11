@@ -286,9 +286,9 @@ export default function Home() {
               </Card>
             ))}
       </div>
-      <div className='w-96 mx-auto text-center'>
+      {/* <div className='w-96 mx-auto text-center'>
         <img src="/job-finder.png" alt="" />
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -63,7 +63,7 @@ const PostDetail = () => {
           <div className="flex justify-center items-center gap-2">
             <p>Kỹ năng:</p>
             <Space>
-              {recruitmentPostData?.skills.map((skill) => (
+              {recruitmentPostData?.skills.map((skill: any) => (
                 <Badge
                   className="site-badge-count-109"
                   count={skill.name}

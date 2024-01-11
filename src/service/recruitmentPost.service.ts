@@ -14,7 +14,7 @@ export const useSearchRecruitmentPost = (onSuccessHandle?: () => void) => {
   return useMutation({
     mutationFn: (body: { value: string }) =>
       http.postWithAutoRefreshToken(
-        "/recruitmentPosts/search",
+        "/api/recruitmentPosts/search",
         body, { useAccessToken: false }
       ),
     onSuccess: (data) => {
@@ -36,7 +36,7 @@ export const useGetListRecruitmentPost = (
   return useQuery({
     queryKey: [QUERY_KEY, "get-all"],
     queryFn: () =>
-      http.getWithAutoRefreshToken("/recruitmentPosts", { useAccessToken: false }),
+      http.getWithAutoRefreshToken("/api/recruitmentPosts/getAll", { useAccessToken: false }),
     select(data) {
       return data;
     },
@@ -51,7 +51,7 @@ export const useGetListRecruitmentPostDetail = (
   return useQuery({
     queryKey: [QUERY_KEY, "get-detail"],
     queryFn: () =>
-      http.getWithAutoRefreshToken(`/recruitmentPosts/${id}`, { useAccessToken: false }),
+      http.getWithAutoRefreshToken(`/api/recruitmentPosts/${id}`, { useAccessToken: false }),
     select(data) {
       return data;
     },
@@ -66,7 +66,7 @@ export const useGetDetailRecruitmentPost = (
   return useQuery({
     queryKey: [QUERY_KEY, "get-detail"],
     queryFn: () =>
-      http.getWithAutoRefreshToken(`/recruitmentPosts/${id}`, { useAccessToken: false }),
+      http.getWithAutoRefreshToken(`/api/recruitmentPosts/khanh/${id}`, { useAccessToken: false }),
     select(data) {
       return data;
     },
@@ -81,7 +81,7 @@ export const useApplyRecruitment = (onSuccessHandle?: () => void) => {
       recruitmentPost_id: number;
       content: string;
       CV: string;
-    }) => http.postWithAutoRefreshToken("/recruitmentPosts/apply", body, { useAccessToken: false }),
+    }) => http.postWithAutoRefreshToken("/api/recruitmentPosts/apply", body, { useAccessToken: false }),
     onSuccess: (data) => {
       if (!data) return;
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY] });

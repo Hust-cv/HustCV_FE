@@ -46,10 +46,10 @@ const Header = () => {
         {
           label: "Việc làm IT theo cấp bậc",
           key: "job by Title",
-          children: levelData?.filter((item: any) => item.level)?.map((role: any) => ({
-            label: role.level,
-            key: role.level,
-          }))
+          // children: levelData?.filter((item: any) => item.level)?.map((role: any) => ({
+          //   label: role.level,
+          //   key: role.level,
+          // }))
         },
         {
           label: "Việc làm IT theo công ty",
