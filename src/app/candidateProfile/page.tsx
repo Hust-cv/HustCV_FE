@@ -42,10 +42,12 @@ const candidateProfile = () => {
     const [showContent, setShowContent] = useState(false);
     const router = useRouter();
     const isBrowser = typeof window !== 'undefined';
-    let refreshToken: any
+    let refreshToken: any;
+    let role: any;
     if (isBrowser) {
-        refreshToken = localStorage.getItem('refreshToken')
-        if (!refreshToken){
+        refreshToken = localStorage.getItem('refreshToken');
+        role = localStorage.getItem('role');
+        if (role != 2){
             router.push("/login");
        }
     }

@@ -226,7 +226,7 @@ const Certification = () => {
                             <Form.Item
                                 label="Thời gian"
                                 name="start"
-                                initialValue={moment(editCer?.name?.split('*/')[2])}
+                                initialValue={dayjs(moment(editCer?.name?.split('*/')[2]).format('MM/YYYY'), 'MM/YYYY')}
                                 rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
                                 <DatePicker picker="month" />
