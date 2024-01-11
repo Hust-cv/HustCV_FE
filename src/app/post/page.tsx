@@ -19,10 +19,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { IPost } from '../shared/recruitmentPost.type';
 import http from '../utils/http';
 import moment from 'moment'
-const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 const { Option } = Select;
 import { Empty } from 'antd';
+import dayjs from 'dayjs';
 
 const Post = () => {
     //hook
@@ -150,7 +150,6 @@ const Post = () => {
         setIsModalConfirmOpen(true)
     }
 
-
     return (
         <>
             <div className="container mx-auto">
@@ -239,7 +238,7 @@ const Post = () => {
                                 </Select>
                             </Form.Item>
                             <Form.Item label="Ngày hết hạn" name='dateClose'>
-                                <DatePicker />
+                                <DatePicker format='DD/MM/YYYY' />
                             </Form.Item>
                             <Form.Item wrapperCol={{ offset: 10, span: 16 }}>
                                 <Button className='bg-blue-600' type="primary" htmlType="submit">
@@ -408,8 +407,8 @@ const Post = () => {
                                         <Option value="25.000.000 đ - 50.000.000 đ">25.000.000 đ - 50.000.000 đ</Option>
                                     </Select>
                                 </Form.Item>
-                                <Form.Item label="Ngày hết hạn" name='dateClose' initialValue={moment(editPost.dateClose)}>
-                                    <DatePicker />
+                                <Form.Item label="Ngày hết hạn" name='dateClose' initialValue={dayjs(moment(editPost.dateClose).format('DD/MM/YYYY'), 'DD/MM/YYYY')}>
+                                    <DatePicker format='DD/MM/YYYY' />
                                 </Form.Item>
                                 <Form.Item wrapperCol={{ offset: 10, span: 16 }}>
                                     <Button className='bg-blue-600' type="primary" htmlType="submit">
