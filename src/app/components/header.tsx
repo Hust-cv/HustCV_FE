@@ -1,8 +1,8 @@
 "use client";
-import { useGetListBusiness } from "@/src/service/business.service";
-import { useGetListProvinces } from "@/src/service/provinces.service";
-import { useGetListRecruitmentPost } from "@/src/service/recruitmentPost.service";
-import { useGetListSkills } from "@/src/service/skill.service";
+import { useGetListBusiness } from "../../service/business.service";
+import { useGetListProvinces } from "../../service/provinces.service";
+import { useGetListRecruitmentPost } from "../../service/recruitmentPost.service";
+import { useGetListSkills } from "../../service/skill.service";
 import {
   AppstoreOutlined,
   MailOutlined,
