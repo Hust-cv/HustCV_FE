@@ -136,6 +136,7 @@ const Post = () => {
     }
 
     const onFinishEdit = (id: any, values: any) => {
+        console.log('>>> check skill: ', values.skill)
         values.dateClose = values.dateClose.toISOString()
         updateMutation.mutate({ id, values })
     }
@@ -390,7 +391,6 @@ const Post = () => {
                                         allowClear
                                         style={{ width: '100%' }}
                                         placeholder="Kỹ năng"
-                                        // onChange={handleChange}
                                         options={options}
                                     />
                                 </Form.Item>
