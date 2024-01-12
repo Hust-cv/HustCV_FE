@@ -164,7 +164,7 @@ const Header = () => {
         <div className='py-2' onClick={() => router.push('/candidateProfile')}>
           Hồ sơ
         </div>
-        <div className='py-2' onClick={() => router.push('/')}>
+        <div className='py-2' onClick={() => router.push('/manageApplication')}>
           Việc làm của tôi
         </div>
         <div className='py-2'>
