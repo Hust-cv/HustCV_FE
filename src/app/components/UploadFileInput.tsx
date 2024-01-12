@@ -10,17 +10,20 @@ type Props = {
   onChange?: (fileSrc: string) => void;
   className?: string;
 };
-
 export default function UploadFileInput({
   initSrc,
   onChange,
   className,
 }: Props) {
+  const accessToken = localStorage.getItem('refreshToken')
   const inputRef = useRef<HTMLInputElement>(null);
   const uploadService = useMutation({
     mutationFn: (formData: FormData) =>
-      axios.post("'http://localhost:6868/api/create-pdf", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      axios.post("'http://localhost:6868/api/application/create-pdf", formData, {
+        headers: {
+          "Authorization": `Bearer ${accessToken}`,
+          'Content-Type': 'multipart/form-data',
+          },
       }),
     onSuccess: (data) => {
       // @ts-ignore

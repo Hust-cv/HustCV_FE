@@ -81,7 +81,7 @@ export const useApplyRecruitment = (onSuccessHandle?: () => void) => {
       recruitmentPost_id: number;
       content: string;
       CV: string;
-    }) => http.postWithAutoRefreshToken("/api/recruitmentPosts/apply", body, { useAccessToken: false }),
+    }) => http.postWithAutoRefreshToken("/api/application/submit", body, { useAccessToken: true }),
     onSuccess: (data) => {
       if (!data) return;
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY] });
