@@ -254,12 +254,12 @@ const Experience = () => {
                                 initialValue={editExp?.name?.split('*/')[3] == 'Hiện tại' ? true : false}
                                 wrapperCol={{ offset: 8, span: 16 }}
                             >
-                                <Checkbox onChange={(e: any) => onChangeCheckBoxExp(e.target.checked)} >Đanglàm việc</Checkbox>
+                                <Checkbox onChange={(e: any) => onChangeCheckBoxExp(e.target.checked)} >Đang làm việc</Checkbox>
                             </Form.Item>
                             <Form.Item
                                 label="Từ"
                                 name="start"
-                                initialValue={moment(editExp?.name?.split('*/')[2])}
+                                initialValue={dayjs(moment(editExp?.name?.split('*/')[2]).format('MM/YYYY'), 'MM/YYYY')}
                                 rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
                                 <DatePicker picker="month" />
@@ -267,7 +267,7 @@ const Experience = () => {
                             <Form.Item
                                 label="Đến"
                                 name="end"
-                                initialValue={moment(editExp.name.split('*/')[3] != 'Hiện tại' ? editExp.name.split('*/')[3] : undefined)}
+                                initialValue={dayjs(moment(editExp.name.split('*/')[3] != 'Hiện tại' ? editExp.name.split('*/')[3] : undefined).format('MM/YYYY'), 'MM/YYYY')}
                                 rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
                                 <DatePicker picker="month" disabled={disabledCheckboxExp} />
