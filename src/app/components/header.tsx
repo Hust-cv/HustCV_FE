@@ -1,15 +1,12 @@
 'use client'
 import { UserOutlined, DownOutlined } from '@ant-design/icons'
-
 import { MenuProps, message, } from 'antd';
 import { Menu, Button, Popover } from 'antd';
-
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import http from '../utils/http';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-
 
 import { useGetListBusiness } from "../../service/business.service";
 import { useGetListProvinces } from "../../service/provinces.service";
@@ -125,6 +122,14 @@ const Header = () => {
         setUser(user)
         return user
       } catch (error) {
+        //@ts-ignore
+        if (error.response && error.response.status === 403) {
+          message.error('Tài khoản đã bị khoá')
+          localStorage.clear()
+          sessionStorage.clear()
+          router.push('/login')
+          return
+        }
         console.log(error)
         return
       }
@@ -140,6 +145,8 @@ const Header = () => {
       message.success('Đăng xuất thành công')
       router.push('/')
     }catch (error) {
+      sessionStorage.clear()
+      localStorage.clear()
       message.success('Đăng xuất thành công')
       router.push('/')
     }

@@ -55,7 +55,12 @@ const Login: React.FC = () => {
             }
         } catch (error) {
             //@ts-ignore
-             if (error.response && error.response.status === 400) {
+            if(error.response && error.response.status === 403){
+                setLoading(false);
+                message.error("Tài khoản đã bị khoá")
+            }
+            //@ts-ignore
+             else if (error.response && error.response.status === 400) {
             setLoading(false);
             message.error("Tài khoản không tồn tại")
            } // @ts-ignore
