@@ -1,5 +1,6 @@
 'use client'
 import React, { useState } from 'react';
+import dayjs from 'dayjs';
 import Education from './education'
 import Project from './project';
 import { Descriptions } from 'antd';
@@ -190,7 +191,7 @@ const userInfor = () => {
                             <Form.Item
                                 label="Ngày sinh"
                                 name="birth"
-                                initialValue={moment(editInfor?.profile?.split('*/')[2])}
+                                initialValue={dayjs(moment(editInfor?.profile?.split('*/')[2]).format('DD/MM/YYYY'), 'DD/MM/YYYY')}
                                 rules={[{ required: true, message: 'Vui lòng nhập ngày sinh'}]}
                             >
                                 <DatePicker/>

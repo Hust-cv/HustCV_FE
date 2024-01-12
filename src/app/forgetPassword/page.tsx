@@ -33,7 +33,8 @@ const ForgetPassword = () => {
         const handleEmailSubmit = async () => {
         try {
             if (!email) {
-                setError('Vui lòng nhập email');
+                message.error('Vui lòng nhập email');
+
                 return;
             }else{
                 setError('');
@@ -60,7 +61,7 @@ const ForgetPassword = () => {
                 message.error('Email không tồn tại');
             } else {
                 setLoading(false);
-                setError('Hệ thống đang bận');
+                message.error('Hệ thống đang bận');
             }
         } finally {
             // Stop loading
@@ -78,7 +79,7 @@ const ForgetPassword = () => {
     const handleVerificationCodeSubmit = async () => {
         try {
             if (!verificationCode) {
-                setError('Vui lòng nhập mã xác nhận');
+                message.error('Vui lòng nhập mã xác nhận');
                 return;
             }else{
                 setError('');
@@ -99,7 +100,7 @@ const ForgetPassword = () => {
                 message.error('Mã xác nhận không chính xác');
             } else {
                 setLoading(false);
-                setError('Hệ thống đang bận');
+                message.error('Hệ thống đang bận');
             }
         } finally {
             // Stop loading
@@ -112,13 +113,13 @@ const ForgetPassword = () => {
     const handlePasswordSubmit = async () => {
         try {
             if (!newPassword||!confirmNewPassword) {
-                setError('Vui lòng nhập đầy đủ thông tin');
+                message.error('Vui lòng nhập đầy đủ thông tin');
                 return;
             }
             if(newPassword === confirmNewPassword){
                 setError('');
             }else{
-                setError('Mật khẩu mới và xác nhận mật khẩu không khớp');
+                message.error('Mật khẩu mới và xác nhận mật khẩu không khớp');
                 return;
             }
             setLoading(true);
@@ -126,7 +127,7 @@ const ForgetPassword = () => {
             const response = await http.axiosClient.put('/api/auth/resetPassword', {email, newPassword });
             if (response.data?.statusCode === 200) {
                 sessionStorage.clear();
-                message.success('Đặt lại mật khẩu thành công')
+                message.success('Đặt lại mật khẩu thành công bạn có thể đăng nhập lại')
                 setError('');
                 router.push('/login');
             }
@@ -137,7 +138,7 @@ const ForgetPassword = () => {
                 message.error('Mật khẩu tối thiểu 8 ký tự');
             } else {
                 setLoading(false);
-                setError('Hệ thống đang bận');
+                message.error('Hệ thống đang bận');
             }
         } finally {
             // Stop loading
@@ -150,13 +151,15 @@ const ForgetPassword = () => {
 
     // JSX structure for the ForgetPassword component
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh',
+        }}>
             <div style={{
                 border: '1px solid #ccc',
                 padding: '20px',
                 borderRadius: '8px',
                 maxWidth: '400px',
-                width: '100%'
+                width: '100%',
+                background: 'linear-gradient(to bottom right, black 60%, #ff0000)'
             }}>
                 <p style={{
                     fontSize: 30, fontWeight: 'bold',
@@ -164,73 +167,75 @@ const ForgetPassword = () => {
                 }}>
                     Chào mừng bạn đến với HustCv
                 </p>
-                <h2 style={{textAlign: 'center', fontSize: 25, fontWeight: 'bold'}}>Quên mật khẩu</h2>
+                <h2 style={{textAlign: 'center', fontSize: 25, fontWeight: 'bold',color :'white'}}>Quên mật khẩu</h2>
                 {step === 1 && (
                     <>
 
                         <label>
-                            Địa chỉ email:
+
+                            <p style={{color: 'white'}}> Địa chỉ Email:</p>
                             <Input
                                 type="text"
                                 value={email}
                                 placeholder="Nhập email"
                                 onChange={(e) => setEmail(e.target.value)}
                                 onBlur={handleEmailBlur}
+                                style={{marginBottom: '20px'}}
                             />
                             {!isEmailValid && <p style={{color: 'red'}}>Email không hợp lệ.</p>}
                         </label>
-                        <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '20px'}}>
+                        <div style={{display: 'flex', justifyContent: 'right', alignItems: 'center'}}>
                             <Button
                                 type="primary"
                                 onClick={handleEmailSubmit}
                                 loading={loading}
-                                style={{backgroundColor: '#FF0000', borderColor: '#ff0000'}}
+                                style={{backgroundColor: '#FF0000', borderColor: '#ff0000', marginRight: '20px'}}
                             >
                                 {loading ? 'Đang Gửi...' : 'Gửi'}
                             </Button>
-                            <div style={{display: 'flex', justifyContent: 'center', marginBottom: '20px'}}>
-                                <Button
-                                    type="primary"
-                                    onClick={handleLogin}
-                                    style={{backgroundColor: 'blue', borderColor: '#blue'}}
-                                >
-                                    Huỷ
-                                </Button>
-                            </div>
+                            <Button
+                                type="primary"
+                                onClick={handleLogin}
+                                style={{backgroundColor: 'gray', borderColor: '#blue'}}
+                            >
+                                Huỷ
+                            </Button>
                         </div>
+
                     </>
                 )}
 
                 {step === 2 && (
                     <>
                         <label>
-                            Mã xác nhận:
+
+                            <p style={{color: 'white', marginBottom: '8px'}}> Mã xác nhận:</p>
                             <Input
                                 type="text"
                                 value={verificationCode}
                                 placeholder="Nhập mã xác nhận"
                                 onChange={(e) => setVerificationCode(e.target.value)}
+                                style={{marginBottom: '20px'}}
                             />
                         </label>
-                        <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '20px'}}>
+                        <div style={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center'}}>
                             <Button
                                 type="primary"
                                 onClick={handleVerificationCodeSubmit}
                                 loading={loading}
-                                style={{backgroundColor: '#FF0000', borderColor: '#ff0000'}}
+                                style={{backgroundColor: '#FF0000', borderColor: '#FF0000', marginRight: '20px'}}
                             >
                                 {loading ? 'Đang Gửi...' : 'Gửi'}
                             </Button>
-                            <div style={{display: 'flex', justifyContent: 'center', marginBottom: '20px'}}>
-                                <Button
-                                    type="primary"
-                                    onClick={handleLogin}
-                                    style={{backgroundColor: 'blue', borderColor: '#blue'}}
-                                >
-                                    Huỷ
-                                </Button>
-                            </div>
+                            <Button
+                                type="primary"
+                                onClick={handleLogin}
+                                style={{backgroundColor: 'gray', borderColor: '#blue'}}
+                            >
+                                Huỷ
+                            </Button>
                         </div>
+
 
                     </>
                 )}
@@ -238,7 +243,8 @@ const ForgetPassword = () => {
                 {step === 3 && (
                     <>
                         <label>
-                            Mật khẩu mới:
+
+                            <p style={{color: 'white', marginBottom: '8px'}}> Mật khẩu mới:</p>
                             <Input
                                 type={showPassword ? "text" : "password"}
                                 value={newPassword}
@@ -253,7 +259,8 @@ const ForgetPassword = () => {
                             </p>}
                         </label>
                         <label>
-                            Nhập lại mật khẩu mới:
+
+                            <p style={{color: 'white', marginBottom: '8px'}}> Nhập lại mật khẩu mới:</p>
                             <Input
                                 type={showPassword ? "text" : "password"}
                                 value={confirmNewPassword}
@@ -266,23 +273,24 @@ const ForgetPassword = () => {
                                 type="checkbox"
                                 label=" Hiển thị mật khẩu"
                                 checked={showPassword}
-                                onChange={(e) => setShowPassword(e.target.checked)}/>
+                                onChange={(e) => setShowPassword(e.target.checked)}
+                                style={{color: 'white'}}
+                            />
                         </Form.Group>
-                        <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '20px'}}>
+                        <div style={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center'}}>
                             <Button
                                 type="primary"
                                 onClick={handlePasswordSubmit}
                                 loading={loading}
-                                style={{backgroundColor: '#FF0000', borderColor: '#ff0000'}}
+                                style={{backgroundColor: '#FF0000', borderColor: '#ff0000',marginRight: '20px'}}
                             >
-
                                 {loading ? 'Đang Gửi...' : 'Gửi'}
                             </Button>
-                            <div style={{display: 'flex', justifyContent: 'center', marginBottom: '20px'}}>
+                            <div style={{display: 'flex', justifyContent: 'center'}}>
                                 <Button
                                     type="primary"
                                     onClick={handleLogin}
-                                    style={{backgroundColor: 'blue', borderColor: '#blue'}}
+                                    style={{backgroundColor: 'gray', borderColor: '#blue'}}
                                 >
                                     Huỷ
                                 </Button>

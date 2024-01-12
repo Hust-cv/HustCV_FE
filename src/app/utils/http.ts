@@ -69,14 +69,12 @@ class Http {
     public async postWithAutoRefreshToken(url: string, data: any, options: IResOptions): Promise<any> {
         try {
             const requestHeader: (RawAxiosRequestHeaders) | AxiosHeaders = {};
-
             if(options.useAccessToken) {
                 requestHeader.authorization = `Bearer ${localStorage.getItem('refreshToken')}`
             }
             const result = await this.axiosClient.post(url, data,{
                 headers: requestHeader
             })
-
             return result.data
         } catch (error) {
             try{

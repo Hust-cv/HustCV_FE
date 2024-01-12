@@ -131,14 +131,20 @@ const Header = () => {
     }
 
   })
-  const handleLogout = async () => {
-    await http.getWithAutoRefreshToken('/api/auth/logout', { useAccessToken: true })
-    sessionStorage.clear()
-    localStorage.clear()
-    setUser(null)
-    message.success('Đăng xuất thành công')
-    router.push('/')
+  const handleLogout = async() => {
+    try {
+      await http.getWithAutoRefreshToken('/api/auth/logout', {useAccessToken: true})
+      sessionStorage.clear()
+      localStorage.clear()
+      setUser(null)
+      message.success('Đăng xuất thành công')
+      router.push('/')
+    }catch (error) {
+      message.success('Đăng xuất thành công')
+      router.push('/')
+    }
   }
+
   const employerContent = (
     <div className='min-w-14 cursor-pointer'>
       <div className='py-2 ' onClick={() => router.push('/post')}>
@@ -186,6 +192,7 @@ const Header = () => {
       <div className="container min-h-[88px] mx-auto flex items-center">
         <div onClick={() => router.push('/')} className='cursor-pointer'>
           <p className="text-white text-3xl font-bold">Hust<span className="text-[#f0101a]">CV</span></p>
+
         </div>
         <div className='ml-48 flex-1'>
           <div className='flex items-center gap-6 '>

@@ -36,7 +36,7 @@ const Login: React.FC = () => {
           let response;
         try {
             if (!email||!password) {
-                setError('Vui lòng nhập đầy đủ thông tin');
+                message.error('Vui lòng nhập đầy đủ thông tin');
                 return;
             }else{
                 setError('');
@@ -83,7 +83,6 @@ const Login: React.FC = () => {
         <div style={{
             display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh',
 
-
         }}>
             <p style={{fontSize: 30, fontWeight: 'bold',
                 position: 'absolute', top: '100px', left: '100px'
@@ -93,11 +92,15 @@ const Login: React.FC = () => {
             <div style={{
                 border: '1px solid #ccc', padding: '20px', borderRadius: '8px', maxWidth: '400px', width: '100%',
                 //xét màu trắng
-                backgroundColor: 'white',
+                background: 'linear-gradient(to bottom right, black 70%, #ff0000)'
             }}>
-                <h2 style={{textAlign: 'center', fontSize: 25, fontWeight: 'bold'}}>Đăng Nhập</h2>
+                <h2 style={{
+                    textAlign: 'center', fontSize: 25, fontWeight: 'bold'
+                    // xét màu trắng
+                    , color: '#fff'
+                }}>Đăng Nhập</h2>
                 <label>
-                    Địa chỉ email:
+                    <p style={{color: 'white', marginBottom: '8px'}}> Địa chỉ Email:</p>
                     <Input
                         type="text"
                         value={email}
@@ -109,7 +112,7 @@ const Login: React.FC = () => {
                 </label>
                 <br/>
                 <label>
-                    Mật khẩu:
+                <p style={{color: 'white', marginBottom: '8px'}}>Mật khẩu :</p>
                     <Input
                         type={showPassword ? "text" : "password"}
                         value={password}
@@ -123,7 +126,9 @@ const Login: React.FC = () => {
                         type="checkbox"
                         label=" Hiển thị mật khẩu"
                         checked={showPassword}
-                        onChange={(e) => setShowPassword(e.target.checked)}/>
+                        onChange={(e) => setShowPassword(e.target.checked)}
+                        style={{ color: 'white' }}
+                    />
                 </Form.Group>
                 <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '20px'}}>
                     <Button
@@ -142,7 +147,8 @@ const Login: React.FC = () => {
                             }}
                             onClick={handleForgotPassword}
                         >
-                            Quên mật khẩu?
+                            <p style={{color: 'white', marginBottom: '8px'}}> Quên mật khẩu?</p>
+
                         </p>
                     </div>
                 </div>
@@ -154,8 +160,10 @@ const Login: React.FC = () => {
                     color: 'black',
                     cursor: 'pointer'
                 }}>
-                    <a style={{marginRight: '5px'}}>Bạn chưa có tài khoản?</a>
-                    <span onClick={handleRegister} style={{cursor: 'pointer'}}>Đăng kí ngay</span>
+                    <div>
+                        <a style={{color: 'white', marginBottom: '8px', marginRight: '8px'}}>Bạn chưa có tài khoản?</a>
+                        <span onClick={handleRegister} style={{cursor: 'pointer', color: 'white', marginBottom: '8px'}}>Đăng kí ngay</span>
+                    </div>
                 </p>
                 {error && <p style={{color: 'red'}}>{error}</p>}
             </div>

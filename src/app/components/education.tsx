@@ -258,7 +258,7 @@ const Education = () => {
                             <Form.Item
                                 label="Từ"
                                 name="start"
-                                initialValue={moment(editEdu?.name?.split('*/')[2])}
+                                initialValue={dayjs(moment(editEdu?.name?.split('*/')[2]).format('MM/YYYY'), 'MM/YYYY')}
                                 rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
                                 <DatePicker picker="month" />
@@ -266,7 +266,7 @@ const Education = () => {
                             <Form.Item
                                 label="Đến"
                                 name="end"
-                                initialValue={moment(editEdu.name.split('*/')[3] != 'Hiện tại' ? editEdu.name.split('*/')[3] : undefined)}
+                                initialValue={dayjs(moment(editEdu.name.split('*/')[3] != 'Hiện tại' ? editEdu.name.split('*/')[3] : undefined).format('MM/YYYY'), 'MM/YYYY')}
                                 rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
                                 <DatePicker picker="month" disabled={disabledCheckboxEdu} />

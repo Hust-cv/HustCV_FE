@@ -49,17 +49,17 @@ const Signup: React.FC = () => {
         let response = null ;
         try {
             if (!email || !password || !username|| !phoneNumber|| !birthDay|| !confirmPass) {
-                setError('Vui lòng nhập đầy đủ thông tin đăng ký');
+                message.error('Vui lòng nhập đầy đủ thông tin');
                 setLoading(false);
                 return;
             }
             if(password !== confirmPass){
-                setError('Mật khẩu không khớp');
+                message.error('Mật khẩu không khớp');
                 setLoading(false);
                 return;
             }
             if(birthDay>new Date().toISOString().slice(0, 10)){
-                setError('Ngày sinh không hợp lệ');
+                message.error('Ngày sinh không hợp lệ');
                 setLoading(false);
                 return;
             }
@@ -68,7 +68,7 @@ const Signup: React.FC = () => {
             let business_id = null;
             if (isEmployerOption) {
                 if (!businessName || !businessAddress || !businessWebsite) {
-                    setError('Vui lòng nhập đầy đủ thông tin công ty');
+                    message.error('Vui lòng nhập đầy đủ thông tin công ty');
                     setLoading(false);
                     return;
                 }
@@ -130,7 +130,6 @@ const Signup: React.FC = () => {
             justifyContent: 'center',
             alignItems: 'center',
             height: '150vh',
-            backgroundImage: "linear-gradient(to bottom, #ffffff, #e0e0e0)",
         }}>
             <p style={{
                 fontSize: 30, fontWeight: 'bold',
@@ -143,12 +142,14 @@ const Signup: React.FC = () => {
                 padding: '20px',
                 borderRadius: '8px',
                 maxWidth: '400px',
-                width: '100%'
+                width: '100%',
+                background: 'linear-gradient(to bottom right, black 80%, #ff0000)'
 
             }}>
-                <h2 style={{textAlign: 'center', fontSize: 25, fontWeight: 'bold'}}>Đăng Ký</h2>
+                <h2 style={{textAlign: 'center', fontSize: 25, fontWeight: 'bold', color: 'white'}}>Đăng Ký</h2>
                 <label>
-                    Họ và tên:
+
+                    <p style={{color: 'white', marginBottom: '8px'}}> Họ và tên:</p>
                     <Input
                         type="text"
                         value={username}
@@ -159,7 +160,7 @@ const Signup: React.FC = () => {
                 </label>
                 <br/>
                 <label>
-                    Địa chỉ email:
+                    <p style={{color: 'white', marginBottom: '8px'}}> Địa chỉ Email:</p>
                     <Input
                         type="text"
                         value={email}
@@ -172,7 +173,8 @@ const Signup: React.FC = () => {
                 </label>
                 <br/>
                 <label>
-                    Mật khẩu:
+
+                    <p style={{color: 'white', marginBottom: '8px'}}> Mật khẩu:</p>
                     <Input
                         type={showPassword ? "text" : "password"}
                         value={password}
@@ -187,7 +189,7 @@ const Signup: React.FC = () => {
                     </p>}
                 </label>
                 <label>
-                    Nhập lại mật khẩu:
+                    <p style={{color: 'white', marginBottom: '8px'}}> Nhập lại mật khẩu:</p>
                     <Input
                         type={showPassword ? "text" : "password"}
                         value={confirmPass}
@@ -200,10 +202,12 @@ const Signup: React.FC = () => {
                         type="checkbox"
                         label=" Hiển thị mật khẩu"
                         checked={showPassword}
-                        onChange={(e) => setShowPassword(e.target.checked)}/>
+                        onChange={(e) => setShowPassword(e.target.checked)}
+                        style={{color: 'white'}}
+                    />
                 </Form.Group>
                 <label>
-                    Số điện thoại:
+                    <p style={{color: 'white', marginBottom: '8px'}}> Số điện thoại:</p>
                     <Input
                         type="text"
                         value={phoneNumber}
@@ -225,15 +229,14 @@ const Signup: React.FC = () => {
                 {/*        style={{ marginBottom: '20px' }}*/}
                 {/*    />*/}
                 {/*</label>*/}
-                <label>
-                    Ngày sinh:
-                    <DatePicker onChange={(date, dateString) => setBirthDay(dateString)}
-                                style={{marginBottom: '20px'}}/>
+                <label style={{marginBottom: '12px'}}>
+                    <p style={{color: 'white', marginBottom: '8px'}}>Ngày sinh:</p>
+                    <DatePicker onChange={(date, dateString) => setBirthDay(dateString)}/>
                 </label>
                 <br/>
                 {/* Employer option */}
-                <div style={{marginBottom: '20px'}}>
-                    <label>
+                <div style={{marginBottom: '20px', marginTop: '20px'}}>
+                    <label style={{color: 'white'}}>
                         Bạn có phải nhà tuyển dụng không?
                         <input
                             type="checkbox"
@@ -242,12 +245,14 @@ const Signup: React.FC = () => {
                             style={{marginLeft: '5px'}}
                         />
                     </label>
+
                 </div>
+
                 {/* Render additional fields if isEmployerOption is true */}
                 {isEmployerOption && (
                     <>
                         <label>
-                            Tên công ty:
+                            <p style={{color: 'white', marginBottom: '8px'}}>Tên công ty:</p>
                             <Input
                                 type="text"
                                 value={businessName}
@@ -258,7 +263,7 @@ const Signup: React.FC = () => {
                         </label>
                         <br/>
                         <label>
-                            Địa chỉ công ty:
+                            <p style={{color: 'white', marginBottom: '8px'}}> Địa chỉ công ty:</p>
                             <Input
                                 type="text"
                                 value={businessAddress}
@@ -269,7 +274,7 @@ const Signup: React.FC = () => {
                         </label>
                         <br/>
                         <label>
-                            Website công ty:
+                            <p style={{color: 'white', marginBottom: '8px'}}> Website công ty:</p>
                             <Input
                                 type="text"
                                 value={businessWebsite}
@@ -294,13 +299,13 @@ const Signup: React.FC = () => {
                         <Button
                             type="primary"
                             onClick={handleLogin}
-                            style={{backgroundColor: 'blue', borderColor: '#blue'}}
+                            style={{backgroundColor: 'Gray', borderColor: '#blue'}}
                         >
                             Huỷ
                         </Button>
                     </div>
                 </div>
-                {error && <p style={{color: 'red'}}>{error}</p>}
+                {error && <p style={{color: '#ff0000'}}>{error}</p>}
             </div>
         </div>
     );
