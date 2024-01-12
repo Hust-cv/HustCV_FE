@@ -19,7 +19,7 @@ export default function UploadFileInput({
   const inputRef = useRef<HTMLInputElement>(null);
   const uploadService = useMutation({
     mutationFn: (formData: FormData) =>
-      axios.post("'http://localhost:6868/api/application/create-pdf", formData, {
+      axios.post("http://localhost:6868/api/application/create-pdf", formData, {
         headers: {
           "Authorization": `Bearer ${accessToken}`,
           'Content-Type': 'multipart/form-data',
