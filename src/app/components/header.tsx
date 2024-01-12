@@ -1,4 +1,16 @@
-"use client";
+'use client'
+import { UserOutlined, DownOutlined } from '@ant-design/icons'
+
+import { MenuProps, message, } from 'antd';
+import { Menu, Button, Popover } from 'antd';
+
+import { useRouter } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
+import http from '../utils/http';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+
+
 import { useGetListBusiness } from "../../service/business.service";
 import { useGetListProvinces } from "../../service/provinces.service";
 import { useGetListRecruitmentPost } from "../../service/recruitmentPost.service";
@@ -8,32 +20,25 @@ import {
   MailOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
-import type { MenuProps } from "antd";
-import { Menu, Button } from "antd";
-import { useRouter } from "next/navigation";
 
 const Header = () => {
+  const [user, setUser] = useState<any>(null)
+  const router = useRouter();
+
   const { data: provincesData } = useGetListProvinces();
   const { data: skillsData } = useGetListSkills();
   const { data: levelData } = useGetListRecruitmentPost();
   const { data: businessData } = useGetListBusiness();
-  const router = useRouter();
 
-  const handleLoginClick = () => {
-    router.push("/login");
-  };
-  const handleRegisterClick = () => {
-    router.push("/signup");
-  };
-  const items: MenuProps["items"] = [
+  const items: MenuProps['items'] = [
     {
-      label: "All Jobs",
-      key: "All Job",
+      label: 'All Jobs',
+      key: 'All Job',
       children: [
         {
           label: "Việc làm IT theo kĩ năng",
           key: "job by skills",
-          children: skillsData?.map(skill => ({
+          children: skillsData?.map((skill: any) => ({
             label: skill.name,
             key: skill.name,
           }))
@@ -41,7 +46,7 @@ const Header = () => {
         {
           label: "Việc làm IT theo cấp bậc",
           key: "job by Title",
-          children: levelData?.filter(item => item.level)?.map(role => ({
+          children: levelData?.filter((item: any) => item.level)?.map((role: any) => ({
             label: role.level,
             key: role.level,
           }))
@@ -49,7 +54,7 @@ const Header = () => {
         {
           label: "Việc làm IT theo công ty",
           key: "job by company",
-          children: businessData?.map(role => ({
+          children: businessData?.map((role: any) => ({
             label: role.businessName,
             key: role.businessName,
           }))
@@ -65,135 +70,145 @@ const Header = () => {
       ],
     },
     {
-      label: "Top Công ty IT",
-      key: "app",
+      label: 'Top Công ty IT',
+      key: 'app',
       children: [
         {
-          label: "Công ty tốt nhất",
-          key: "best companies",
+          label: 'Công ty tốt nhất',
+          key: 'best companies',
           children: [
             {
-              label: "Công ty 1",
-              key: "company 1",
+              label: 'Công ty 1',
+              key: 'company 1'
             },
             {
-              label: "Công ty 2",
-              key: "company 2",
-            },
-          ],
+              label: 'Công ty 2',
+              key: 'company 2'
+            }
+          ]
         },
         {
-          label: "Review công ty",
-          key: "review",
-        },
-      ],
+          label: 'Review công ty',
+          key: 'review'
+        }
+      ]
     },
     {
-      label: "Blogs",
-      key: "SubMenu",
+      label: "Đơn ứng tuyển",
+      key: `application`,
       children: [
         {
-          label: "Báo cáo lương IT",
-          key: "report",
-          children: [
-            {
-              label: "Option 1",
-              key: "setting:1",
-            },
-            {
-              label: "Option 2",
-              key: "setting:2",
-            },
-          ],
+          label: (
+            <Link href="http://localhost:3000/pendingApplications">
+              Đang chờ
+            </Link>
+          ),
+          key: "application:1"
         },
         {
-          label: "Sự nghiệp IT",
-          key: "career",
-          children: [
-            {
-              label: "Option 3",
-              key: "setting:3",
-            },
-            {
-              label: "Option 4",
-              key: "setting:4",
-            },
-          ],
-        },
-        {
-          label: "Ứng tuyển và thăng tiến",
-          key: "apply",
-          children: [
-            {
-              label: "Option 3",
-              key: "setting:5",
-            },
-            {
-              label: "Option 4",
-              key: "setting:6",
-            },
-          ],
-        },
-        {
-          label: "Chuyên môn IT",
-          key: "major",
-          children: [
-            {
-              label: "Option 3",
-              key: "setting:7",
-            },
-            {
-              label: "Option 4",
-              key: "setting:8",
-            },
-          ],
-        },
-      ],
-    },
+          label: (
+            <Link href="http://localhost:3000/acceptedApplications">
+              Đã duyệt
+            </Link>
+          ),
+          key: "application:2"
+        }
+      ]
+    }
   ];
+
+  const verifyLogin = useQuery({
+    queryKey: ['verify'],
+    queryFn: async () => {
+      try {
+        const user = await http.getWithAutoRefreshToken('http://localhost:6868/api/users/me', { useAccessToken: true })
+        setUser(user)
+        return user
+      } catch (error) {
+        console.log(error)
+        return
+      }
+    }
+
+  })
+  const handleLogout = async () => {
+    await http.getWithAutoRefreshToken('/api/auth/logout', { useAccessToken: true })
+    sessionStorage.clear()
+    localStorage.clear()
+    setUser(null)
+    message.success('Đăng xuất thành công')
+    router.push('/')
+  }
+  const employerContent = (
+    <div className='min-w-14 cursor-pointer'>
+      <div className='py-2 ' onClick={() => router.push('/post')}>
+        Tuyển dụng
+      </div>
+      <div className='py-2'>
+        <button className='text-black' onClick={handleLogout} style={{ color: 'black' }}>
+          Đăng xuất
+        </button>
+
+      </div>
+    </div>
+  )
+
+  const employeeContent = (
+    <div className='min-w-14 cursor-pointer'>
+      <div className='py-2' onClick={() => router.push('/candidateProfile')}>
+        Hồ sơ
+      </div>
+      <div className='py-2'>
+        <button className='text-black' onClick={handleLogout} style={{ color: 'black' }}>
+          Đăng xuất
+        </button>
+      </div>
+    </div>
+  )
+
+  const handleLoginClick = () => {
+    router.push('/login');
+  };
+  const handleRegisterClick = () => {
+    router.push('/signup');
+  };
+
   const onNavigate: MenuProps['onClick'] = (e) => {
     router.push(`/?key=${e.key}`)
     setTimeout(() => {
       window.location.reload()
     }, 500)
   };
-  
+
+
   return (
     <div className="header min-h-[88px] border-b border-b-gray-800 fixed z-10 top-0 left-0 right-0">
       <div className="container min-h-[88px] mx-auto flex items-center">
-        <div>
-          <p className="text-white text-3xl font-bold">
-            Hust<span className="text-[#f0101a]">CV</span>
-          </p>
+        <div onClick={() => router.push('/')} className='cursor-pointer'>
+          <p className="text-white text-3xl font-bold">Hust<span className="text-[#f0101a]">CV</span></p>
         </div>
-        <div className="ml-48 flex-1">
-          <div className="flex items-center gap-6 ">
-            <Menu
-              className="bg-transparent min-w-[400px] text-xl text-[#a6a6a6]"
-              mode="horizontal"
-              items={items}
-              onClick={onNavigate}
-            />
+        <div className='ml-48 flex-1'>
+          <div className='flex items-center gap-6 '>
+            <Menu className='bg-transparent min-w-[400px] text-xl text-[#a6a6a6]' mode="horizontal" selectedKeys={[]} items={items} onClick={onNavigate} />
           </div>
         </div>
-        <div className="pr-14">
-          <button
-            className="text-[#a6a6a6] hover:text-white"
-            onClick={handleLoginClick}
-          >
-            Đăng nhập
-          </button>
-          <span className="text-[#a6a6a6] mx-2">/</span>
-          <button
-            className="text-[#a6a6a6] hover:text-white"
-            onClick={handleRegisterClick}
-          >
-            Đăng ký
-          </button>
-        </div>
+        {user ? (
+          <Popover content={user.role_id === 2 ? employeeContent : employerContent} style={{ width: 100 }} trigger="click" placement="bottom">
+            <div className='pr-28 cursor-pointer'><UserOutlined className='mr-4' />{user.username}<DownOutlined className='ml-4 opacity-70' /></div>
+          </Popover>
+        ) : (
+          <div className='pr-14'>
+            <button className='text-[#a6a6a6] hover:text-white' onClick={handleLoginClick}>
+              Đăng nhập
+            </button>
+            <span className='text-[#a6a6a6] mx-2'>/</span>
+            <button className='text-[#a6a6a6] hover:text-white' onClick={handleRegisterClick}>
+              Đăng ký
+            </button>
+          </div>
+        )}
       </div>
-    </div>
-  );
-};
+    </div>)
+}
 
-export default Header;
+export default Header

@@ -5,7 +5,8 @@ import { Button, Input } from 'antd';
 import { useRouter } from 'next/navigation';
 import http from "@/app/utils/http";
 import { useQueryClient } from '@tanstack/react-query';
-
+import { message } from 'antd';
+import {Form} from "react-bootstrap";
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -14,10 +15,10 @@ const Login: React.FC = () => {
     const [error, setError] = useState('');
     const [loginAttempts, setLoginAttempts] = useState(0);
     const [isValidEmail, setIsValidEmail] = useState(true);
+    const [showPassword, setShowPassword] = useState<boolean>(false);
     const router = useRouter();
     const [isEmailValid, setIsEmailValid] = useState(true);
     const queryClient = useQueryClient()
-
     const handleForgotPassword = () => {
         router.push('/forgetPassword');
     };
@@ -31,48 +32,70 @@ const Login: React.FC = () => {
         const isValid = emailRegex.test(email);
         setIsEmailValid(isValid);
     };
-
     const handleLogin = async () => {
+          let response;
         try {
-            if (!email) {
-                setError('Vui lòng nhập email');
+            if (!email||!password) {
+                setError('Vui lòng nhập đầy đủ thông tin');
                 return;
+            }else{
+                setError('');
             }
-            if (!password) {
-                setError('Vui lòng nhập password');
-                return;
-            }
-
             setLoading(true);
-            const response = await http.axiosClient.post('/api/auth/login', { email, password });
-            console.log("check : ",response.data);
-            localStorage.setItem('accessToken', response.data?.resBody?.accessToken);
-            localStorage.setItem('refreshToken', response.data?.resBody?.refreshToken);
-            console.log(">>>>>>1" + response.data?.resBody?.accessToken)
-            setLoginAttempts(0);
-            setLoading(false);
-            router.push('/');
-            queryClient.invalidateQueries({ queryKey: ['verify'] })
-        } catch (error) {
-            setError('Email hoặc mật khẩu không đúng. Vui lòng thử lại');
-            setLoading(false);
-            setLoginAttempts((prevAttempts) => prevAttempts + 1);
-            if (loginAttempts + 1 === 5) {
-                const changePassword = window.confirm(
-                    'Bạn có muốn đổi mật khẩu không?'
-                );
-                if (changePassword) {
-                    router.push('/forgetPassword');
-                }
-
+            response = await http.axiosClient.post('/api/auth/login', {email, password});
+            if (response.data?.statusCode === 200) {
+                localStorage.setItem('accessToken', response.data?.resBody?.accessToken);
+                localStorage.setItem('refreshToken', response.data?.resBody?.refreshToken);
+                localStorage.setItem('role', response.data?.resBody?.userData?.role_id);
                 setLoginAttempts(0);
+                setLoading(false);
+                message.success('Đăng nhập thành công!')
+                router.push('/');
+                queryClient.invalidateQueries({queryKey: ['verify']})
             }
+        } catch (error) {
+            //@ts-ignore
+             if (error.response && error.response.status === 400) {
+            setLoading(false);
+            message.error("Tài khoản không tồn tại")
+           } // @ts-ignore
+             else if (error.response && error.response.status === 401) {
+            setLoading(false);
+            message.error("Mật khẩu không chính xác")
+                 setLoginAttempts((prevAttempts) => prevAttempts + 1);
+                if (loginAttempts + 1 === 5) {
+                     const changePassword = window.confirm(
+                         'Bạn có muốn đổi mật khẩu không?'
+                     );
+                     if (changePassword) {
+                         router.push('/forgetPassword');
+                     }
+                     setLoginAttempts(0);
+                 }
+
+             } else {
+            setLoading(false);
+            message.error("Hệ thống đang bận")
         }
+    }
     };
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-            <div style={{ border: '1px solid #ccc', padding: '20px', borderRadius: '8px', maxWidth: '400px', width: '100%' }}>
-                <h2 style={{ textAlign: 'center' }}>Đăng Nhập</h2>
+        <div style={{
+            display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh',
+
+
+        }}>
+            <p style={{fontSize: 30, fontWeight: 'bold',
+                position: 'absolute', top: '100px', left: '100px'
+                 }}>
+                Chào mừng bạn đến với HustCv
+            </p>
+            <div style={{
+                border: '1px solid #ccc', padding: '20px', borderRadius: '8px', maxWidth: '400px', width: '100%',
+                //xét màu trắng
+                backgroundColor: 'white',
+            }}>
+                <h2 style={{textAlign: 'center', fontSize: 25, fontWeight: 'bold'}}>Đăng Nhập</h2>
                 <label>
                     Địa chỉ email:
                     <Input
@@ -82,29 +105,36 @@ const Login: React.FC = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         onBlur={handleEmailBlur}
                     />
-                    {!isEmailValid && <p style={{ color: 'red' }}>Email không hợp lệ.</p>}
+                    {!isEmailValid && <p style={{color: 'red'}}>Email không hợp lệ.</p>}
                 </label>
-                <br />
+                <br/>
                 <label>
-                    Password:
+                    Mật khẩu:
                     <Input
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         value={password}
                         placeholder="Nhập mật khẩu"
                         onChange={(e) => setPassword(e.target.value)}
-                        style={{ marginBottom: '20px' }}
+                        style={{marginBottom: '20px'}}
                     />
                 </label>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+                <Form.Group className="mb-3">
+                    <Form.Check
+                        type="checkbox"
+                        label=" Hiển thị mật khẩu"
+                        checked={showPassword}
+                        onChange={(e) => setShowPassword(e.target.checked)}/>
+                </Form.Group>
+                <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '20px'}}>
                     <Button
                         type="primary"
                         onClick={handleLogin}
                         loading={loading}
-                        style={{ backgroundColor: '#FF0000', borderColor: '#ff0000' }}
+                        style={{backgroundColor: '#FF0000', borderColor: '#ff0000'}}
                     >
                         {loading ? 'Đang đăng nhập...' : 'Đăng Nhập'}
                     </Button>
-                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                    <div style={{display: 'flex', justifyContent: 'center', marginBottom: '20px'}}>
                         <p
                             style={{
                                 color: 'black',
@@ -124,10 +154,10 @@ const Login: React.FC = () => {
                     color: 'black',
                     cursor: 'pointer'
                 }}>
-                    <a style={{ marginRight: '5px' }}>Bạn chưa có tài khoản?</a>
-                    <span onClick={handleRegister} style={{ cursor: 'pointer' }}>Đăng kí ngay</span>
+                    <a style={{marginRight: '5px'}}>Bạn chưa có tài khoản?</a>
+                    <span onClick={handleRegister} style={{cursor: 'pointer'}}>Đăng kí ngay</span>
                 </p>
-                {error && <p style={{ color: 'red' }}>{error}</p>}
+                {error && <p style={{color: 'red'}}>{error}</p>}
             </div>
         </div>
     );

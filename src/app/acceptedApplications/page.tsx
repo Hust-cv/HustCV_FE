@@ -60,16 +60,16 @@ const Home = () => {
             {!(posts != null && posts.length==0) || 
                 <div className="text-center h-screen">
                     <h1 className="text-3xl text-gray-800 font-semibold">
-                        Hiring Posts
+                        Đơn ứng tuyển đã duyệt
                     </h1>
                     <p className="mt-3 text-gray-500">
-                        No Hiring Posts
+                        Người dùng chưa tạo bài đăng tuyển
                     </p>
                 </div>
             }
             {!(posts != null && posts.length) || 
             // <Card title={"Hiring Posts"} posts={posts} href={`/danh-cho-nha-tuyen-dung/applications/list/`}></Card>
-            <Card title={"Hiring Posts"} posts={posts} href={`/acceptedApplications/`}></Card>
+            <Card title={"Đơn ứng tuyển đã duyệt"} posts={posts} href={`/acceptedApplications/`}></Card>
             }
         </>
     )

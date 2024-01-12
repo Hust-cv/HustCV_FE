@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import Education from '../components/education'
 import Project from '../components/project';
 import Certification from '../components/certification';
@@ -39,6 +39,7 @@ import axios from 'axios';
 
 
 const candidateProfile = () => {
+    const [showContent, setShowContent] = useState(false);
     const router = useRouter();
     const isBrowser = typeof window !== 'undefined';
     let refreshToken: any
@@ -101,7 +102,23 @@ const candidateProfile = () => {
             </>
         )
     }
-
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowContent(true);
+        }, 500);
+        return () => clearTimeout(timer);
+    }, []);
+    
+    if (!showContent) {
+        return(     
+            <div className="text-center h-screen">
+                <h1 className="text-3xl text-gray-800 font-semibold">
+                    Loading...
+                </h1>
+            </div>
+        )
+    }
+    
     return (
         <>
             <Tabs
