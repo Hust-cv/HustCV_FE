@@ -160,16 +160,19 @@ const Header = () => {
   )
 
   const employeeContent = (
-    <div className='min-w-14 cursor-pointer'>
-      <div className='py-2' onClick={() => router.push('/candidateProfile')}>
-        Hồ sơ
+      <div className='min-w-14 cursor-pointer'>
+        <div className='py-2' onClick={() => router.push('/candidateProfile')}>
+          Hồ sơ
+        </div>
+        <div className='py-2' onClick={() => router.push('/')}>
+          Việc làm của tôi
+        </div>
+        <div className='py-2'>
+          <button className='text-black' onClick={handleLogout} style={{color: 'black'}}>
+            Đăng xuất
+          </button>
+        </div>
       </div>
-      <div className='py-2'>
-        <button className='text-black' onClick={handleLogout} style={{ color: 'black' }}>
-          Đăng xuất
-        </button>
-      </div>
-    </div>
   )
 
   const handleLoginClick = () => {
@@ -201,7 +204,7 @@ const Header = () => {
         </div>
         {user ? (
           <Popover content={user.role_id === 2 ? employeeContent : employerContent} style={{ width: 100 }} trigger="click" placement="bottom">
-            <div className='pr-28 cursor-pointer'><UserOutlined className='mr-4' />{user.username}<DownOutlined className='ml-4 opacity-70' /></div>
+            <div className='pr-28 cursor-pointer text-[#a6a6a6] hover:text-white' ><UserOutlined className='mr-4' />{user.username}<DownOutlined className='ml-4 opacity-70' /></div>
           </Popover>
         ) : (
           <div className='pr-14'>

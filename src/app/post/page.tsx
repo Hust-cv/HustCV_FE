@@ -175,23 +175,23 @@ const Post = () => {
                             className='w-800px'
                             onFinish={onFinish}
                         >
-                            <Form.Item label="Tiêu đề bài đăng" name='title'>
+                            <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label="Tiêu đề bài đăng" name='title'>
                                 <Input />
                             </Form.Item>
-                            <Form.Item label="Mô tả bài đăng tuyển" name='describe'>
+                            <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label="Mô tả bài đăng tuyển" name='describe'>
                                 <TextArea rows={4} />
                             </Form.Item>
-                            <Form.Item label="Yêu cầu" name='request'>
+                            <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label="Yêu cầu" name='request'>
                                 <TextArea rows={4} />
                             </Form.Item>
-                            <Form.Item label="Hình thức" name='form'>
+                            <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label="Hình thức" name='form'>
                                 <Radio.Group>
                                     <Radio value="Onsite"> Onsite </Radio>
                                     <Radio value="Hybrid"> Hybrid </Radio>
                                     <Radio value="Remote"> Remote </Radio>
                                 </Radio.Group>
                             </Form.Item>
-                            <Form.Item label='Địa điểm' name='location'>
+                            <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label='Địa điểm' name='location'>
                                 <Select
                                     allowClear
                                     style={{ width: '100%' }}
@@ -204,7 +204,7 @@ const Post = () => {
                                     <Option value="Hải Phòng">Hải Phòng</Option>
                                 </Select>
                             </Form.Item>
-                            <Form.Item label='Trình độ' name='level'>
+                            <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label='Trình độ' name='level'>
                                 <Select
                                     allowClear
                                     style={{ width: '100%' }}
@@ -216,7 +216,7 @@ const Post = () => {
                                     <Option value="Senior">Senior</Option>
                                 </Select>
                             </Form.Item>
-                            <Form.Item label='Kỹ năng' name='skill'>
+                            <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label='Kỹ năng' name='skill'>
                                 <Select
                                     mode="multiple"
                                     allowClear
@@ -225,7 +225,7 @@ const Post = () => {
                                     options={options}
                                 />
                             </Form.Item>
-                            <Form.Item label='Mức lương' name='salary'>
+                            <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label='Mức lương' name='salary'>
                                 <Select
                                     allowClear
                                     style={{ width: '100%' }}
@@ -238,10 +238,10 @@ const Post = () => {
                                     <Option value="25.000.000 đ - 50.000.000 đ">25.000.000 đ - 50.000.000 đ</Option>
                                 </Select>
                             </Form.Item>
-                            <Form.Item label="Ngày hết hạn" name='dateClose'>
+                            <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label="Ngày hết hạn" name='dateClose'>
                                 <DatePicker format='DD/MM/YYYY' />
                             </Form.Item>
-                            <Form.Item wrapperCol={{ offset: 10, span: 16 }}>
+                            <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]}  wrapperCol={{ offset: 10, span: 16 }}>
                                 <Button className='bg-blue-600' type="primary" htmlType="submit">
                                     Đăng
                                 </Button>
@@ -344,23 +344,23 @@ const Post = () => {
                                 className='w-800px'
                                 onFinish={(values: any) => onFinishEdit(editPost.id, values)}
                             >
-                                <Form.Item label="Tiêu đề bài đăng" name='title' initialValue={editPost.title}>
+                                <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label="Tiêu đề bài đăng" name='title' initialValue={editPost.title}>
                                     <Input />
                                 </Form.Item>
-                                <Form.Item label="Mô tả bài đăng tuyển" name='describe' initialValue={editPost.describe}>
+                                <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label="Mô tả bài đăng tuyển" name='describe' initialValue={editPost.describe}>
                                     <TextArea rows={4} />
                                 </Form.Item>
-                                <Form.Item label="Yêu cầu" name='request' initialValue={editPost.request}>
+                                <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label="Yêu cầu" name='request' initialValue={editPost.request}>
                                     <TextArea rows={4} />
                                 </Form.Item>
-                                <Form.Item label="Hình thức" name='form' initialValue={editPost.form}>
+                                <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label="Hình thức" name='form' initialValue={editPost.form}>
                                     <Radio.Group>
                                         <Radio value="Onsite"> Onsite </Radio>
                                         <Radio value="Hybrid"> Hybrid </Radio>
                                         <Radio value="Remote"> Remote </Radio>
                                     </Radio.Group>
                                 </Form.Item>
-                                <Form.Item label='Địa điểm' name='location' initialValue={editPost.location}>
+                                <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label='Địa điểm' name='location' initialValue={editPost.location}>
                                     <Select
                                         allowClear
                                         style={{ width: '100%' }}
@@ -373,7 +373,7 @@ const Post = () => {
                                         <Option value="Hải Phòng">Hải Phòng</Option>
                                     </Select>
                                 </Form.Item>
-                                <Form.Item label='Trình độ' name='level' initialValue={editPost.level}>
+                                <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label='Trình độ' name='level' initialValue={editPost.level}>
                                     <Select
                                         allowClear
                                         style={{ width: '100%' }}
@@ -385,7 +385,7 @@ const Post = () => {
                                         <Option value="Senior">Senior</Option>
                                     </Select>
                                 </Form.Item>
-                                <Form.Item label='Kỹ năng' name='skill' initialValue={editPost.skills?.map((skill: any) => skill.name)}>
+                                <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label='Kỹ năng' name='skill' initialValue={editPost.skills?.map((skill: any) => skill.name)}>
                                     <Select
                                         mode="multiple"
                                         allowClear
@@ -394,7 +394,7 @@ const Post = () => {
                                         options={options}
                                     />
                                 </Form.Item>
-                                <Form.Item label='Mức lương' name='salary' initialValue={editPost.salary}>
+                                <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label='Mức lương' name='salary' initialValue={editPost.salary}>
                                     <Select
                                         allowClear
                                         style={{ width: '100%' }}
@@ -407,7 +407,7 @@ const Post = () => {
                                         <Option value="25.000.000 đ - 50.000.000 đ">25.000.000 đ - 50.000.000 đ</Option>
                                     </Select>
                                 </Form.Item>
-                                <Form.Item label="Ngày hết hạn" name='dateClose' initialValue={dayjs(moment(editPost.dateClose).format('DD/MM/YYYY'), 'DD/MM/YYYY')}>
+                                <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label="Ngày hết hạn" name='dateClose' initialValue={dayjs(moment(editPost.dateClose).format('DD/MM/YYYY'), 'DD/MM/YYYY')}>
                                     <DatePicker format='DD/MM/YYYY' />
                                 </Form.Item>
                                 <Form.Item wrapperCol={{ offset: 10, span: 16 }}>
