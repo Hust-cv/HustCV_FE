@@ -56,11 +56,10 @@ const Experience = () => {
 
     const addNewExpMutation = useMutation({
         mutationFn: async (values: any) => {
-            const userId = await localStorage.getItem('userId');
             values.start = values.start.toISOString();
             values.end = values.end.toISOString();
             const name = values.firms + '*/' + values.jobs + '*/' + values.start + '*/' + (values.isStillDo == true ? 'Hiện tại' : values.end)
-            const data = await http.postWithAutoRefreshToken('/api/profile/experience/add', {name: name, personalFileId: userId}, { useAccessToken: true })
+            const data = await http.postWithAutoRefreshToken('/api/profile/experience/add', {name: name}, { useAccessToken: true })
             return data
         },
         onSuccess: (data, variables, context) => {
@@ -182,7 +181,7 @@ const Experience = () => {
                                 valuePropName='checked'
                                 wrapperCol={{ offset: 8, span: 16 }}
                             >
-                                <Checkbox onChange={(e: any) => {onChangeCheckBoxExp(e.target.checked)}} >Đanglàm việc</Checkbox>
+                                <Checkbox onChange={(e: any) => {onChangeCheckBoxExp(e.target.checked)}} >Đang làm việc</Checkbox>
                             </Form.Item>
                             <Form.Item
                                 label="Từ"
@@ -268,7 +267,7 @@ const Experience = () => {
                             <Form.Item
                                 label="Đến"
                                 name="end"
-                                initialValue={moment(editExp.name.split('*/')[3] != 'Hiện tại' ? editExp.name.split('*/')[3] : false)}
+                                initialValue={moment(editExp.name.split('*/')[3] != 'Hiện tại' ? editExp.name.split('*/')[3] : undefined)}
                                 rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
                                 <DatePicker picker="month" disabled={disabledCheckboxExp} />
@@ -291,11 +290,12 @@ const Experience = () => {
                         extra={
                             <>
                                 <div className='mb-4 mt-2'>
-                                    <a onClick={() => showModalAddExp()}><PlusCircleOutlined className='mr-4 text-2xl' /></a>
+                                    <a onClick={() => showModalAddExp()}><PlusCircleOutlined className='mr-4 text-2xl' style={{ color: 'red' }} /></a>
                                 </div>
                             </>
                         }
                         className='w-full mb-4 border-black'
+                        style={{ border: '2px solid darkred' }}
                     >
                         {experience?.data?.map((info: any) => {
                             return (
@@ -308,7 +308,7 @@ const Experience = () => {
                                     }
                                     extra={
                                         <>
-                                            <a onClick={() => handleEditExp(info)}><EditOutlined className='mr-8' /></a>
+                                            <a onClick={() => handleEditExp(info)}><EditOutlined className='mr-8' style={{ color: 'blue' }} /></a>
                                             <a onClick={() => handleDeleteExp(info.id)}><DeleteOutlined className='' /></a>
                                         </>
                                     }
