@@ -33,7 +33,8 @@ const ForgetPassword = () => {
         const handleEmailSubmit = async () => {
         try {
             if (!email) {
-                setError('Vui lòng nhập email');
+                message.error('Vui lòng nhập email');
+
                 return;
             }else{
                 setError('');
@@ -60,7 +61,7 @@ const ForgetPassword = () => {
                 message.error('Email không tồn tại');
             } else {
                 setLoading(false);
-                setError('Hệ thống đang bận');
+                message.error('Hệ thống đang bận');
             }
         } finally {
             // Stop loading
@@ -78,7 +79,7 @@ const ForgetPassword = () => {
     const handleVerificationCodeSubmit = async () => {
         try {
             if (!verificationCode) {
-                setError('Vui lòng nhập mã xác nhận');
+                message.error('Vui lòng nhập mã xác nhận');
                 return;
             }else{
                 setError('');
@@ -99,7 +100,7 @@ const ForgetPassword = () => {
                 message.error('Mã xác nhận không chính xác');
             } else {
                 setLoading(false);
-                setError('Hệ thống đang bận');
+                message.error('Hệ thống đang bận');
             }
         } finally {
             // Stop loading
@@ -112,13 +113,13 @@ const ForgetPassword = () => {
     const handlePasswordSubmit = async () => {
         try {
             if (!newPassword||!confirmNewPassword) {
-                setError('Vui lòng nhập đầy đủ thông tin');
+                message.error('Vui lòng nhập đầy đủ thông tin');
                 return;
             }
             if(newPassword === confirmNewPassword){
                 setError('');
             }else{
-                setError('Mật khẩu mới và xác nhận mật khẩu không khớp');
+                message.error('Mật khẩu mới và xác nhận mật khẩu không khớp');
                 return;
             }
             setLoading(true);
@@ -137,7 +138,7 @@ const ForgetPassword = () => {
                 message.error('Mật khẩu tối thiểu 8 ký tự');
             } else {
                 setLoading(false);
-                setError('Hệ thống đang bận');
+                message.error('Hệ thống đang bận');
             }
         } finally {
             // Stop loading

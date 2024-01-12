@@ -36,7 +36,7 @@ const Login: React.FC = () => {
           let response;
         try {
             if (!email||!password) {
-                setError('Vui lòng nhập đầy đủ thông tin');
+                message.error('Vui lòng nhập đầy đủ thông tin');
                 return;
             }else{
                 setError('');

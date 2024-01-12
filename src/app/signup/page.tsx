@@ -49,17 +49,17 @@ const Signup: React.FC = () => {
         let response = null ;
         try {
             if (!email || !password || !username|| !phoneNumber|| !birthDay|| !confirmPass) {
-                setError('Vui lòng nhập đầy đủ thông tin đăng ký');
+                message.error('Vui lòng nhập đầy đủ thông tin');
                 setLoading(false);
                 return;
             }
             if(password !== confirmPass){
-                setError('Mật khẩu không khớp');
+                message.error('Mật khẩu không khớp');
                 setLoading(false);
                 return;
             }
             if(birthDay>new Date().toISOString().slice(0, 10)){
-                setError('Ngày sinh không hợp lệ');
+                message.error('Ngày sinh không hợp lệ');
                 setLoading(false);
                 return;
             }
@@ -68,7 +68,7 @@ const Signup: React.FC = () => {
             let business_id = null;
             if (isEmployerOption) {
                 if (!businessName || !businessAddress || !businessWebsite) {
-                    setError('Vui lòng nhập đầy đủ thông tin công ty');
+                    message.error('Vui lòng nhập đầy đủ thông tin công ty');
                     setLoading(false);
                     return;
                 }
