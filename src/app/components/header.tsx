@@ -131,14 +131,20 @@ const Header = () => {
     }
 
   })
-  const handleLogout = async () => {
-    await http.getWithAutoRefreshToken('/api/auth/logout', { useAccessToken: true })
-    sessionStorage.clear()
-    localStorage.clear()
-    setUser(null)
-    message.success('Đăng xuất thành công')
-    router.push('/')
+  const handleLogout = async() => {
+    try {
+      await http.getWithAutoRefreshToken('/api/auth/logout', {useAccessToken: true})
+      sessionStorage.clear()
+      localStorage.clear()
+      setUser(null)
+      message.success('Đăng xuất thành công')
+      router.push('/')
+    }catch (error) {
+      message.success('Đăng xuất thành công')
+      router.push('/')
+    }
   }
+
   const employerContent = (
     <div className='min-w-14 cursor-pointer'>
       <div className='py-2 ' onClick={() => router.push('/post')}>
@@ -179,33 +185,6 @@ const Header = () => {
       window.location.reload()
     }, 500)
   };
-
-
-    })
-    const handleLogout = async() => {
-        try {
-            await http.getWithAutoRefreshToken('/api/auth/logout', {useAccessToken: true})
-            sessionStorage.clear()
-            localStorage.clear()
-            setUser(null)
-            message.success('Đăng xuất thành công')
-            router.push('/')
-        }catch (error) {
-            message.success('Đăng xuất thành công')
-            router.push('/')
-        }
-    }
-    const content = (
-        <div className='min-w-14 cursor-pointer'>
-            <div className='py-2 ' onClick={() => router.push('/post')}>
-                Tuyển dụng
-            </div>
-            <div className='py-2'>
-                <button className='text-black' onClick={handleLogout} style={{ color: 'black' }}>
-                    Đăng xuất
-                </button>
-
-            </div>
 
 
   return (
