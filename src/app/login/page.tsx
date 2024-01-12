@@ -28,7 +28,7 @@ const Login: React.FC = () => {
     };
 
     const handleEmailBlur = () => {
-        const emailRegex = /^[a-zA-Z0-9._-]+@gmail\.com$/;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const isValid = emailRegex.test(email);
         setIsEmailValid(isValid);
     };

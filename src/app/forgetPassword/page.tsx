@@ -21,7 +21,7 @@ const ForgetPassword = () => {
     const [isPasswordValid, setIsPasswordValid] = useState(true);
 
     const handleEmailBlur = () => {
-        const emailRegex = /^[a-zA-Z0-9._-]+@gmail\.com$/;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const isValid = emailRegex.test(email);
         setIsEmailValid(isValid);
     };
@@ -51,7 +51,12 @@ const ForgetPassword = () => {
             }
         } catch (error) {
             // @ts-ignore
-            if(error.response && error.response.status === 401){
+            if(error.response && error.response.status === 403){
+                setLoading(false);
+                message.error('Tài khoản đã bị khoá');
+            }
+            // @ts-ignore
+            else if(error.response && error.response.status === 401){
                 setLoading(false);
                 message.error('Email không tồn tại');
             }
