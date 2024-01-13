@@ -97,7 +97,8 @@ const Login: React.FC = () => {
             <div style={{
                 border: '1px solid #ccc', padding: '20px', borderRadius: '8px', maxWidth: '400px', width: '100%',
                 //xét màu trắng
-                background: 'linear-gradient(to bottom right, black 70%, #ff0000)'
+                // background: 'linear-gradient(to bottom right, black 70%, #ff0000)'
+                background: 'linear-gradient(269.85deg, #54151C 0%, #121212 54.89%)'
             }}>
                 <h2 style={{
                     textAlign: 'center', fontSize: 25, fontWeight: 'bold'

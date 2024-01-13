@@ -164,7 +164,8 @@ const ForgetPassword = () => {
                 borderRadius: '8px',
                 maxWidth: '400px',
                 width: '100%',
-                background: 'linear-gradient(to bottom right, black 60%, #ff0000)'
+                // background: 'linear-gradient(to bottom right, black 60%, #ff0000)'
+                background: 'linear-gradient(269.85deg, #54151C 0%, #121212 54.89%)'
             }}>
                 <p style={{
                     fontSize: 30, fontWeight: 'bold',

@@ -143,7 +143,8 @@ const Signup: React.FC = () => {
                 borderRadius: '8px',
                 maxWidth: '400px',
                 width: '100%',
-                background: 'linear-gradient(to bottom right, black 80%, #ff0000)'
+                // background: 'linear-gradient(to bottom right, black 80%, #ff0000)'
+                background: 'linear-gradient(269.85deg, #54151C 0%, #121212 54.89%)'
 
             }}>
                 <h2 style={{textAlign: 'center', fontSize: 25, fontWeight: 'bold', color: 'white'}}>Đăng Ký</h2>
