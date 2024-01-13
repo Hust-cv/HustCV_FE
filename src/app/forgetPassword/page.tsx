@@ -140,7 +140,7 @@ const ForgetPassword = () => {
             // @ts-ignore
             if(error.response && error.response.status === 400){
                 setLoading(false);
-                message.error('Mật khẩu tối thiểu 8 ký tự');
+                message.error('Vui lòng điền đúng định dạng mật khẩu');
             } else {
                 setLoading(false);
                 message.error('Hệ thống đang bận');
