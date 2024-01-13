@@ -25,11 +25,12 @@ const ForgetPassword = () => {
         const isValid = emailRegex.test(email);
         setIsEmailValid(isValid);
     };
+    // mât khẩu phải có ít nhất 8 ký tự, trong đó có ít nhất 1 chữ cái viết hoa, 1 chữ cái viết thường và 1 số, có ký tự đặc biệt
     const handlePasswordBlur = () => {
-        const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/;
         const isValid = passwordRegex.test(newPassword);
         setIsPasswordValid(isValid);
-    };
+    }
         const handleEmailSubmit = async () => {
         try {
             if (!email) {
@@ -260,8 +261,7 @@ const ForgetPassword = () => {
                             />
                             {!isPasswordValid && <p style={{color: 'red'}}>
                               Mật khẩu phải có ít nhất 8 ký tự, trong đó có ít nhất 1 chữ cái viết hoa, 1 chữ cái viết
-                              thường và
-                              1 số.
+                              thường, 1 số và 1 ký tự đặc biệt
                             </p>}
                         </label>
                         <label>
