@@ -4,52 +4,93 @@ import {
   useGetDetailRecruitmentPost,
 } from "../../../service/recruitmentPost.service";
 import { useMutation } from "@tanstack/react-query";
-import { Badge, Button, Form, message, Space, UploadProps } from "antd";
+import { Badge, Button, Form, message, Space, UploadProps, Checkbox, Radio } from "antd";
 import { useForm } from "antd/es/form/Form";
 import TextArea from "antd/es/input/TextArea";
+import { UploadOutlined } from '@ant-design/icons';
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import UploadFileInput from "../../components/UploadFileInput";
-
+import http from "@/app/utils/http";
+// import UploadFileInput from "../../components/UploadFileInput";
+import { Upload } from "antd";
+import axios from "axios";
 const PostDetail = () => {
+    const dummyRequest = ({file, onSuccess }: { file: any, onSuccess: (response: string) => void })=> {
+        setTimeout(() => {
+          onSuccess("ok");
+        }, 0);
+      };
   const [form] = useForm();
   const path = usePathname();
   const [idPost, setIdPost] = useState(Number(path.split("/")[2]));
+  const [isUpload, setUpload] = useState(false)
   const { data: recruitmentPostData } = useGetDetailRecruitmentPost(
     idPost || NaN
   );
-  const props: UploadProps = {
-    name: "file",
-    action: "https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188",
-    headers: {
-      authorization: "authorization-text",
-    },
-    onChange(info) {
-      if (info.file.status !== "uploading") {
-        console.log(info.file, info.fileList);
-      }
-      if (info.file.status === "done") {
-        message.success(`${info.file.name} file uploaded successfully`);
-      } else if (info.file.status === "error") {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-    },
+  const [value, setValue] = useState(0);
+
+  const onChange = (e: any) => {
+    console.log('radio checked', e.target.value);
+    setValue(e.target.value);
+    setUpload(e.target.value);
+  };
+  const getFile = (e: any) => {
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e?.fileList;
   };
   useEffect(() => {
     setIdPost(Number(path.split("/")[2]));
   }, [path]);
-  const doApply = useApplyRecruitment();
-  function handleApplication(value: any) {
-    const body = {
-      recruitmentPost_id: Number(idPost) as number,
-      content: value.content as string,
-      CV: value.CV as string,
-    };
-    console.log(body);
-    doApply.mutate(body);
+  async function handleApplication(value: any) {
+    try{
+      message.loading({content: "Đang gửi", duration: 0, key: 1});
+      if (isUpload){
+        console.log(value)
+        const data = new FormData();
+        data.append("fileCV", value.fileCV[0].originFileObj);
+        const body = {
+           recruitmentPost_id: Number(idPost) as number,
+           content: value.content as string,
+           CV: value.CV as string,
+           fileCV: data.get("fileCV"),
+        };
+        console.log(body)
+        await http.postWithAutoRefreshTokenMultipart("/api/application/upload", body, {useAccessToken: true});
+        message.destroy(1);
+        message.success("Đã gửi đơn")
+      }
+      else{
+        const body = {
+          recruitmentPost_id: idPost,
+          content: value.content,
+        }
+        try{
+          await http.postWithAutoRefreshToken("/api/application/available", body, {useAccessToken: true});
+          message.destroy(1);
+          message.success("Đã gửi đơn");
+        }
+        catch(e:any){
+          if (e.response.status == 404){
+            message.destroy(1);
+            message.error("Người dùng chưa tạo đơn trên hệ thống")
+          }
+          else{
+            throw e;
+        }
+      }
+    }
   }
+  catch(e){
+    console.log(e)
+    message.destroy(1);
+    message.error("Lỗi hệ thống")
+  }
+}
   if (!recruitmentPostData) return <></>;
   return (
+    <>
     <div className="min-h-[100vh] !text-black">
       <div className="search pt-16 mt-[88px]"></div>
       <div className="mt-10 px-10 mx-auto w-full">
@@ -68,7 +109,7 @@ const PostDetail = () => {
                   className="site-badge-count-109"
                   count={skill.name}
                   style={{ backgroundColor: "#52c41a" }}
-                  key = {1000}
+                  key={skill.id}
                 />
               ))}
             </Space>
@@ -85,21 +126,38 @@ const PostDetail = () => {
           className="w-full mt-10"
         >
           <Form.Item
-            label="Nội dung:"
+            label="Thư xin việc:"
             name="content"
             className="flex flex-col"
           >
-            <TextArea rows={4} />
+            <TextArea rows={4} count={{max: 500, show: true}} placeholder="Tối đa 500 ký tự" required/>
           </Form.Item>
-          <Form.Item label="File CV:  " name="CV" className="flex flex-col">
-            <UploadFileInput />
+          {/* <Form.Item label="File CV:  " name="CV" className="flex flex-col">
+            <UploadFileInput onChange={props.onChange}/>
+          </Form.Item> */}
+          <Form.Item label="Lựa chọn CV">
+          <Radio.Group onChange={onChange} value={value}>
+              <Radio value={0}>Dùng file CV có sẵn</Radio>
+              <Radio value={1}>Tải lên CV mới</Radio>
+          </Radio.Group>
           </Form.Item>
+          {/* getValueFromEvent={getFile} */}
+          {!isUpload || <Form.Item label="Tải lên CV mới" name="fileCV" valuePropName="fileList" getValueFromEvent={getFile}>
+            <Upload accept="application/pdf" maxCount={1} customRequest={dummyRequest}>
+            <Button icon={<UploadOutlined />}>Click to Upload</Button>
+              {/* <button style={{ border: 0, background: 'none' }} type="button">
+                <div style={{ marginTop: 8 }}>Upload</div>
+              </button> */}
+            </Upload>
+          </Form.Item>}
+          {/* <Form.Item label=""></Form.Item> */}
           <Form.Item style={{ textAlign: "center" }}>
             <Button htmlType="submit">Đăng ký</Button>
           </Form.Item>
         </Form>
       </div>
     </div>
+    </>
   );
 };
 export default PostDetail;

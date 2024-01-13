@@ -94,6 +94,35 @@ class Http {
             }
         }
     }
+    public async postWithAutoRefreshTokenMultipart(url: string, data: any, options: IResOptions): Promise<any> {
+        try {
+            const requestHeader: (RawAxiosRequestHeaders) | AxiosHeaders = {};
+            if(options.useAccessToken) {
+                requestHeader.authorization = `Bearer ${localStorage.getItem('refreshToken')}`
+            }
+            requestHeader['Content-Type'] = 'multipart/form-data'
+            const result = await this.axiosClient.post(url, data,{
+                headers: requestHeader
+            })
+            return result.data
+        } catch (error) {
+            try{
+            // @ts-ignore
+            if (error.response && error.response.status === 401) {
+                await this._handleRefreshToken();
+                if(localStorage.getItem('accessToken') !== null)
+                    return await this.postWithAutoRefreshToken(url, data, options);
+                else
+                    throw error;
+            } else {
+                throw error;
+            }
+        }
+            catch (error) {
+                throw error;
+            }
+        }
+    }
     public async putWithAutoRefreshToken(url: string, data: any, options: IResOptions): Promise<any> {
         try {
             const requestHeader: (RawAxiosRequestHeaders) | AxiosHeaders = {};

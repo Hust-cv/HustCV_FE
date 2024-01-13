@@ -237,7 +237,7 @@ export default function Home() {
                       className="site-badge-count-109"
                       count={skill.name}
                       style={{ backgroundColor: "#52c41a" }}
-                      key={1000}
+                      key={skill.id}
                     />
                   ))}
                 </Space>
@@ -265,12 +265,12 @@ export default function Home() {
                 extra={
                   <p
                     className="hover:text-green-400 cursor-pointer"
-                    onClick={() => router.push(`/post/${item.id}`)}
+                    onClick={() => router.push(`/recruitementPost/${item.id}`)}
                   >
                     Chi tiết
                   </p>
                 }
-                key={1000}
+                key={item.id}
               >
                 <p>Mức lương: {item.salary}</p>
                 <Space className="mt-3">
@@ -279,7 +279,7 @@ export default function Home() {
                       className="site-badge-count-109"
                       count={skill.name}
                       style={{ backgroundColor: "#52c41a" }}
-                      key={1000}
+                      key={skill.id}
                     />
                   ))}
                 </Space>
