@@ -36,9 +36,9 @@ export const useGetListRecruitmentPost = (
   return useQuery({
     queryKey: [QUERY_KEY, "get-all"],
     queryFn: () =>
-      http.getWithAutoRefreshToken("/api/recruitmentPosts/getAll", { useAccessToken: false }),
+      http.getWithAutoRefreshToken("/api/recruitmentPosts/posts-not-expired", { useAccessToken: false }),
     select(data) {
-      return data;
+      return data.posts;
     },
     enabled: options?.enabled,
   });

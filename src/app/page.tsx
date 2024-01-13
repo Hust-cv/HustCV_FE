@@ -228,7 +228,7 @@ export default function Home() {
                     Chi tiết
                   </p>
                 }
-                key={1000}
+                key={item.id}
               >
                 <p>Mức lương: {item.salary}</p>
                 <Space className="mt-3">

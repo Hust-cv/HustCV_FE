@@ -272,7 +272,7 @@ const Header = () => {
         </div>
         <div className='ml-48 flex-1'>
           <div className='flex items-center gap-6 '>
-            {user?.id === 1 ?
+            {user?.role_id === 1 ?
               (
                 <Menu className='bg-transparent min-w-[400px] text-xl text-[#a6a6a6]' mode="horizontal" selectedKeys={[]} items={employerItems} /*onClick={onNavigate}*/ />
               ) :

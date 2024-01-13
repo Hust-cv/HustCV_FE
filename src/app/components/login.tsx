@@ -8,7 +8,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { message } from 'antd';
 import {Form} from "react-bootstrap";
 
-const Login: React.FC = () => {
+const Login = ({onSignup, onLogin, onForget}: {onSignup: any, onLogin: any, onForget: any}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -20,11 +20,15 @@ const Login: React.FC = () => {
     const [isEmailValid, setIsEmailValid] = useState(true);
     const queryClient = useQueryClient()
     const handleForgotPassword = () => {
-        router.push('/forgetPassword');
+        onForget(true);
+        onLogin(false);
+        onSignup(false);
     };
 
     const handleRegister = () => {
-        router.push('/signup');
+        onSignup(true);
+        onLogin(false);
+        onForget(false);
     };
 
     const handleEmailBlur = () => {
@@ -50,7 +54,7 @@ const Login: React.FC = () => {
                 setLoginAttempts(0);
                 setLoading(false);
                 message.success('Đăng nhập thành công!')
-                router.push('/');
+                router.back();
                 queryClient.invalidateQueries({queryKey: ['verify']})
             }
         } catch (error) {
@@ -73,7 +77,9 @@ const Login: React.FC = () => {
                          'Bạn có muốn đổi mật khẩu không?'
                      );
                      if (changePassword) {
-                         router.push('/forgetPassword');
+                         onForget(true);
+                         onLogin(false);
+                         onSignup(false);
                      }
                      setLoginAttempts(0);
                  }
@@ -85,9 +91,9 @@ const Login: React.FC = () => {
     }
     };
     return (
+    <>
         <div style={{
             display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh',
-
         }}>
             <p style={{fontSize: 30, fontWeight: 'bold',
                 position: 'absolute', top: '100px', left: '100px'
@@ -173,6 +179,7 @@ const Login: React.FC = () => {
                 {error && <p style={{color: 'red'}}>{error}</p>}
             </div>
         </div>
+    </>
     );
 };
 
