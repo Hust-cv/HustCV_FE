@@ -1,7 +1,8 @@
-import React from 'react';
+
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-
+import React, { useEffect, useState } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 interface JobApplication {
@@ -48,6 +49,7 @@ const ApplicationInfoModal: React.FC<Props> = ({ application, show, handleClose 
                 </Button>
             </Modal.Footer>
         </Modal>
+
     );
 };
 

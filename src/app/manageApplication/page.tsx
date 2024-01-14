@@ -28,6 +28,7 @@ const ApplicationList: React.FC<Props> =(props) => {
     const [selectedAppli, setSelectedAppli] = useState<JobApplication | null>(null);
 
     useEffect(() => {
+        fetchApplications();
     }, []);
     const handleCloseModal = () => {
         setSelectedAppli(null);
