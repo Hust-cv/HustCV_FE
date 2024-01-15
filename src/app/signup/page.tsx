@@ -1,11 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button, Input } from 'antd';
+import {Button, Input, Select} from 'antd';
 import { useRouter } from 'next/navigation';
 import http from "@/app/utils/http";
 import { message ,DatePicker} from 'antd';
 import {Form} from "react-bootstrap";
+import {useGetListProvinces} from "@/service/provinces.service";
 
 const Signup: React.FC = () => {
     const [username, setUsername] = useState('');
@@ -16,7 +17,7 @@ const Signup: React.FC = () => {
     const [birthDay, setBirthDay] = useState('');
     const [isEmployerOption, setIsEmployerOption] = useState(false);
     const [businessName, setBusinessName] = useState('');
-    const [businessAddress, setBusinessAddress] = useState('');
+    const [businessAddress, setBusinessAddress] = useState(null);
     const [businessWebsite, setBusinessWebsite] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -41,6 +42,8 @@ const Signup: React.FC = () => {
         const isValid = passwordRegex.test(password);
         setIsPasswordValid(isValid);
     };
+    const { data: provincesData } = useGetListProvinces();
+    console.log('>>>  check:', provincesData)
     const handlePhoneBlur = () => {
         const phoneRegex = /((09|03|07|08|05)+([0-9]{8})\b)/g;
         const isValid = phoneRegex.test(phoneNumber);
@@ -266,13 +269,20 @@ const Signup: React.FC = () => {
                         <br/>
                         <label>
                             <p style={{color: 'white', marginBottom: '8px'}}> Địa chỉ công ty:</p>
-                            <Input
-                                type="text"
+                            <Select
+                                allowClear
+                                style={{ width: '100%' }}
+                                placeholder="Địa chỉ công ty"
+                                options={provincesData?.data?.map(province => {
+                                    return {
+                                        value: province.name,
+                                        label: province.name
+                                    }
+                                })}
                                 value={businessAddress}
-                                placeholder="Nhập địa chỉ công ty"
-                                onChange={(e) => setBusinessAddress(e.target.value)}
-                                style={{marginBottom: '20px'}}
-                            />
+                                onChange={(value) => setBusinessAddress(value)}
+                            >
+                            </Select>
                         </label>
                         <br/>
                         <label>
