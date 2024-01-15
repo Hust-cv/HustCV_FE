@@ -131,6 +131,7 @@ const PostDetail = () => {
           </div>
         </div>
         <p className="mt-3 w-full">Mô tả: {recruitmentPostData.describe}</p>
+        <p className="mt-3 w-full">Yêu cầu: {recruitmentPostData.request}</p>
         {isEmployee == 0 ? (<Button className="mt-3" onClick={e => router.push("/signin")}>Đăng nhập để ứng tuyển</Button>) : <></>}
         </div>
         </div>
@@ -164,6 +165,7 @@ const PostDetail = () => {
           </div>
         </div>
         <p className="mt-3 w-full">Mô tả: {recruitmentPostData.describe}</p>
+        <p className="mt-3 w-full">Yêu cầu: {recruitmentPostData.request}</p>
         <Form
           form={form}
           name="basic"
@@ -186,7 +188,7 @@ const PostDetail = () => {
           <Form.Item label="Lựa chọn CV">
           <Radio.Group onChange={onChange} value={value}>
               <Radio value={0}>Dùng file CV có sẵn</Radio>
-              <Radio value={1}>Tải lên CV mới</Radio>
+              <Radio value={1}>Tải lên CV mới (.pdf)</Radio>
           </Radio.Group>
           </Form.Item>
           {/* getValueFromEvent={getFile} */}
