@@ -241,7 +241,7 @@ const Post = () => {
                             <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label="Ngày hết hạn" name='dateClose'>
                                 <DatePicker format='DD/MM/YYYY' />
                             </Form.Item>
-                            <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]}  wrapperCol={{ offset: 10, span: 16 }}>
+                            <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} wrapperCol={{ offset: 10, span: 16 }}>
                                 <Button className='bg-blue-600' type="primary" htmlType="submit">
                                     Đăng
                                 </Button>
@@ -266,25 +266,14 @@ const Post = () => {
                                         </>
                                     }
                                     extra={
-                                        <Popover
-                                            content={
-                                                <>
-                                                    <div className='mb-4 mt-2'>
-                                                        <a onClick={() => handleEdit(post)}><EditOutlined className='mr-4' />Sửa bài đăng</a>
-                                                    </div>
-                                                    <div>
-                                                        <a onClick={() => handleDelete(post.id)}><DeleteOutlined className='mr-4' />Xoá bài đăng</a>
-                                                    </div>
-                                                </>
-                                            }
-                                            title="Hành động"
-                                            trigger="click"
-                                            placement="left"
-                                            className='z-1'
-
-                                        >
-                                            <MoreOutlined />
-                                        </Popover>
+                                        <div className='flex items-center text-lg'>
+                                            <div>
+                                                <a onClick={() => handleEdit(post)}><EditOutlined className='mr-4' /></a>
+                                            </div>
+                                            <div>
+                                                <a onClick={() => handleDelete(post.id)}><DeleteOutlined className='mr-4' /></a>
+                                            </div>
+                                        </div>
                                     }
                                     className='w-full mb-4'
                                 >
