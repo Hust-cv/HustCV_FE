@@ -14,7 +14,7 @@ interface JobApplication {
         level: string;
         location: string;
         salary: string;
-        form:string;
+        form: string;
     };
 }
 interface Props {
@@ -94,11 +94,11 @@ const ApplicationList: React.FC<Props> =(props) => {
 
     return (
 
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <div style={{ textAlign: 'left', marginLeft: '10px', marginBottom: '10px', fontSize: '24px', marginTop: '5px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ fontWeight: 'bold',textAlign: 'left', marginLeft: '50px', marginBottom: '10px', fontSize: '30px', marginTop: '10px', alignSelf: 'flex-start' }}>
                 Tất cả việc làm ({applications.length})
             </div>
-            <button onClick={handleRefreshClick}>Làm mới</button>
+            <button style={{ backgroundColor : "#FFFFFF", border: '1px solid black', color: 'black', padding: '5px' }} onClick={handleRefreshClick}>Làm mới</button>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 {applications.map((application) => (
                     <div
@@ -111,16 +111,16 @@ const ApplicationList: React.FC<Props> =(props) => {
                             width: '900px',
                         }}
                     >
-                        <p style={{ textAlign: 'left' }}>Tên: {application.content}</p>
-                        <p style={{ textAlign: 'left' }}>CV: {application.cv}</p>
+                        <p style={{ textAlign: 'left' }}>Đơn xin việc: {application.content}</p>
+                        <p style={{ textAlign: 'left' }}>Mô tả công việc: {application.recruitmentPost.describe}</p>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <p style={{ textAlign: 'left' }}>Địa điểm: {application.recruitmentPost.location}</p>
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <p style={{ backgroundColor: getStatusColor(application.status),border: '1px solid black', display: 'inline', padding: '5px', marginRight: '10px' }}>Trạng thái: {application.status}</p>
                                 {application.status === 'Đang chờ' ? (
-                                    <button style={{ backgroundColor : "#CC6699", border: '1px solid black', color: 'white', padding: '5px' }} onClick={() => handleWithdrawClick(application.id)}>Rút đơn</button>
+                                    <button style={{ backgroundColor : "#CC6699", border: '1px solid black', color: 'white',marginBottom: '16px', padding: '5px' }} onClick={() => handleWithdrawClick(application.id)}>Rút đơn</button>
                                 ) : (
-                                    <button style={{ backgroundColor: "#555555", border: '1px solid black', color: 'white', padding: '5px' }} onClick={() => handleDeleteClick(application.id)}>Xóa đơn</button>
+                                    <button style={{ backgroundColor: "#555555", border: '1px solid black', color: 'white',marginBottom: '16px', padding: '5px' }} onClick={() => handleDeleteClick(application.id)}>Xóa đơn</button>
                                 )}
                             </div>
                         </div>
