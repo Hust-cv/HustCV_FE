@@ -54,7 +54,7 @@ export default function Home() {
     <div className="min-h-[100vh]">
       <div className="search text-white pt-16 mt-[88px]">
         <div className="mx-40">
-          <h2 className='text-3xl pb-8 font-bold'>773 Việc làm IT cho Developer &quot;Chất&quot;</h2>
+          <h2 className='text-3xl pb-8 font-bold'> Việc làm IT cho Developer &quot;Chất&quot;</h2>
           <div className="flex justify-center">
             <Form
               layout="inline"
@@ -65,7 +65,7 @@ export default function Home() {
               <Form.Item name='location'>
                 <Select
                   allowClear
-                  style={{ height: '48px', width: '150px' }}
+                  style={{ height: '48px', width: '200px' }}
                   placeholder="Tất cả thành phố"
                   options={provincesData?.data?.map(province => {
                     return {
