@@ -50,8 +50,6 @@ export default function Home() {
     setParams(values)
   }
 
-  console.log('checkdata:', data)
-
   return (
     <div className="min-h-[100vh]">
       <div className="search text-white pt-16 mt-[88px]">

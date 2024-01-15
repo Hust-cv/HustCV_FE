@@ -38,7 +38,6 @@ const Post = () => {
 
     //api
     const { data: provincesData } = useGetListProvinces();
-    console.log('>>>  check:', provincesData)
 
     const addNewPostMutation = useMutation({
         mutationFn: async (values: IPost) => {
@@ -140,7 +139,6 @@ const Post = () => {
     }
 
     const onFinishEdit = (id: any, values: any) => {
-        console.log('>>> check skill: ', values.skill)
         values.dateClose = values.dateClose.toISOString()
         updateMutation.mutate({ id, values })
     }
@@ -154,6 +152,7 @@ const Post = () => {
         setDeleteId(id)
         setIsModalConfirmOpen(true)
     }
+
 
     return (
         <>
@@ -243,7 +242,24 @@ const Post = () => {
                                     <Option value="25.000.000 đ - 50.000.000 đ">25.000.000 đ - 50.000.000 đ</Option>
                                 </Select>
                             </Form.Item>
-                            <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label="Ngày hết hạn" name='dateClose'>
+                            <Form.Item
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Vui lòng nhập trường này'
+                                    },
+                                    ({ getFieldValue }) => ({
+                                        validator(_, value) {
+                                            if (!value || getFieldValue('dateClose') >= new Date()) {
+                                                return Promise.resolve();
+                                            }
+                                            return Promise.reject(new Error('Ngày kết thúc phải bắt đầu ít nhất từ ngày mai.'));
+                                        },
+                                    })
+                                ]}
+                                label="Ngày hết hạn"
+                                name='dateClose'
+                            >
                                 <DatePicker format='DD/MM/YYYY' />
                             </Form.Item>
                             <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} wrapperCol={{ offset: 10, span: 16 }}>
@@ -380,7 +396,18 @@ const Post = () => {
                                         <Option value="Senior">Senior</Option>
                                     </Select>
                                 </Form.Item>
-                                <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label='Kỹ năng' name='skill' initialValue={editPost.skills?.map((skill: any) => skill.name)}>
+                                <Form.Item
+                                    rules={[{ required: true, message: 'Vui lòng nhập trường này' }]}
+                                    label='Kỹ năng' name='skill'
+                                    initialValue={
+                                        editPost.skills?.map((skill: any) => {
+                                            return {
+                                                label: skill.name,
+                                                value: skill.id
+                                            }
+                                        })
+                                    }
+                                >
                                     <Select
                                         mode="multiple"
                                         allowClear
