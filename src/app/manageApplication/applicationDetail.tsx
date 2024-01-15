@@ -16,7 +16,7 @@ interface JobApplication {
         level: string;
         location: string;
         salary: string;
-        form:string;
+        form: string;
     };
 }
 
