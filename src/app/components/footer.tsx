@@ -31,13 +31,13 @@ const Footer = () => {
                     <div className="col-span-2 grid grid-cols-3">
                         <div>
                             <h3 className="text-white font-semibold">Về HustCV</h3>
-                            <a href='https://www.facebook.com/hoangtrung.trung.566' className='text-[#a6a6a6] block text-sm py-2 cursor-pointer hover:text-white'>Hoàng Văn Trung</a>
-                            <a href='https://www.facebook.com/vu9636' className='text-[#a6a6a6] block text-sm py-2 cursor-pointer hover:text-white'>Nguyễn Đức Long Vũ</a>
-                            <a href='https://www.facebook.com/Meizu.17.08' className='text-[#a6a6a6] block text-sm py-2 cursor-pointer hover:text-white'>Lê Văn Minh</a>
-                            <a href='https://www.facebook.com/profile.php?id=100020583019038' className='text-[#a6a6a6] block text-sm py-2 cursor-pointer hover:text-white'>Vũ Đình Linh</a>
-                            <a href='https://www.facebook.com/profile.php?id=100017717225379' className='text-[#a6a6a6] block text-sm py-2 cursor-pointer hover:text-white'>Tạ Ngọc Tú</a>
-                            <a href='https://www.facebook.com/xnam132003' className='text-[#a6a6a6] block text-sm py-2 cursor-pointer hover:text-white'>Nguyễn Xuân Nam</a>
-                            <a href='https://www.facebook.com/profile.php?id=100012098265712' className='text-[#a6a6a6] block text-sm py-2 cursor-pointer hover:text-white'>Nguyễn Nam Khánh</a>
+                            <a href='https://www.facebook.com/hoangtrung.trung.566' className='no-underline text-[#a6a6a6] block text-sm py-2 cursor-pointer hover:text-white'>Hoàng Văn Trung</a>
+                            <a href='https://www.facebook.com/vu9636' className='no-underline text-[#a6a6a6] block text-sm py-2 cursor-pointer hover:text-white'>Nguyễn Đức Long Vũ</a>
+                            <a href='https://www.facebook.com/Meizu.17.08' className='no-underline text-[#a6a6a6] block text-sm py-2 cursor-pointer hover:text-white'>Lê Văn Minh</a>
+                            <a href='https://www.facebook.com/profile.php?id=100020583019038' className='no-underline text-[#a6a6a6] block text-sm py-2 cursor-pointer hover:text-white'>Vũ Đình Linh</a>
+                            <a href='https://www.facebook.com/profile.php?id=100017717225379' className='no-underline text-[#a6a6a6] block text-sm py-2 cursor-pointer hover:text-white'>Tạ Ngọc Tú</a>
+                            <a href='https://www.facebook.com/xnam132003' className='no-underline text-[#a6a6a6] block text-sm py-2 cursor-pointer hover:text-white'>Nguyễn Xuân Nam</a>
+                            <a href='https://www.facebook.com/profile.php?id=100012098265712' className='no-underline text-[#a6a6a6] block text-sm py-2 cursor-pointer hover:text-white'>Nguyễn Nam Khánh</a>
                         </div>
                         <div>
                             <h3 className="text-white font-semibold">Lớp </h3>
