@@ -23,6 +23,7 @@ import type { SelectProps, DatePickerProps } from 'antd';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import http from '../utils/http';
 import SizeContext from 'antd/es/config-provider/SizeContext';
+import { useGetListProvinces } from '@/service/provinces.service';
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 const { Option } = Select;
@@ -30,6 +31,7 @@ const { Option } = Select;
 
 const CriterionJob = () => {
     const queryClient = useQueryClient()
+    const { data: provincesData } = useGetListProvinces();
 
     const skillsResponse = useQuery({
         queryKey: ['skills'],
@@ -118,10 +120,10 @@ const CriterionJob = () => {
                         >
                             <Radio.Group>
                                 <Space direction='vertical'>
+                                    <Radio value="Intern">Intern</Radio>
                                     <Radio value="Fresher">Fresher</Radio>
                                     <Radio value="Junior">Junior</Radio>
                                     <Radio value="Senior">Senior</Radio>
-                                    <Radio value="Manager">Manager</Radio>
                                 </Space>
                             </Radio.Group>
                         </Form.Item>
@@ -153,10 +155,13 @@ const CriterionJob = () => {
                                 allowClear
                                 style={{ width: '100%' }}
                                 placeholder="Địa chỉ"
+                                options={provincesData?.data?.map(province => {
+                                    return {
+                                        value: province.name,
+                                        label: province.name
+                                    }
+                                })}
                             >
-                                <Option value="Hanoi">Hà Nội</Option>
-                                <Option value="Danang">Đà Nẵng</Option>
-                                <Option value="Hochiminh">Hồ Chí Minh</Option>
                             </Select>
                         </Form.Item>
                         <Form.Item wrapperCol={{ offset: 10, span: 16 }}>
