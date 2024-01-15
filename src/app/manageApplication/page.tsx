@@ -58,7 +58,7 @@ const ApplicationList: React.FC<Props> =(props) => {
             refreshData();
             customFunction();
         } catch (error) {
-            console.error('Lỗi khi rút đơn:', error);
+            console.error('Lỗi khi xóa đơn:', error);
         }
     };
     const handleWithdrawClick = async (applicationId: number) => {
@@ -68,7 +68,7 @@ const ApplicationList: React.FC<Props> =(props) => {
             refreshData();
             customFunction();
         } catch (error) {
-            console.error('Lỗi khi xóa đơn:', error);
+            console.error('Lỗi khi rút đơn:', error);
         }
     };
     const handleRefreshClick = async () => {
@@ -85,7 +85,7 @@ const ApplicationList: React.FC<Props> =(props) => {
                 return '#33FF66';
             case 'Đang chờ':
                 return '#FFFF33';
-            case 'Từ chối':
+            case 'Bị từ chối':
                 return '#CC3300';
             case 'Rút đơn':
                 return '#66FFFF';
@@ -103,20 +103,35 @@ const ApplicationList: React.FC<Props> =(props) => {
                 {applications.map((application) => (
                     <div
                         key={application.id}
-                        onClick={() => handleUserNameClick(application)}
                         style={{
                             border: '2px solid black',
                             padding: '10px',
                             margin: '10px',
                             width: '900px',
+                            backgroundColor: "#E0E0E0"
                         }}
                     >
-                        <p style={{ textAlign: 'left' }}>Đơn xin việc: {application.content}</p>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <p style={{ textAlign: 'left' }}>Đơn xin việc: {application.content}</p>
+                            <button
+                                style={{
+                                    backgroundColor: "#FFFFFF",
+                                    border: '1px solid black',
+                                    color: 'black',
+                                    marginBottom: '16px',
+                                    padding: '5px',
+                                    alignSelf: 'flex-start',
+                                }}
+                                onClick={() => handleUserNameClick(application)}
+                            >
+                                Chi tiết
+                            </button>
+                        </div>
                         <p style={{ textAlign: 'left' }}>Mô tả công việc: {application.recruitmentPost.describe}</p>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <p style={{ textAlign: 'left' }}>Địa điểm: {application.recruitmentPost.location}</p>
                             <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <p style={{ backgroundColor: getStatusColor(application.status),border: '1px solid black', display: 'inline', padding: '5px', marginRight: '10px' }}>Trạng thái: {application.status}</p>
+                                <p style={{ backgroundColor: getStatusColor(application.status), border: '1px solid black', display: 'inline', padding: '5px', marginRight: '10px' }}>Trạng thái: {application.status}</p>
                                 {application.status === 'Đang chờ' ? (
                                     <button style={{ backgroundColor : "#CC6699", border: '1px solid black', color: 'white',marginBottom: '16px', padding: '5px' }} onClick={() => handleWithdrawClick(application.id)}>Rút đơn</button>
                                 ) : (
@@ -129,8 +144,6 @@ const ApplicationList: React.FC<Props> =(props) => {
             </div>
             <ApplicationInfoModal application={selectedAppli} show={selectedAppli !== null} handleClose={handleCloseModal}/>
         </div>
-
-
     );
 };
 
