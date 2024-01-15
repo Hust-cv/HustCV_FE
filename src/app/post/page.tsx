@@ -23,6 +23,7 @@ const { TextArea } = Input;
 const { Option } = Select;
 import { Empty } from 'antd';
 import dayjs from 'dayjs';
+import { useGetListProvinces } from '@/service/provinces.service';
 
 const Post = () => {
     //hook
@@ -36,6 +37,9 @@ const Post = () => {
     const queryClient = useQueryClient()
 
     //api
+    const { data: provincesData } = useGetListProvinces();
+    console.log('>>>  check:', provincesData)
+
     const addNewPostMutation = useMutation({
         mutationFn: async (values: IPost) => {
             const data = await http.postWithAutoRefreshToken('/api/recruitmentPosts', values, { useAccessToken: true })
@@ -196,12 +200,13 @@ const Post = () => {
                                     allowClear
                                     style={{ width: '100%' }}
                                     placeholder="Địa điểm"
+                                    options={provincesData?.data?.map(province => {
+                                        return {
+                                            value: province.name,
+                                            label: province.name
+                                        }
+                                    })}
                                 >
-                                    <Option value="Hà Nội">Hà Nội</Option>
-                                    <Option value="Hồ Chí Minh">Hồ Chí Minh</Option>
-                                    <Option value="Đà Nẵng">Đà Nẵng</Option>
-                                    <Option value="Hải Dương">Hải Dương</Option>
-                                    <Option value="Hải Phòng">Hải Phòng</Option>
                                 </Select>
                             </Form.Item>
                             <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label='Trình độ' name='level'>
@@ -354,12 +359,13 @@ const Post = () => {
                                         allowClear
                                         style={{ width: '100%' }}
                                         placeholder="Địa điểm"
+                                        options={provincesData?.data?.map(province => {
+                                            return {
+                                                value: province.name,
+                                                label: province.name
+                                            }
+                                        })}
                                     >
-                                        <Option value="Hà Nội">Hà Nội</Option>
-                                        <Option value="Hồ Chí Minh">Hồ Chí Minh</Option>
-                                        <Option value="Đà Nẵng">Đà Nẵng</Option>
-                                        <Option value="Hải Dương">Hải Dương</Option>
-                                        <Option value="Hải Phòng">Hải Phòng</Option>
                                     </Select>
                                 </Form.Item>
                                 <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label='Trình độ' name='level' initialValue={editPost.level}>

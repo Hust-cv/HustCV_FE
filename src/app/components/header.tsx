@@ -10,7 +10,7 @@ import Link from 'next/link';
 
 import { useGetListBusiness } from "../../service/business.service";
 import { useGetListProvinces } from "../../service/provinces.service";
-import { useGetListRecruitmentPost } from "../../service/recruitmentPost.service";
+// import { useGetListRecruitmentPost } from "../../service/recruitmentPost.service";
 import { useGetListSkills } from "../../service/skill.service";
 import {
   AppstoreOutlined,
@@ -24,7 +24,7 @@ const Header = () => {
 
   const { data: provincesData } = useGetListProvinces();
   const { data: skillsData } = useGetListSkills();
-  const { data: levelData } = useGetListRecruitmentPost();
+  // const { data: levelData } = useGetListRecruitmentPost();
   const { data: businessData } = useGetListBusiness();
 
   const employerItems: MenuProps['items'] = [
