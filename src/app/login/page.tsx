@@ -46,7 +46,7 @@ const Login: React.FC = () => {
             if (response.data?.statusCode === 200) {
                 localStorage.setItem('accessToken', response.data?.resBody?.accessToken);
                 localStorage.setItem('refreshToken', response.data?.resBody?.refreshToken);
-                localStorage.setItem('role', response.data?.resBody?.userData?.role_id);
+                localStorage.setItem('isEmployer', response.data?.resBody?.userData?.role_id);
                 setLoginAttempts(0);
                 setLoading(false);
                 message.success('Đăng nhập thành công!')
