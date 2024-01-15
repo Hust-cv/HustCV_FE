@@ -165,6 +165,7 @@ const PostDetail = () => {
           </div>
         </div>
         <p className="mt-3 w-full">Mô tả: {recruitmentPostData.describe}</p>
+        <p className="mt-3 w-full">Yêu cầu: {recruitmentPostData.request}</p>
         <Form
           form={form}
           name="basic"
