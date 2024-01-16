@@ -73,7 +73,7 @@ const ManageCV = () => {
             });
             if (response.status) {
                 queryClient.invalidateQueries({ queryKey: ['cv'] })
-                message.success('Upload thành vấn thành công!')
+                message.success('Upload file thành công!')
                 onSuccess();
             } else {
                 onError(new Error('Failed to upload file'));
