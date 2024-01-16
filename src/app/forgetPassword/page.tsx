@@ -52,19 +52,19 @@ const ForgetPassword = () => {
             }
         } catch (error) {
             // @ts-ignore
-             if(error.response && error.response.status === 401){
+            if(error.response && error.response.status === 400){
                 setLoading(false);
                 message.error('Email không tồn tại');
             }
             // @ts-ignore
-            else if(error.response && error.response.status === 400){
-                setLoading(false);
-                message.error('Email không tồn tại');
-            }
-            // @ts-ignore
-            if(error.response && error.response.status === 403){
+            else if(error.response && error.response.status === 403){
                 setLoading(false);
                 message.error('Tài khoản đã bị khoá');
+            }
+            // @ts-ignore
+            else if(error.response && error.response.status === 401){
+                setLoading(false);
+                message.error('Email không tồn tại');
             }
             else {
                 setLoading(false);
