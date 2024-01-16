@@ -52,7 +52,9 @@ const Project = () => {
     const addNewPrjMutation = useMutation({
         mutationFn: async (values: any) => {
             values.start = values.start.toISOString();
-            values.end = values.end.toISOString(); 
+            if (values.end !== undefined && values.end !== null) {
+                values.end = values.end.toISOString();
+            }
             const name = values.nameProject + '*/' + values.start + '*/' + (values.isStillDo == true ? 'Hiện tại' : values.end)
             const data = await http.postWithAutoRefreshToken('/api/profile/project/add', {name: name}, { useAccessToken: true })
             return data
@@ -83,7 +85,9 @@ const Project = () => {
     const editPrjMutation = useMutation({
         mutationFn: async ({ id, values }: any) => {
             values.start = values.start.toISOString();
-            values.end = values.end.toISOString();
+            if (values.end !== null) {
+                values.end = values.end.toISOString();
+            }
             const name = values.nameProject + '*/' + values.start + '*/' + (values.isStillDo == true ? 'Hiện tại' : values.end)
             const response = await http.putWithAutoRefreshToken('/api/profile/project/' + id, {name: name}, { useAccessToken: true })
             return response
@@ -98,13 +102,14 @@ const Project = () => {
     })
 
     const showModalAddPrj = () => {
+        setDisabledCheckboxPrj(false)
         setModalAddPrjOpen(true);
     }
     const cancelModalAddPrj = () => {
         setModalAddPrjOpen(false);
     }
     const onChangeCheckBoxPrj = (checked: any) => {
-        // setDisabledCheckboxPrj((checked))
+        setDisabledCheckboxPrj(checked)
     }
     const finishAddPrj = (values: any) => {
         setModalAddPrjOpen(false);
@@ -129,6 +134,12 @@ const Project = () => {
     }
 
     const handleEditPrj = (infoPrj: any) => {
+        if (infoPrj.name.split('*/')[2] == 'Hiện tại'){
+            setDisabledCheckboxPrj(true);
+        }
+        else {
+            setDisabledCheckboxPrj(false);
+        }
         setEditPrj(infoPrj);
         setModalEditPrjOpen(true);
     }
@@ -179,7 +190,7 @@ const Project = () => {
                             <Form.Item
                                 label="Đến"
                                 name="end"
-                                rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
+                                rules={[{ required: !disabledCheckboxPrj, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
                                 <DatePicker picker="month" disabled={disabledCheckboxPrj} />
                             </Form.Item>
@@ -244,7 +255,7 @@ const Project = () => {
                                 label="Đến"
                                 name="end"
                                 initialValue={moment(editPrj.name.split('*/')[2] != 'Hiện tại' ? editPrj.name.split('*/')[3] : undefined)}
-                                rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
+                                rules={[{ required: !disabledCheckboxPrj, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
                                 <DatePicker picker="month" disabled={disabledCheckboxPrj} />
                             </Form.Item>

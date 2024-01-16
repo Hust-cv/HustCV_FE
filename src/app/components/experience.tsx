@@ -57,7 +57,9 @@ const Experience = () => {
     const addNewExpMutation = useMutation({
         mutationFn: async (values: any) => {
             values.start = values.start.toISOString();
-            values.end = values.end.toISOString();
+            if (values.end !== undefined) {
+                values.end = values.end.toISOString();
+            }
             const name = values.firms + '*/' + values.jobs + '*/' + values.start + '*/' + (values.isStillDo == true ? 'Hiện tại' : values.end)
             const data = await http.postWithAutoRefreshToken('/api/profile/experience/add', {name: name}, { useAccessToken: true })
             return data
@@ -88,7 +90,9 @@ const Experience = () => {
     const editExpMutation = useMutation({
         mutationFn: async ({ id, values }: any) => {
             values.start = values.start.toISOString();
-            values.end = values.end.toISOString();
+            if (values.end !== null && values.end !== null) {
+                values.end = values.end.toISOString();
+            }
             const name = values.firms + '*/' + values.jobs + '*/' + values.start + '*/' + (values.isStillDo == true ? 'Hiện tại' : values.end)
             const response = await http.putWithAutoRefreshToken('/api/profile/experience/' + id, {name: name}, { useAccessToken: true })
             return response
@@ -103,13 +107,14 @@ const Experience = () => {
     })
 
     const showModalAddExp = () => {
+        setDisabledCheckboxExp(false)
         setModalAddExpOpen(true);
     }
     const cancelModalAddExp = () => {
         setModalAddExpOpen(false);
     }
     const onChangeCheckBoxExp = (checked: any) => {
-        // setDisabledCheckboxExp((checked))
+        setDisabledCheckboxExp(checked)
     }
     const finishAddExp = (values: any) => {
         setModalAddExpOpen(false);
@@ -134,6 +139,12 @@ const Experience = () => {
     }
 
     const handleEditExp = (infoExp: any) => {
+        if (infoExp.name.split('*/')[3] == 'Hiện tại'){
+            setDisabledCheckboxExp(true)
+        }
+        else {
+            setDisabledCheckboxExp(false)
+        }
         setEditExp(infoExp);
         setModalEditExpOpen(true);
     }
@@ -193,7 +204,7 @@ const Experience = () => {
                             <Form.Item
                                 label="Đến"
                                 name="end"
-                                rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
+                                rules={[{ required: !disabledCheckboxExp, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
                                 <DatePicker picker="month" disabled={disabledCheckboxExp} />
                             </Form.Item>
@@ -268,7 +279,7 @@ const Experience = () => {
                                 label="Đến"
                                 name="end"
                                 initialValue={dayjs(moment(editExp.name.split('*/')[3] != 'Hiện tại' ? editExp.name.split('*/')[3] : undefined).format('MM/YYYY'), 'MM/YYYY')}
-                                rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
+                                rules={[{ required: !disabledCheckboxExp, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
                                 <DatePicker picker="month" disabled={disabledCheckboxExp} />
                             </Form.Item>

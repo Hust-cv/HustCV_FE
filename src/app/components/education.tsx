@@ -56,7 +56,9 @@ const Education = () => {
     const addNewEduMutation = useMutation({
         mutationFn: async (values: any) => {
             values.start = values.start.toISOString();
-            values.end = values.end.toISOString();
+            if (values.end !== undefined && values.end !== null) {
+                values.end = values.end.toISOString();
+            }
             const name = values.schools + '*/' + values.majors + '*/' + values.start + '*/' + (values.isStillStudy == true ? 'Hiện tại' : values.end)
             const data = await http.postWithAutoRefreshToken('/api/profile/education/add', {name: name}, { useAccessToken: true })
             return data
@@ -87,7 +89,9 @@ const Education = () => {
     const editEduMutation = useMutation({
         mutationFn: async ({ id, values }: any) => {
             values.start = values.start.toISOString();
-            values.end = values.end.toISOString();
+            if (values.end !== null) {
+                values.end = values.end.toISOString();
+            }
             const name = values.schools + '*/' + values.majors + '*/' + values.start + '*/' + (values.isStillStudy == true ? 'Hiện tại' : values.end)
             const response = await http.putWithAutoRefreshToken('/api/profile/education/' + id, {name: name}, { useAccessToken: true })
             return response
@@ -102,16 +106,19 @@ const Education = () => {
     })
 
     const showModalAddEdu = () => {
+        setDisabledCheckboxEdu(false);
+        // console.log(disabledCheckboxEdu);
         setModalAddEduOpen(true);
     }
     const cancelModalAddEdu = () => {
         setModalAddEduOpen(false);
     }
     const onChangeCheckBoxEdu = (checked: any) => {
-        // setDisabledCheckboxEdu((checked))
+        setDisabledCheckboxEdu(checked)
     }
     const finishAddEdu = (values: any) => {
         setModalAddEduOpen(false);
+        // console.log(values);
         addNewEduMutation.mutate(values);
     }
 
@@ -133,6 +140,12 @@ const Education = () => {
     }
 
     const handleEditEdu = (infoEdu: any) => {
+        if (infoEdu.name.split('*/')[3] == 'Hiện tại'){
+            setDisabledCheckboxEdu(true);
+        }
+        else {
+            setDisabledCheckboxEdu(false)
+        }
         setEditEdu(infoEdu);
         setModalEditEduOpen(true);
     }
@@ -140,6 +153,7 @@ const Education = () => {
     const finishEditEdu = (values: any) => {
         let id = editEdu.id
         editEduMutation.mutate({id, values});
+        // console.log(values);
         cancelModalEditEdu();
     }
     return(
@@ -156,7 +170,7 @@ const Education = () => {
                             labelCol={{ span: 8 }}
                             wrapperCol={{ span: 16 }}
                             style={{ maxWidth: 600 }}
-                            initialValues={{ isStillStudy: false }}
+                            // initialValues={{ isStillStudy: false }}
                             onFinish={finishAddEdu}
                         >
                             <Form.Item
@@ -179,6 +193,7 @@ const Education = () => {
                                 name="isStillStudy"
                                 valuePropName='checked'
                                 wrapperCol={{ offset: 8, span: 16 }}
+                                initialValue={false}
                             >
                                 <Checkbox onChange={(e: any) => {onChangeCheckBoxEdu(e.target.checked)}} >Đang học</Checkbox>
                             </Form.Item>
@@ -192,7 +207,7 @@ const Education = () => {
                             <Form.Item
                                 label="Đến"
                                 name="end"
-                                rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
+                                rules={[{ required: !disabledCheckboxEdu, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
                                 <DatePicker picker="month" disabled={disabledCheckboxEdu} />
                             </Form.Item>
@@ -267,7 +282,7 @@ const Education = () => {
                                 label="Đến"
                                 name="end"
                                 initialValue={dayjs(moment(editEdu.name.split('*/')[3] != 'Hiện tại' ? editEdu.name.split('*/')[3] : undefined).format('MM/YYYY'), 'MM/YYYY')}
-                                rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
+                                rules={[{ required: !disabledCheckboxEdu, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
                                 <DatePicker picker="month" disabled={disabledCheckboxEdu} />
                             </Form.Item>
