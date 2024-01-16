@@ -156,14 +156,14 @@ const Certification = () => {
                             <Form.Item
                                 label="Tên chứng chỉ"
                                 name="nameCertificate"
-                                rules={[{ required: true, message: 'Vui lòng nhập tên trường của bạn!' }]}
+                                rules={[{ required: true, message: 'Vui lòng nhập tên chứng chỉ của bạn!' }]}
                             >
                                 <Input />
                             </Form.Item>
                             <Form.Item
                                 label="Tổ chức"
                                 name="nameOrganize"
-                                rules={[{ required: true, message: 'Vui lòng nhập tên trường của bạn!' }]}
+                                rules={[{ required: true, message: 'Vui lòng nhập tên tổ chức!' }]}
                             >
                                 <Input />
                             </Form.Item>
@@ -211,7 +211,7 @@ const Certification = () => {
                                 label="Tên chứng chỉ"
                                 name="nameCertificate"
                                 initialValue={editCer?.name?.split('*/')[0]}
-                                rules={[{ required: true, message: 'Vui lòng nhập tên dự án của bạn!' }]}
+                                rules={[{ required: true, message: 'Vui lòng nhập tên chứng chỉ của bạn!' }]}
                             >
                                 <Input />
                             </Form.Item>
@@ -219,7 +219,7 @@ const Certification = () => {
                                 label="Tên tổ chức"
                                 name="nameOrganize"
                                 initialValue={editCer?.name?.split('*/')[1]}
-                                rules={[{ required: true, message: 'Vui lòng nhập tên dự án của bạn!' }]}
+                                rules={[{ required: true, message: 'Vui lòng nhập tên tổ chức!' }]}
                             >
                                 <Input />
                             </Form.Item>

@@ -158,7 +158,7 @@ const Project = () => {
                             <Form.Item
                                 label="Tên dự án"
                                 name="nameProject"
-                                rules={[{ required: true, message: 'Vui lòng nhập tên trường của bạn!' }]}
+                                rules={[{ required: true, message: 'Vui lòng nhập tên dự án của bạn!' }]}
                             >
                                 <Input />
                             </Form.Item>

@@ -54,7 +54,7 @@ const SkillProfile = () => {
             return data
         },
         onSuccess: (data, variables, context) => {
-            message.success('Thêm học vấn thành công!')
+            message.success('Thay đổi kỹ năng thành công!')
             queryClient.invalidateQueries({ queryKey: ['skillProfile'] })
         },
         onError: (error: any) => {
@@ -92,15 +92,15 @@ const SkillProfile = () => {
                     footer={null}
                 >
                     <Form
-                        labelCol={{ span: 8 }}
-                        wrapperCol={{ span: 16 }}
+                        // labelCol={{ span: 8 }}
+                        // wrapperCol={{ span: 16 }}
                         style={{ maxWidth: 600 }}
                         onFinish={(values :any) => finishEditSkill(values)}
                     >
                         <Form.Item
                             label="Kỹ năng"
                             name="skill"
-                            initialValue={skillProfileResponse.data?.skills?.map((skill: any) => skill.name)}
+                            initialValue={skillProfileResponse.data?.skills?.map((skill: any) => {return { label: skill.name, value: skill.id}})}
                         >
                             <Select
                                 mode="multiple"
@@ -110,7 +110,7 @@ const SkillProfile = () => {
                                 options={options}
                             />
                         </Form.Item>
-                        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                        <Form.Item >
                             <Button type="primary" htmlType="submit" className='bg-blue-600'>
                                 Lưu
                             </Button>
@@ -135,11 +135,11 @@ const SkillProfile = () => {
                     className='w-full mb-4 border-black'
                     style={{ border: '2px solid darkred' }}
                 >
-                    <div className='inline-flex'>
+                    <div className='flex flex-wrap '>
                         {skillProfileResponse?.data?.skills.map((info: any) => {
                             return (
                                 // <p className='ml-6 text-xl' key={info.id}>{info.name}</p>
-                                <p className='bg-transparent rounded-full border border-gray-600 px-4 py-2 mx-2' key={info.id}>{info.name}</p>
+                                <p className='bg-transparent rounded-full border border-green-600 px-4 py-2 mx-2 mb-2 mt-2' key={info.id}>{info.name}</p>
                             )
                         })}
                     </div>

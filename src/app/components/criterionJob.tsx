@@ -100,7 +100,7 @@ const CriterionJob = () => {
                         <Form.Item
                             label={<span style={{fontWeight: 'bold', fontSize: 25}}>Kỹ năng</span>}
                             name="skill"
-                            initialValue={criterionJob?.data?.skills.map((skill: any) => skill.name)}
+                            initialValue={criterionJob?.data?.skills.map((skill: any) => {return { label: skill.name, value: skill.id}})}
                             rules={[{ required: true, message: 'Vui lòng nhập kỹ năng của bạn!' }]}
                         >
                         <Select
