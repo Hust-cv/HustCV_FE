@@ -68,7 +68,7 @@ const Education = () => {
             queryClient.invalidateQueries({ queryKey: ['education'] })
         },
         onError: (error: any) => {
-            message.error(error.response.message)
+            message.error(error.response.data)
         }
     })
 
@@ -82,7 +82,7 @@ const Education = () => {
             queryClient.invalidateQueries({ queryKey: ['education']})
         },
         onError: (error: any) => {
-            message.error(error.response.message)
+            message.error(error.response.data)
         }
     })
 
@@ -101,9 +101,14 @@ const Education = () => {
             queryClient.invalidateQueries({ queryKey: ['education']})
         },
         onError: (error: any) => {
-            message.error(error.response.message)
+            message.error(error.response.data)
         }
     })
+
+    const disabledDate = (current: any) => {
+        // Can not select days before today and today
+        return current && current > moment().endOf('month');
+      };
 
     const showModalAddEdu = () => {
         setDisabledCheckboxEdu(false);
@@ -202,7 +207,7 @@ const Education = () => {
                                 name="start"
                                 rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
-                                <DatePicker picker="month" />
+                                <DatePicker picker="month" disabledDate={disabledDate}/>
                             </Form.Item>
                             <Form.Item
                                 label="Đến"
@@ -276,7 +281,7 @@ const Education = () => {
                                 initialValue={dayjs(moment(editEdu?.name?.split('*/')[2]).format('MM/YYYY'), 'MM/YYYY')}
                                 rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
-                                <DatePicker picker="month" />
+                                <DatePicker picker="month" disabledDate={disabledDate}/>
                             </Form.Item>
                             <Form.Item
                                 label="Đến"

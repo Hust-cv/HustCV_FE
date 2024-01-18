@@ -64,7 +64,7 @@ const Project = () => {
             queryClient.invalidateQueries({ queryKey: ['project'] })
         },
         onError: (error: any) => {
-            message.error(error.response.message)
+            message.error(error.response.data)
         }
     })
 
@@ -78,7 +78,7 @@ const Project = () => {
             queryClient.invalidateQueries({ queryKey: ['project']})
         },
         onError: (error: any) => {
-            message.error(error.response.message)
+            message.error(error.response.data)
         }
     })
 
@@ -97,10 +97,15 @@ const Project = () => {
             queryClient.invalidateQueries({ queryKey: ['project']})
         },
         onError: (error: any) => {
-            message.error(error.response.message)
+            message.error(error.response.data)
         }
     })
 
+    const disabledDate = (current: any) => {
+        // Can not select days before today and today
+        return current && current > moment().endOf('month');
+      };
+    
     const showModalAddPrj = () => {
         setDisabledCheckboxPrj(false)
         setModalAddPrjOpen(true);
@@ -185,14 +190,14 @@ const Project = () => {
                                 name="start"
                                 rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
-                                <DatePicker picker="month" />
+                                <DatePicker picker="month" disabledDate={disabledDate}/>
                             </Form.Item>
                             <Form.Item
                                 label="Đến"
                                 name="end"
                                 rules={[{ required: !disabledCheckboxPrj, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
-                                <DatePicker picker="month" disabled={disabledCheckboxPrj} />
+                                <DatePicker picker="month" disabled={disabledCheckboxPrj} disabledDate={disabledDate}/>
                             </Form.Item>
                             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                                 <Button type="primary" htmlType="submit" className='bg-blue-600'>
@@ -246,18 +251,18 @@ const Project = () => {
                             <Form.Item
                                 label="Từ"
                                 name="start"
-                                initialValue={moment(editPrj?.name?.split('*/')[1])}
+                                initialValue={dayjs(moment(editPrj?.name?.split('*/')[1]).format('MM/YYYY'), 'MM/YYYY')}
                                 rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
-                                <DatePicker picker="month" />
+                                <DatePicker picker="month" disabledDate={disabledDate}/>
                             </Form.Item>
                             <Form.Item
                                 label="Đến"
                                 name="end"
-                                initialValue={moment(editPrj.name.split('*/')[2] != 'Hiện tại' ? editPrj.name.split('*/')[3] : undefined)}
+                                initialValue={dayjs(moment(editPrj.name.split('*/')[2] != 'Hiện tại' ? editPrj.name.split('*/')[3] : undefined).format('MM/YYYY'), 'MM/YYYY')}
                                 rules={[{ required: !disabledCheckboxPrj, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
-                                <DatePicker picker="month" disabled={disabledCheckboxPrj} />
+                                <DatePicker picker="month" disabled={disabledCheckboxPrj} disabledDate={disabledDate}/>
                             </Form.Item>
                             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                                 <Button type="primary" htmlType="submit" className='bg-blue-600'>

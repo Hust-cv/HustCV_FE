@@ -78,7 +78,7 @@ const CriterionJob = () => {
             queryClient.invalidateQueries({ queryKey: ['criterionJob']})
         },
         onError: (error: any) => {
-            message.error(error.response.message)
+            message.error(error.response.data)
         }
     })
 

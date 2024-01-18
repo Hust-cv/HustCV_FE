@@ -58,7 +58,7 @@ const SkillProfile = () => {
             queryClient.invalidateQueries({ queryKey: ['skillProfile'] })
         },
         onError: (error: any) => {
-            message.error(error.response.message)
+            message.error(error.response.data)
         }
     })
     const options: SelectProps['options'] = [];

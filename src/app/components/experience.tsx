@@ -10,6 +10,7 @@ import {
     Input,
     Checkbox,
     Radio,
+    // GetProps,
     Select,
     message,
     Card,
@@ -28,6 +29,7 @@ import moment from 'moment'
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 const { Option } = Select;
+// type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
 
 
 const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY', 'DD-MM-YYYY', 'DD-MM-YY'];
@@ -69,7 +71,7 @@ const Experience = () => {
             queryClient.invalidateQueries({ queryKey: ['experience'] })
         },
         onError: (error: any) => {
-            message.error(error.response.message)
+            message.error(error.response.data)
         }
     })
 
@@ -83,7 +85,7 @@ const Experience = () => {
             queryClient.invalidateQueries({ queryKey: ['experience']})
         },
         onError: (error: any) => {
-            message.error(error.response.message)
+            message.error(error.response.data)
         }
     })
 
@@ -102,9 +104,18 @@ const Experience = () => {
             queryClient.invalidateQueries({ queryKey: ['experience']})
         },
         onError: (error: any) => {
-            message.error(error.response.message)
+            message.error(error.response.data)
         }
     })
+
+    // const disabledDate: RangePickerProps['disabledDate'] = (current) => {
+    //     // Can not select days before today and today
+    //     return current && current < dayjs().endOf('day');
+    //   };
+    const disabledDate = (current: any) => {
+        // Can not select days before today and today
+        return current && current > moment().endOf('month');
+      };
 
     const showModalAddExp = () => {
         setDisabledCheckboxExp(false)
@@ -199,14 +210,14 @@ const Experience = () => {
                                 name="start"
                                 rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
-                                <DatePicker picker="month" />
+                                <DatePicker picker="month" disabledDate={disabledDate}/>
                             </Form.Item>
                             <Form.Item
                                 label="Đến"
                                 name="end"
                                 rules={[{ required: !disabledCheckboxExp, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
-                                <DatePicker picker="month" disabled={disabledCheckboxExp} />
+                                <DatePicker picker="month" disabled={disabledCheckboxExp} disabledDate={disabledDate}/>
                             </Form.Item>
                             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                                 <Button type="primary" htmlType="submit" className='bg-blue-600'>
@@ -273,7 +284,7 @@ const Experience = () => {
                                 initialValue={dayjs(moment(editExp?.name?.split('*/')[2]).format('MM/YYYY'), 'MM/YYYY')}
                                 rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
-                                <DatePicker picker="month" />
+                                <DatePicker picker="month" disabledDate={disabledDate}/>
                             </Form.Item>
                             <Form.Item
                                 label="Đến"
@@ -281,7 +292,7 @@ const Experience = () => {
                                 initialValue={dayjs(moment(editExp.name.split('*/')[3] != 'Hiện tại' ? editExp.name.split('*/')[3] : undefined).format('MM/YYYY'), 'MM/YYYY')}
                                 rules={[{ required: !disabledCheckboxExp, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
-                                <DatePicker picker="month" disabled={disabledCheckboxExp} />
+                                <DatePicker picker="month" disabled={disabledCheckboxExp} disabledDate={disabledDate}/>
                             </Form.Item>
                             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                                 <Button type="primary" htmlType="submit" className='bg-blue-600'>

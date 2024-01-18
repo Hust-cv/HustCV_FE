@@ -62,7 +62,7 @@ const Certification = () => {
             queryClient.invalidateQueries({ queryKey: ['certificate'] })
         },
         onError: (error: any) => {
-            message.error(error.response.message)
+            message.error(error.response.data)
         }
     })
 
@@ -76,7 +76,7 @@ const Certification = () => {
             queryClient.invalidateQueries({ queryKey: ['certificate']})
         },
         onError: (error: any) => {
-            message.error(error.response.message)
+            message.error(error.response.data)
         }
     })
 
@@ -92,9 +92,14 @@ const Certification = () => {
             queryClient.invalidateQueries({ queryKey: ['certificate']})
         },
         onError: (error: any) => {
-            message.error(error.response.message)
+            message.error(error.response.data)
         }
     })
+
+    const disabledDate = (current: any) => {
+        // Can not select days before today and today
+        return current && current > moment().endOf('month');
+      };
 
     const showModalAddCer = () => {
         setModalAddCerOpen(true);
@@ -172,7 +177,7 @@ const Certification = () => {
                                 name="start"
                                 rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
-                                <DatePicker picker="month" />
+                                <DatePicker picker="month" disabledDate={disabledDate}/>
                             </Form.Item>
                             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                                 <Button type="primary" htmlType="submit" className='bg-blue-600'>
@@ -229,7 +234,7 @@ const Certification = () => {
                                 initialValue={dayjs(moment(editCer?.name?.split('*/')[2]).format('MM/YYYY'), 'MM/YYYY')}
                                 rules={[{ required: true, message: 'Vui lòng chọn mốc thời gian'}]}
                             >
-                                <DatePicker picker="month" />
+                                <DatePicker picker="month" disabledDate={disabledDate}/>
                             </Form.Item>
                             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                                 <Button type="primary" htmlType="submit" className='bg-blue-600'>
