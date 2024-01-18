@@ -1,8 +1,8 @@
 'use client'
 import Image from 'next/image'
-import { Badge, Button, Card, MenuProps, Select, Slider, Space, Avatar } from "antd";
+import { Empty, Button, Card, Pagination, Select, Avatar } from "antd";
 import { SearchOutlined } from '@ant-design/icons'
-import { MoreOutlined, AreaChartOutlined, FireOutlined, CheckOutlined, ReadOutlined, FormOutlined, TagOutlined, EditOutlined, DeleteOutlined, UserOutlined, HomeOutlined, MoneyCollectOutlined, FieldTimeOutlined } from '@ant-design/icons';
+import { AreaChartOutlined, FireOutlined, CheckOutlined, ReadOutlined, FormOutlined, TagOutlined, UserOutlined, HomeOutlined, MoneyCollectOutlined, FieldTimeOutlined } from '@ant-design/icons';
 import {
   Form,
   Input,
@@ -28,7 +28,8 @@ export default function Home() {
   const [key, setKey] = useState("");
   const { data: provincesData, refetch } = useGetListProvinces();
   // const { data: recruitmentPostData } = useGetListRecruitmentPost();
-  const [params, setParams] = useState(null)
+  const [params, setParams] = useState<any>({})
+  const [page, setPage] = useState(1)
 
   const { data: skillsData } = useGetListSkills();
 
@@ -48,6 +49,21 @@ export default function Home() {
 
   const onFinish = (values: any) => {
     setParams(values)
+  }
+
+  const handlePageChange = (page: number, pageSize: number) => {
+    console.log(page)
+    const newParams = params
+    if (newParams) {
+      newParams._page = page
+      setParams(newParams)
+      setPage(page)
+    } else {
+      setParams({
+        _page: page
+      })
+      setPage(page)
+    }
   }
 
   return (
@@ -150,129 +166,59 @@ export default function Home() {
       </div>
       {data ?
         (
-          <div className='grid grid-cols-3 gap-4 mx-4 mt-4'>
-            {data?.data?.posts?.map((post: any, index: number) => {
-              return (
-                <Card
-                  key={post.id}
-                  title={
-                    <>
-                      <p><Avatar className='mr-4' size='large' icon={<UserOutlined />} />{post.user.username}</p>
-                    </>
-                  }
-                  extra={
-                    <div className='flex items-center text-lg'>
-                      <Link href={`/post/${post.id}`}>Ứng tuyển</Link>
-                    </div>
-                  }
-                  className='w-full mb-4'
-                >
-                  <h3 className='font-bold text-lg'><TagOutlined className='mr-4' />{post.title}</h3>
-                  <p className='my-3'><FormOutlined className='mr-4' />{post.describe}</p>
-                  <div className='my-3'>
-                    <p><FireOutlined className='mr-4' />Yêu cầu: {post.request}</p>
-                  </div>
-                  <p className='my-3'><AreaChartOutlined className='mr-4' />Hình thức: {post.form}</p>
-                  <p className='my-3'><HomeOutlined className='mr-4' />Địa điểm: {post.location}</p>
-                  <p className='my-3'><CheckOutlined className='mr-4' />Trình độ: {post.level}</p>
-                  <div className='my-3'>
-                    <p><ReadOutlined className='mr-4' />Kĩ năng cần thiết: {post.skills?.map((skill: any) => skill.name).join(', ')}</p>
-                  </div>
-                  <p className='my-3'><MoneyCollectOutlined className='mr-4' />Mức lương: {post.salary}</p>
-                  <p className='my-3'><FieldTimeOutlined className='mr-4' />Ngày kết thúc: {moment(post.dateClose).format('DD/MM/YYYY')}</p>
-                </Card>
-              )
-            })}
-          </div>
+          <>
+            {data?.data?.count < 1 ? (
+              <div className='mx-[300px] my-[80px]'>
+                <div className='text-center text-black'>Oops... Không có công việc phù hợp với yêu cầu của bạn.</div>
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+              </div>
+            ) :
+              (<div className='grid grid-cols-3 gap-4 mx-4 mt-4'>
+                {data?.data?.posts?.map((post: any, index: number) => {
+                  return (
+                    <Card
+                      key={post.id}
+                      title={
+                        <>
+                          <p><Avatar className='mr-4' size='large' icon={<UserOutlined />} />{post.user.username}</p>
+                        </>
+                      }
+                      extra={
+                        <div className='flex items-center text-lg'>
+                          <Link href={`/post/${post.id}`}>Ứng tuyển</Link>
+                        </div>
+                      }
+                      className='w-full mb-4'
+                    >
+                      <h3 className='font-bold text-lg'><TagOutlined className='mr-4' />{post.title}</h3>
+                      <p className='my-3'><FormOutlined className='mr-4' />{post.describe}</p>
+                      <div className='my-3'>
+                        <p><FireOutlined className='mr-4' />Yêu cầu: {post.request}</p>
+                      </div>
+                      <p className='my-3'><AreaChartOutlined className='mr-4' />Hình thức: {post.form}</p>
+                      <p className='my-3'><HomeOutlined className='mr-4' />Địa điểm: {post.location}</p>
+                      <p className='my-3'><CheckOutlined className='mr-4' />Trình độ: {post.level}</p>
+                      <div className='my-3'>
+                        <p><ReadOutlined className='mr-4' />Kĩ năng cần thiết: {post.skills?.map((skill: any) => skill.name).join(', ')}</p>
+                      </div>
+                      <p className='my-3'><MoneyCollectOutlined className='mr-4' />Mức lương: {post.salary}</p>
+                      <p className='my-3'><FieldTimeOutlined className='mr-4' />Ngày kết thúc: {moment(post.dateClose).format('DD/MM/YYYY')}</p>
+                    </Card>
+                  )
+                })}
+              </div>)}
+            <div className='flex justify-center mb-4'>
+              <Pagination
+                // defaultCurrent={1}
+                total={data?.data?.count}
+                pageSize={6}
+                current={page}
+                onChange={(page, pageSize) => handlePageChange(page, pageSize)}
+              />
+            </div>
+          </>
         )
         : ('Loading...')}
-      {/* <div className="my-10 px-10 mx-auto w-full grid grid-cols-1 md:grid-cols-3 gap-5">
-        {recruitmentPostData && !checkFilter
-          ? recruitmentPostData
-            .filter((item: any) => {
-              if (key !== "") {
-                return (
-                  item.title.toLowerCase() === key ||
-                  item.location.toLowerCase() === key ||
-                  item.level.toLowerCase() === key ||
-                  item.skills.some((skill: any) => skill.name.toLowerCase() === key)
-                );
-              } else {
-                return item;
-              }
-            })
-            .map((item: any) => (
-              <Card
-                title={item.title}
-                extra={
-                  <p
-                    className="hover:text-green-400 cursor-pointer"
-                    onClick={() => router.push(`/post/${item.id}`)}
-                  >
-                    Chi tiết
-                  </p>
-                }
-                key={item.id}
-              >
-                <p>Mức lương: {item.salary}</p>
-                <Space className="mt-3">
-                  {item.skills.map((skill: any) => (
-                    <Badge
-                      className="site-badge-count-109"
-                      count={skill.name}
-                      style={{ backgroundColor: "#52c41a" }}
-                      key={skill.id}
-                    />
-                  ))}
-                </Space>
-              </Card>
-            ))
-          : recruitmentPostData &&
-          recruitmentPostFilterData &&
-          checkFilter &&
-          recruitmentPostFilterData
-            .filter((item) => {
-              if (key !== "") {
-                return (
-                  item.title === key ||
-                  item.location === key ||
-                  item.level === key ||
-                  item.skills.some((skill) => skill.name === key)
-                );
-              } else {
-                return item;
-              }
-            })
-            .map((item) => (
-              <Card
-                title={item.title}
-                extra={
-                  <p
-                    className="hover:text-green-400 cursor-pointer"
-                    onClick={() => router.push(`/recruitementPost/${item.id}`)}
-                  >
-                    Chi tiết
-                  </p>
-                }
-                key={item.id}
-              >
-                <p>Mức lương: {item.salary}</p>
-                <Space className="mt-3">
-                  {item.skills.map((skill) => (
-                    <Badge
-                      className="site-badge-count-109"
-                      count={skill.name}
-                      style={{ backgroundColor: "#52c41a" }}
-                      key={skill.id}
-                    />
-                  ))}
-                </Space>
-              </Card>
-            ))}
-      </div> */}
-      {/* <div className='w-96 mx-auto text-center'>
-        <img src="/job-finder.png" alt="" />
-      </div> */}
     </div>
   );
 }

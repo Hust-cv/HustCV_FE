@@ -255,14 +255,6 @@ const Header = () => {
     router.push('/signup');
   };
 
-  // const onNavigate: MenuProps['onClick'] = (e) => {
-  //   router.push(`/?key=${e.key}`)
-  //   setTimeout(() => {
-  //     window.location.reload()
-  //   }, 500)
-  // };
-
-
   return (
     <div className="header min-h-[88px] border-b border-b-gray-800 fixed z-10 top-0 left-0 right-0">
       <div className="container min-h-[88px] mx-auto flex items-center">

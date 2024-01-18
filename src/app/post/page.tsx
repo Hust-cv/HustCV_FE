@@ -140,6 +140,7 @@ const Post = () => {
 
     const onFinishEdit = (id: any, values: any) => {
         values.dateClose = values.dateClose.toISOString()
+        console.log(values)
         updateMutation.mutate({ id, values })
     }
 
@@ -178,13 +179,62 @@ const Post = () => {
                             className='w-800px'
                             onFinish={onFinish}
                         >
-                            <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label="Tiêu đề bài đăng" name='title'>
+                            <Form.Item
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Vui lòng nhập trường này'
+                                    },
+                                    ({ getFieldValue }) => ({
+                                        validator(_, value) {
+                                            if (!value || getFieldValue('title').length <= 100) {
+                                                return Promise.resolve();
+                                            }
+                                            return Promise.reject(new Error('Giới hạn 100 ký tự.'));
+                                        },
+                                    })
+                                ]}
+                                label="Tiêu đề bài đăng"
+                                name='title'
+                            >
                                 <Input />
                             </Form.Item>
-                            <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label="Mô tả bài đăng tuyển" name='describe'>
+                            <Form.Item
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Vui lòng nhập trường này'
+                                    },
+                                    ({ getFieldValue }) => ({
+                                        validator(_, value) {
+                                            if (!value || getFieldValue('describe').length <= 1000) {
+                                                return Promise.resolve();
+                                            }
+                                            return Promise.reject(new Error('Giới hạn 1000 ký tự.'));
+                                        },
+                                    })
+                                ]}
+                                label="Mô tả bài đăng tuyển"
+                                name='describe'>
                                 <TextArea rows={4} />
                             </Form.Item>
-                            <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label="Yêu cầu" name='request'>
+                            <Form.Item
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Vui lòng nhập trường này'
+                                    },
+                                    ({ getFieldValue }) => ({
+                                        validator(_, value) {
+                                            if (!value || getFieldValue('request').length <= 500) {
+                                                return Promise.resolve();
+                                            }
+                                            return Promise.reject(new Error('Giới hạn 500 ký tự.'));
+                                        },
+                                    })
+                                ]}
+                                label="Yêu cầu"
+                                name='request'>
                                 <TextArea rows={4} />
                             </Form.Item>
                             <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label="Hình thức" name='form'>
@@ -354,13 +404,66 @@ const Post = () => {
                                 className='w-800px'
                                 onFinish={(values: any) => onFinishEdit(editPost.id, values)}
                             >
-                                <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label="Tiêu đề bài đăng" name='title' initialValue={editPost.title}>
+                                <Form.Item
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Vui lòng nhập trường này'
+                                        },
+                                        ({ getFieldValue }) => ({
+                                            validator(_, value) {
+                                                if (!value || getFieldValue('title').length <= 100) {
+                                                    return Promise.resolve();
+                                                }
+                                                return Promise.reject(new Error('Giới hạn 100 ký tự.'));
+                                            },
+                                        })
+                                    ]}
+                                    label="Tiêu đề bài đăng"
+                                    name='title'
+                                    initialValue={editPost.title}>
                                     <Input />
                                 </Form.Item>
-                                <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label="Mô tả bài đăng tuyển" name='describe' initialValue={editPost.describe}>
+                                <Form.Item
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Vui lòng nhập trường này'
+                                        },
+                                        ({ getFieldValue }) => ({
+                                            validator(_, value) {
+                                                if (!value || getFieldValue('describe').length <= 1000) {
+                                                    return Promise.resolve();
+                                                }
+                                                return Promise.reject(new Error('Giới hạn 1000 ký tự.'));
+                                            },
+                                        })
+                                    ]}
+                                    label="Mô tả bài đăng tuyển"
+                                    name='describe'
+                                    initialValue={editPost.describe}
+                                >
                                     <TextArea rows={4} />
                                 </Form.Item>
-                                <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label="Yêu cầu" name='request' initialValue={editPost.request}>
+                                <Form.Item
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Vui lòng nhập trường này'
+                                        },
+                                        ({ getFieldValue }) => ({
+                                            validator(_, value) {
+                                                if (!value || getFieldValue('request').length <= 500) {
+                                                    return Promise.resolve();
+                                                }
+                                                return Promise.reject(new Error('Giới hạn 500 ký tự.'));
+                                            },
+                                        })
+                                    ]}
+                                    label="Yêu cầu"
+                                    name='request'
+                                    initialValue={editPost.request}
+                                >
                                     <TextArea rows={4} />
                                 </Form.Item>
                                 <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label="Hình thức" name='form' initialValue={editPost.form}>
@@ -429,7 +532,25 @@ const Post = () => {
                                         <Option value="25.000.000 đ - 50.000.000 đ">25.000.000 đ - 50.000.000 đ</Option>
                                     </Select>
                                 </Form.Item>
-                                <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} label="Ngày hết hạn" name='dateClose' initialValue={dayjs(moment(editPost.dateClose).format('DD/MM/YYYY'), 'DD/MM/YYYY')}>
+                                <Form.Item
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Vui lòng nhập trường này'
+                                        },
+                                        ({ getFieldValue }) => ({
+                                            validator(_, value) {
+                                                if (!value || getFieldValue('dateClose') >= new Date()) {
+                                                    return Promise.resolve();
+                                                }
+                                                return Promise.reject(new Error('Ngày kết thúc phải bắt đầu ít nhất từ ngày mai.'));
+                                            },
+                                        })
+                                    ]}
+                                    label="Ngày hết hạn"
+                                    name='dateClose'
+                                    initialValue={dayjs(moment(editPost.dateClose).format('DD/MM/YYYY'), 'DD/MM/YYYY')}
+                                >
                                     <DatePicker format='DD/MM/YYYY' />
                                 </Form.Item>
                                 <Form.Item wrapperCol={{ offset: 10, span: 16 }}>
