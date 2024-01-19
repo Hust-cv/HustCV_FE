@@ -50,7 +50,7 @@ class Http {
             const requestHeader: RawAxiosRequestHeaders | AxiosHeaders = {};
 
             if (options.useAccessToken) {
-                const accessToken = localStorage.getItem('refreshToken');
+                const accessToken = localStorage.getItem('accessToken');
                 if (accessToken) {
                     requestHeader.authorization = `Bearer ${accessToken}`;
                 }
@@ -82,7 +82,7 @@ class Http {
         try {
             const requestHeader: (RawAxiosRequestHeaders) | AxiosHeaders = {};
             if (options.useAccessToken) {
-                requestHeader.authorization = `Bearer ${localStorage.getItem('refreshToken')}`
+                requestHeader.authorization = `Bearer ${localStorage.getItem('accessToken')}`
             }
             const result = await this.axiosClient.post(url, data, {
                 headers: requestHeader
@@ -110,7 +110,7 @@ class Http {
         try {
             const requestHeader: (RawAxiosRequestHeaders) | AxiosHeaders = {};
             if (options.useAccessToken) {
-                requestHeader.authorization = `Bearer ${localStorage.getItem('refreshToken')}`
+                requestHeader.authorization = `Bearer ${localStorage.getItem('accessToken')}`
             }
             requestHeader['Content-Type'] = 'multipart/form-data'
             const result = await this.axiosClient.post(url, data, {
@@ -140,7 +140,7 @@ class Http {
             const requestHeader: (RawAxiosRequestHeaders) | AxiosHeaders = {};
 
             if (options.useAccessToken) {
-                requestHeader.authorization = `Bearer ${localStorage.getItem('refreshToken')}`
+                requestHeader.authorization = `Bearer ${localStorage.getItem('accessToken')}`
             }
             const result = await this.axiosClient.put(url, data, {
                 headers: requestHeader
@@ -170,7 +170,7 @@ class Http {
             const requestHeader: RawAxiosRequestHeaders | AxiosHeaders = {};
 
             if (options.useAccessToken) {
-                requestHeader.authorization = `Bearer ${localStorage.getItem('refreshToken')}`;
+                requestHeader.authorization = `Bearer ${localStorage.getItem('accessToken')}`;
             }
 
             const result = await this.axiosClient.delete(url, {

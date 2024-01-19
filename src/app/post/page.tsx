@@ -32,6 +32,9 @@ const Post = () => {
     const [deleteId, setDeleteId] = useState(null)
     const [isModalEditOpen, setIsModalEditOpen] = useState(false)
     const [editPost, setEditPost] = useState<any>({})
+    const [isAddNewLoading,setIsAddNewLoading] = useState(false)
+    const [isEditLoading,setIsEditLoading] = useState(false)
+    const [isDeleteLoading,setIsDeleteLoading] = useState(false)
 
     // Get QueryClient from the context
     const queryClient = useQueryClient()
@@ -125,6 +128,7 @@ const Post = () => {
     };
 
     const handleConfirm = () => {
+        setIsDeleteLoading(true)
         deletePostMutation.mutate(deleteId)
         setIsModalConfirmOpen(false)
     };
@@ -134,17 +138,19 @@ const Post = () => {
     };
 
     const onFinish = (values: any) => {
+        setIsAddNewLoading(true)
         values.dateClose = values.dateClose.toISOString()
         addNewPostMutation.mutate(values)
     }
 
     const onFinishEdit = (id: any, values: any) => {
+        setIsEditLoading(true)
         values.dateClose = values.dateClose.toISOString()
-        console.log(values)
         updateMutation.mutate({ id, values })
     }
 
     const handleEdit = (post: any) => {
+
         setEditPost(post)
         setIsModalEditOpen(true)
     }
@@ -178,6 +184,7 @@ const Post = () => {
                             style={{ maxWidth: 800 }}
                             className='w-800px'
                             onFinish={onFinish}
+
                         >
                             <Form.Item
                                 rules={[
@@ -313,7 +320,7 @@ const Post = () => {
                                 <DatePicker format='DD/MM/YYYY' />
                             </Form.Item>
                             <Form.Item rules={[{ required: true, message: 'Vui lòng nhập trường này' }]} wrapperCol={{ offset: 10, span: 16 }}>
-                                <Button className='bg-blue-600' type="primary" htmlType="submit">
+                                <Button loading={isAddNewLoading} className='bg-blue-600' type="primary" htmlType="submit">
                                     Đăng
                                 </Button>
                             </Form.Item>
@@ -376,7 +383,7 @@ const Post = () => {
                                 <Button key="back" onClick={() => setIsModalConfirmOpen(false)}>
                                     Huỷ
                                 </Button>,
-                                <Button danger key='ok' onClick={handleConfirm}>
+                                <Button loading={isDeleteLoading} danger key='ok' onClick={handleConfirm}>
                                     Xoá
                                 </Button>
                             ]}
@@ -554,7 +561,7 @@ const Post = () => {
                                     <DatePicker format='DD/MM/YYYY' />
                                 </Form.Item>
                                 <Form.Item wrapperCol={{ offset: 10, span: 16 }}>
-                                    <Button className='bg-blue-600' type="primary" htmlType="submit">
+                                    <Button loading={isEditLoading} className='bg-blue-600' type="primary" htmlType="submit">
                                         Lưu
                                     </Button>
                                 </Form.Item>
