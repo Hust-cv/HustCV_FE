@@ -92,11 +92,11 @@ const ManageCV = () => {
     }
     return (
         <div className='mb-10 mt-5'>
-            <Card className='border-gray-400'>
+            <Card className='border-black'>
                 <p className='font-bold text-3xl mb-5'>Quản lý CV</p>
                 <p className='mb-5 text-base'>Tải CV của bạn bên dưới để có thể sử dụng xuyên suốt quá trình tìm việc</p>
-                <div className="border border-solid border-gray-500 p-4 mb-5">
-                    <div className='mb-5'>
+                <div className="border border-solid border-gray-600 p-4 mb-5">
+                    <div className='mb-4'>
                         <Upload
                             customRequest={customRequest}
                             beforeUpload={beforeUpload}
